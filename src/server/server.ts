@@ -1,5 +1,7 @@
 import dotenv from 'dotenv'
 import next from 'next'
+import * as trpcExpress from '@trpc/server/adapters/express'
+
 import nextBuild from 'next/dist/build'
 import path from 'path'
 
@@ -9,6 +11,8 @@ dotenv.config({
 
 import express from 'express'
 import payload from 'payload'
+import { appRouter } from '../trpc'
+import { createContext } from '..//trpc/context'
 
 
 const app = express()
@@ -41,6 +45,13 @@ const start = async (): Promise<void> => {
   })
 
   const nextHandler = nextApp.getRequestHandler()
+  app.use(
+    '/api/trpc',
+    trpcExpress.createExpressMiddleware({
+      router: appRouter,
+      createContext,
+    })
+  )
 
   app.use((req, res) => nextHandler(req, res))
 
@@ -48,7 +59,7 @@ const start = async (): Promise<void> => {
     payload.logger.info('Starting Next.js...')
 
     app.listen(PORT, async () => {
-      payload.logger.info(`Next.js App URL: ${process.env.PAYLOAD_PUBLIC_SERVER_URL}`)
+      payload.logger.info(`Next.js App URL: ${process.env.NEXT_PUBLIC_SERVER_URL}`)
     })
   })
 }

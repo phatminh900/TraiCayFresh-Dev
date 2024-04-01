@@ -20,10 +20,11 @@ export type CartItems =
 
 export interface Config {
   collections: {
-    admin: Admin;
-    users: User;
+    admins: Admin;
+    customers: Customer;
     products: Product;
     media: Media;
+    reviews: Review;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -31,7 +32,7 @@ export interface Config {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "admin".
+ * via the `definition` "admins".
  */
 export interface Admin {
   id: string;
@@ -50,16 +51,15 @@ export interface Admin {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "customers".
  */
-export interface User {
+export interface Customer {
   id: string;
   name: string;
-  role?: string | null;
   phoneNumber?:
     | {
         isDefault?: boolean | null;
-        phoneNumber: number;
+        phoneNumber: string;
         id?: string | null;
       }[]
     | null;
@@ -83,6 +83,8 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password: string | null;
@@ -156,18 +158,32 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: string;
+  text: string;
+  rating: number;
+  reviewImgs?: (string | Media)[] | null;
+  product: string | Product;
+  user: string | Customer;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
   id: string;
   user:
     | {
-        relationTo: 'admin';
+        relationTo: 'admins';
         value: string | Admin;
       }
     | {
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'customers';
+        value: string | Customer;
       };
   key?: string | null;
   value?:

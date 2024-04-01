@@ -1,10 +1,11 @@
-// import type { AccessArgs } from 'payload/config'
+import type { AccessArgs } from 'payload/config'
 
-// import { checkRole } from '../collections/Users/checkRole'
-// import type { User } from '../payload-types'
+import type { Customer } from '../payload-types'
 
-// type isAdmin = (args: AccessArgs<unknown, User>) => boolean
+type isAdmin = (args: AccessArgs<unknown, Customer>) => boolean
 
-// export const admins: isAdmin = ({ req: { user } }) => {
-//   return checkRole(['admin'], user)
-// }
+export const isAdmins: isAdmin = ({ req: { user } }) => {
+    // only admins collection have role
+    if(!user?.role) return false
+    return true
+}

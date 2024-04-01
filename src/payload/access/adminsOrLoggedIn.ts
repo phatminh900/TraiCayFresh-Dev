@@ -1,12 +1,14 @@
-// import type { Access, AccessArgs } from 'payload/config'
+import type { Access, AccessArgs } from "payload/config";
 
-// import { checkRole } from '../collections/Users/checkRole'
-// import type { User } from '../payload-types'
+import type { Customer } from "../payload-types";
 
-// export const adminsOrLoggedIn: Access = ({ req }: AccessArgs<User>) => {
-//   if (checkRole(['admin'], req.user)) {
-//     return true
-//   }
-
-//   return !!req.user
-// }
+export const isAdminAndCustomer: Access = ({ req }: AccessArgs<Customer>) => {
+  const user = req.user;
+  if (!user) return false;
+  if (user?.role || user.role === "admin") return true;
+  return {
+    id: {
+      equals: user.id,
+    },
+  };
+};

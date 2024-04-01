@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
+import Header from "@/layout/header";
+import MaxWidthWrapper from "@/components/molecules/max-width-wrapper";
+import Provider from "@/layout/provider";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +20,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang='en'>
+      <body className={inter.className}>
+        <Provider>
+          <Header />
+          <main className='py-4 px-4 md:py-6 md:px-0'>
+            <MaxWidthWrapper>{children}</MaxWidthWrapper>
+          </main>
+        </Provider>
+        <Toaster
+      position="top-center"
+      richColors
+        toastOptions={{
+          classNames: {
+            title: "text-center",
+          },
+        }}
+      />
+      </body>
+     
     </html>
   );
 }

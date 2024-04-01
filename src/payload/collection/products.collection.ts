@@ -35,7 +35,7 @@ export const Products: CollectionConfig = {
       label: "Estimate Quantity For 1Kg",
       type: "text",
     },
-    { name: "description", label: "Description", type: "text", required: true },
+    { name: "description", label: "Description", type: "textarea", required: true },
     {
       name: "thumbnailImg",
       label:"Thumbnail Img",

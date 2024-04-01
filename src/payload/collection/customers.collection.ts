@@ -1,8 +1,48 @@
 import { CollectionConfig } from "payload/types";
+import { isAdmins } from "../access/isAdmin";
+import { isAdminAndCustomer } from "../access/adminsOrLoggedIn";
+import { anyone } from "../access/anyone";
+import { Customer } from "../payload-types";
 
-export const Users: CollectionConfig = {
-  slug: "users",
-    auth:true,
+export const Customers: CollectionConfig = {
+  slug: "customers",
+  access: {
+    read: isAdminAndCustomer,
+    update: isAdminAndCustomer,
+    create: anyone,
+    delete: isAdmins,
+  },
+
+  auth: {
+    forgotPassword: {
+      generateEmailHTML: (agrs) => {
+        const req = agrs?.req;
+        const user = agrs?.user as Customer;
+        const token = agrs?.token;
+        // Use the token provided to allow your user to reset their password
+        const resetPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/reset-password?token=${token}`;
+
+        return `
+          <!doctype html>
+          <html>
+            <body>
+              <h1>Here is my custom email template!</h1>
+              <p>Hello, ${user.email}!</p>
+              <p>Click below to reset your password.</p>
+              <p>
+                <a href="${resetPasswordURL}">${resetPasswordURL}</a>
+              </p>
+            </body>
+          </html>
+        `;
+      },
+    },
+    verify: {
+      generateEmailHTML(token) {
+        return `<p>Hi please verify your email ${token}</p>`;
+      },
+    },
+  },
   fields: [
     {
       name: "name",
@@ -10,11 +50,11 @@ export const Users: CollectionConfig = {
       type: "text",
       required: true,
     },
-    { name: "role", label: "Role", type: "text", defaultValue: "user" },
     {
       name: "phoneNumber",
       label: "Phone Number",
       type: "array",
+      maxRows: 3,
       fields: [
         {
           name: "isDefault",
@@ -24,7 +64,7 @@ export const Users: CollectionConfig = {
         {
           name: "phoneNumber",
           label: "Phone Number",
-          type: "number",
+          type: "text",
           required: true,
         },
       ],
@@ -33,6 +73,7 @@ export const Users: CollectionConfig = {
       name: "address",
       label: "Address",
       type: "array",
+      maxRows: 3,
       fields: [
         {
           name: "isDefault",
