@@ -29,31 +29,33 @@ const BreadCrumbLinks = <Deep extends 1 | 2 | 3>({
   const deepLevel = Array.from({ length: deep }, (_, i) => i);
   return (
     <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem>
+      <BreadcrumbList data-cy='breadcrumb-list-links'>
+        <BreadcrumbItem data-cy='breadcrumb-list-item'>
           <Link href={APP_URL.home}>Trang chủ</Link>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         {deepLevel.map((level, i) => {
-          if(!links[i].label) return null
-          return <Fragment key={level}>
-          {i + 1 === deep && (
-            <BreadcrumbItem>
-              <BreadcrumbPage>
-                <Link href={links[i].href}>{links[i].label}</Link>
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          )}
+          if (!links[i].label) return null;
+          return (
+            <Fragment key={level}>
+              {i + 1 === deep && (
+                <BreadcrumbItem data-cy='breadcrumb-list-item'>
+                  <BreadcrumbPage>
+                    <Link href={links[i].href}>{links[i].label}</Link>
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              )}
 
-          {i + 1 !== deep && (
-            <>
-              <BreadcrumbItem>
-                <Link href={links[i].href}>{links[i].label}</Link>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </>
-          )}
-        </Fragment>
+              {i + 1 !== deep && (
+                <>
+                  <BreadcrumbItem data-cy='breadcrumb-list-item'>
+                    <Link href={links[i].href}>{links[i].label}</Link>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                </>
+              )}
+            </Fragment>
+          );
         })}
       </BreadcrumbList>
     </Breadcrumb>

@@ -19,7 +19,7 @@ export const SignUpCredentialSchema = AuthCredentialSchema.extend({
   name: z.string().min(2, "Tên phải từ 2 chữ cái").trim(),
   passwordConfirm: z
     .string()
-    .min(6, { message: "Mật khẩu phải có ít nhất 6 kí tự" })
+    .min(6, { message: "Nhập lại mật khẩu phải có ít nhất 6 kí tự" })
     .regex(
       new RegExp(/^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/),
       "Mật khẩu phải có ít nhất 1 chữ cái và 1 số. Và có độ dài từ 6 kí tự trở lên"

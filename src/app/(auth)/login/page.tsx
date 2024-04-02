@@ -68,6 +68,7 @@ const LoginPage = () => {
             Email
           </Label>
           <Input
+            data-cy='input-email-login'
             {...register("email")}
             className={cn({
               "focus-visible:ring-red-500 ring-1 ring-red-400": errors.email,
@@ -84,6 +85,7 @@ const LoginPage = () => {
             Mật khẩu
           </Label>
           <InputPassword
+            data-cy='input-password-login'
             {...register("password")}
             className={cn({
               "focus-visible:ring-red-500 ring-1 ring-red-400": errors.password,
@@ -97,6 +99,7 @@ const LoginPage = () => {
           )}
         </div>
         <Link
+        data-cy='forgot-password-link'
           href={{
             pathname: APP_URL.forgotPassword,
             query: {

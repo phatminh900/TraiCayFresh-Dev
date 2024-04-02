@@ -8,7 +8,7 @@ const ErrorMsg = ({
   msg?: string;
 }) => {
   return (
-    <p className='text-sm font-semi-bold text-red-500 mt-2'>
+    <p data-cy='form-error-msg' className='text-sm font-semi-bold text-red-500 mt-2'>
       {msg === "Required" ? `Vui lòng nhập ${field}` : msg}
     </p>
   );

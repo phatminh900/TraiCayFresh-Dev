@@ -16,7 +16,7 @@ const MyProfilePage = async () => {
   const data = await getMeServer(nextCookies);
   const user = data.result?.user;
   if (!data.ok || !user) {
-    redirect(APP_URL.login);
+    redirect(APP_URL.login+`?origin=${APP_URL.myProfile.slice(1)}`);
   }
 
   return (

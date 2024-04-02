@@ -5,6 +5,13 @@ export const Products: CollectionConfig = {
   fields: [
     { name: "title", label: "Title", type: "text", required: true },
     {
+      name: "_inStock",
+      label: "In Stock",
+      type: "checkbox",
+      defaultValue: true,
+    },
+
+    {
       name: "originalPrice",
       label: "OriginalPrice",
       type: "number",
@@ -35,10 +42,15 @@ export const Products: CollectionConfig = {
       label: "Estimate Quantity For 1Kg",
       type: "text",
     },
-    { name: "description", label: "Description", type: "textarea", required: true },
+    {
+      name: "description",
+      label: "Description",
+      type: "textarea",
+      required: true,
+    },
     {
       name: "thumbnailImg",
-      label:"Thumbnail Img",
+      label: "Thumbnail Img",
       type: "relationship",
       relationTo: "media",
       required: true,
@@ -46,7 +58,7 @@ export const Products: CollectionConfig = {
     },
     {
       name: "productImgs",
-      label:"Product Imgs",
+      label: "Product Imgs",
       type: "relationship",
       relationTo: "media",
       required: true,
@@ -55,12 +67,17 @@ export const Products: CollectionConfig = {
     },
     {
       name: "benefitImg",
-      label:"Benefit Img",
+      label: "Benefit Img",
       type: "relationship",
       relationTo: "media",
       required: true,
     },
 
-    { name: "discountCode", label:'Discount Code',type: "text", required: false },
+    {
+      name: "discountCode",
+      label: "Discount Code",
+      type: "text",
+      required: false,
+    },
   ],
 };

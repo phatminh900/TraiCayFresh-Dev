@@ -24,12 +24,17 @@ const SignUpPage = () => {
 
   return (
     <Auth type='signUp'>
-      <form onSubmit={signUp} className='mt-8 grid gap-y-4'>
+      <form
+        data-cy='form-sign-up'
+        onSubmit={signUp}
+        className='mt-8 grid gap-y-4'
+      >
         <div>
           <Label htmlFor='name' className='block mb-2'>
             Tên của bạn
           </Label>
           <Input
+            data-cy='input-name-sign-up'
             {...register("name")}
             className={cn({
               "focus-visible:ring-red-500 ring-1 ring-red-400": errors.name,
@@ -45,6 +50,7 @@ const SignUpPage = () => {
           </Label>
           <Input
             {...register("email")}
+            data-cy='input-email-sign-up'
             type='email'
             className={cn({
               "focus-visible:ring-red-500 ring-1 ring-red-400": errors.email,
@@ -58,53 +64,49 @@ const SignUpPage = () => {
           <Label htmlFor='password' className='block mb-2'>
             Mật khẩu
           </Label>
-          <div>
-            <InputPassword
-              {...register("password", {
-                onChange: () => {
-
-                  if (isValid) {
-                    comparePasswordAndPasswordConfirm({
-                      password: watch('password'),
-                      passwordConfirm: watch("passwordConfirm"),
-                    });
-                  }
-                },
-              })}
-              className={cn({
-                "focus-visible:ring-red-500 ring-1 ring-red-400":
-                  errors.password,
-              })}
-              placeholder='Mật khẩu'
-              id='password'
-            />
-
-            {errors.password && <ErrorMsg msg={errors.password.message} />}
-          </div>
+          <InputPassword
+            {...register("password", {
+              onChange: () => {
+                if (isValid) {
+                  comparePasswordAndPasswordConfirm({
+                    password: watch("password"),
+                    passwordConfirm: watch("passwordConfirm"),
+                  });
+                }
+              },
+            })}
+            data-cy='input-password-sign-up'
+            className={cn({
+              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.password,
+            })}
+            placeholder='Mật khẩu'
+            id='password'
+          />
+          {errors.password && <ErrorMsg msg={errors.password.message} />}
         </div>
         <div>
           <Label htmlFor='password-confirm' className='block mb-2'>
             Nhập lại mật khẩu
           </Label>
-          <div>
-            <InputPassword
-              {...register("passwordConfirm", {
-                onChange: () => {
-                  if (isValid) {
-                    comparePasswordAndPasswordConfirm({
-                       password:watch("password"), passwordConfirm:watch('passwordConfirm')
-                    });
-                  }
-                },
-              })}
-              className={cn({
-                "focus-visible:ring-red-500 ring-1 ring-red-400":
-                  errors.passwordConfirm,
-              })}
-              placeholder='Nhập lại mật khẩu'
-              id='password-confirm'
-            />
-          </div>
+          <InputPassword
+            {...register("passwordConfirm", {
+              onChange: () => {
+                if (isValid) {
+                  comparePasswordAndPasswordConfirm({
+                    password: watch("password"),
+                    passwordConfirm: watch("passwordConfirm"),
+                  });
+                }
+              },
+            })}
+            data-cy='input-password-confirm-sign-up'
+            className={cn({
+              "focus-visible:ring-red-500 ring-1 ring-red-400":
+                errors.passwordConfirm,
+            })}
+            placeholder='Nhập lại mật khẩu'
+            id='password-confirm'
+          />
           {errors.passwordConfirm && (
             <ErrorMsg msg={errors.passwordConfirm.message} />
           )}
@@ -113,11 +115,12 @@ const SignUpPage = () => {
             <ErrorMsg msg={"Mật khẩu và xác nhận mật khẩu không giống nhau"} />
           )}
         </div>
-        <Button disabled={isPending}>
+        <Button type='submit' disabled={isPending}>
           {isPending ? "Đăng đăng kí" : "Đăng kí"}
         </Button>
 
         <Link
+        data-cy='link-to-login-instead'
           href={APP_URL.login}
           className={buttonVariants({ variant: "link" })}
         >

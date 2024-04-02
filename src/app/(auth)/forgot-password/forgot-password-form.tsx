@@ -27,6 +27,7 @@ const ForgotPasswordForm = () => {
     register,
     formState: { errors },
     getValues,
+    setFocus,
     handleSubmit,
   } = useForm<{ email: string }>({
     resolver: zodResolver(EmailValidationSchema),
@@ -78,7 +79,6 @@ const ForgotPasswordForm = () => {
       isRequestSendAgain &&
       timerSendRequestAgain === TIMER_SEND_REQUEST_AGAIN
     ) {
-      console.log("go in hể");
       timer = setInterval(
         () => setTimerSendRequestAgain((prev) => prev - 1),
         1000
@@ -90,7 +90,10 @@ const ForgotPasswordForm = () => {
       return () => clearInterval(timer);
     }
   }, [isRequestSendAgain, timerSendRequestAgain]);
-
+  //
+  useEffect(() => {
+    setFocus("email");
+  }, [setFocus]);
   return (
     <>
       <form
@@ -102,6 +105,7 @@ const ForgotPasswordForm = () => {
             Email
           </Label>
           <Input
+            data-cy='input-email-forgot-password'
             className={cn({
               "focus-visible:ring-red-500 ring-1 ring-red-400": errors.email,
             })}
@@ -122,8 +126,9 @@ const ForgotPasswordForm = () => {
           }
           variant='secondary'
         >
-          Nhận mã khôi phục
+         {!isSuccess?"Nhận mã khôi phục":"Link thay đổi mật khẩu đã được gửi đến email của bạn"}
         </Button>
+      {isSuccess && <>
         <p className='text-center text-sm md:text-base'>
           Không nhận được mã?{" "}
           <button
@@ -138,6 +143,7 @@ const ForgotPasswordForm = () => {
             {isRequestSendAgain ? `sau ${timerSendRequestAgain} giây` : null}
           </button>{" "}
         </p>
+      </>}
       </form>
     </>
   );
