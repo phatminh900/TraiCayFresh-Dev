@@ -2,6 +2,7 @@ import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 
 import { APP_URL } from "@/constants/navigation.constant";
 import ForgotPasswordForm from "./forgot-password-form";
+import PageTitle from "@/components/ui/page-title";
 // TODO: put in types
 const ForgotPassword = ({
   searchParams,
@@ -40,10 +41,8 @@ const ForgotPassword = ({
               ]
         }
       />
-      <h2 className='text-2xl font-bold mt-4 text-gray-800'>
-        Lấy lại mật khẩu
-      </h2>
-     <ForgotPasswordForm />
+      <PageTitle>Lấy lại mật khẩu</PageTitle>
+      <ForgotPasswordForm />
     </div>
   );
 };

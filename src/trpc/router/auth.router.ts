@@ -63,7 +63,7 @@ const AuthRouter = router({
       });
       if (docs.length) {
         throw new TRPCError({
-          code: "UNAUTHORIZED",
+          code: "FORBIDDEN",
           message: "Vui lòng xác nhận email.",
         });
       }
@@ -76,7 +76,7 @@ const AuthRouter = router({
           },
           res,
         });
-        return { success: true };
+        return { success: true,message:"Đăng nhập thành công" };
       } catch (err) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -88,7 +88,7 @@ const AuthRouter = router({
     .input(z.object({ token: z.string() }))
     .query(async ({ input }) => {
       const { token } = input;
-
+      if(!token) return
       const payload = await getPayloadClient();
 
       const isVerified = await payload.verifyEmail({
@@ -121,8 +121,7 @@ const AuthRouter = router({
           data: { password, token },
           overrideAccess: true,
         });
-        console.log("go here");
-        return { success: true };
+        return { success: true ,message:'Thay đổi mật khẩu thành công'};
       } catch (error) {
         throw new TRPCError({
           code: "BAD_REQUEST",

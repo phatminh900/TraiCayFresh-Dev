@@ -10,7 +10,7 @@ import { slateEditor } from "@payloadcms/richtext-slate";
 
 import { buildConfig } from "payload/config";
 import { Admins } from "./collection/admins.collection";
-import { Customers } from "./collection/customers.collection";
+import { Customers } from "./collection/customers/customers.collection";
 import { Products } from "./collection/products.collection";
 import { Media } from "./collection/media.collection";
 import { Reviews } from "./collection/reviews.collection";
@@ -41,6 +41,7 @@ export default buildConfig({
       ogImage: "/thumbnail.jpg",
     },
   },
+ 
   rateLimit: {
     max: 3000,
   },

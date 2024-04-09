@@ -35,3 +35,22 @@
 //     }
 //   }
 // }
+
+declare namespace Cypress {
+  interface Chainable<Subject> {
+    // Define the custom command with the correct signature
+    getById(selector: string, ...args: any[]): Chainable<Subject>;
+    login(): Chainable<Subject>;
+  }
+}
+
+Cypress.Commands.add("getById", (selector, agr) => {
+  return cy.get(`[data-cy=${selector}]`, ...agr);
+});
+
+Cypress.Commands.add("login", () => {
+  cy.visit("/login");
+  cy.get("[data-cy='input-email-login']").type("phatminh902@gmail.com");
+  cy.get("[data-cy='input-password-login']").type("Ch@vameo5");
+  cy.contains("Đăng nhập").click();
+});

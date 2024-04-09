@@ -1,31 +1,32 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputPassword } from "@/components/ui/input-password";
 import { Label } from "@/components/ui/label";
 import { APP_URL } from "@/constants/navigation.constant";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/trpc-client";
+import { handleTrpcErrors } from "@/utils/error.util";
 import {
   AuthCredentialSchema,
   IAuthCredential,
 } from "@/validations/auth.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ZodError } from "zod";
 import Auth from "../_component/auth";
 import ErrorMsg from "../_component/error-msg";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
-import { InputPassword } from "@/components/ui/input-password";
-import { handleTrpcErrors } from "@/utils/error.util";
+import { useCart } from "@/store/cart.store";
+
+
 
 const LoginPage = () => {
   const searchParams = useSearchParams();
+  const cartItems = useCart((store) => store.items);
   const origin = searchParams.get("origin") || "";
   const router = useRouter();
   const {
@@ -37,12 +38,21 @@ const LoginPage = () => {
   } = useForm<IAuthCredential>({
     resolver: zodResolver(AuthCredentialSchema),
   });
+  const { mutate: setUserCart } = trpc.user.setUserCart.useMutation();
   const { mutate, isPending } = trpc.auth.login.useMutation({
     onError(error) {
       handleTrpcErrors(error);
     },
-    onSuccess({}) {
-      toast.success("Đăng nhập thành công");
+    onSuccess(data) {
+      toast.success(data?.message);
+      // after login successfully updated the cart of user
+      if (cartItems.length) {
+        const cartItemUser = cartItems.map((item) => ({
+          product: item.id ,
+          quantity: item.quantity,
+        })) 
+        setUserCart(cartItemUser );
+      }
       router.refresh();
       setTimeout(() => {
         if (origin) {
@@ -99,7 +109,7 @@ const LoginPage = () => {
           )}
         </div>
         <Link
-        data-cy='forgot-password-link'
+          data-cy='forgot-password-link'
           href={{
             pathname: APP_URL.forgotPassword,
             query: {
@@ -110,7 +120,7 @@ const LoginPage = () => {
         >
           Quên mật khẩu?
         </Link>
-        <Button>{isPending ? "Đang Đăng nhập" : "Đăng nhập"}</Button>
+        <Button data-cy='btn-submit-login'>{isPending ? "Đang Đăng nhập" : "Đăng nhập"}</Button>
 
         <Link
           href={APP_URL.signUp}

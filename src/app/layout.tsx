@@ -5,7 +5,8 @@ import "./globals.css";
 import Header from "@/layout/header";
 import MaxWidthWrapper from "@/components/molecules/max-width-wrapper";
 import Provider from "@/layout/provider";
-
+import Footer from "@/layout/footer";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,25 +21,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body className={inter.className}>
+    <html className='scroll-smooth' lang='en'>
+      <body className={cn(inter.className, "antialiased")}>
         <Provider>
           <Header />
-          <main className='py-4 px-4 md:py-6 md:px-0'>
+          <main className='pt-4 pb-14 sm:px-4  md:py-6 md:px-0 min-h-[50vh]'>
             <MaxWidthWrapper>{children}</MaxWidthWrapper>
           </main>
+          <Footer />
         </Provider>
         <Toaster
-      position="top-center"
-      richColors
-        toastOptions={{
-          classNames: {
-            title: "text-center",
-          },
-        }}
-      />
+          position='top-center'
+          richColors
+          toastOptions={{
+            classNames: {
+              title: "text-center",
+            },
+          }}
+        />
       </body>
-     
     </html>
   );
 }

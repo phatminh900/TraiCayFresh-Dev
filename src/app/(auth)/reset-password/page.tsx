@@ -42,8 +42,8 @@ const ResetPassword = () => {
         }
         handleTrpcErrors(error);
       },
-      onSuccess: () => {
-        toast.success("Thay đổi mật khẩu thành công");
+      onSuccess: (data) => {
+        toast.success(data?.message);
         setTimeout(() => {
           router.push(APP_URL.login);
         }, 500);

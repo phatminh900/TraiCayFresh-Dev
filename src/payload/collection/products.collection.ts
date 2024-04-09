@@ -1,7 +1,14 @@
 import { CollectionConfig } from "payload/types";
+import { isAdmins } from "../access/isAdmin";
 
 export const Products: CollectionConfig = {
   slug: "products",
+  access: {
+    read: isAdmins,
+    update: isAdmins,
+    create: isAdmins,
+    delete: isAdmins,
+  },
   fields: [
     { name: "title", label: "Title", type: "text", required: true },
     {
@@ -10,7 +17,13 @@ export const Products: CollectionConfig = {
       type: "checkbox",
       defaultValue: true,
     },
-
+    {
+      name: "priority",
+      type: "checkbox",
+      label: "Priority",
+      defaultValue: false,
+      required: true,
+    },
     {
       name: "originalPrice",
       label: "OriginalPrice",
@@ -51,10 +64,9 @@ export const Products: CollectionConfig = {
     {
       name: "thumbnailImg",
       label: "Thumbnail Img",
-      type: "relationship",
+      type: "upload",
       relationTo: "media",
       required: true,
-      hasMany: false,
     },
     {
       name: "productImgs",
@@ -78,6 +90,25 @@ export const Products: CollectionConfig = {
       label: "Discount Code",
       type: "text",
       required: false,
+    },
+    {
+      name: "reviewQuantity",
+      label: "Review Quantity",
+      type: "number",
+      required: false,
+    },
+    {
+      name: "ratingAvarage",
+      label: "Review's ratings",
+      type: "number",
+      required: false,
+    },
+    {
+      name: "relativeProducts",
+      label: "Relative Products",
+      type: "relationship",
+      relationTo: "products",
+      hasMany: true,
     },
   ],
 };

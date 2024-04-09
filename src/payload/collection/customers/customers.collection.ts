@@ -1,19 +1,24 @@
 import { CollectionConfig } from "payload/types";
-import { isAdmins } from "../access/isAdmin";
-import { isAdminAndCustomer } from "../access/adminsOrLoggedIn";
-import { anyone } from "../access/anyone";
-import { Customer } from "../payload-types";
+import { isAdmins } from "../../access/isAdmin";
+import { isAdminAndCustomer } from "../../access/adminsOrLoggedIn";
+import { anyone } from "../../access/anyone";
+import { Customer } from "../../payload-types";
 
 export const Customers: CollectionConfig = {
   slug: "customers",
   access: {
-    read: isAdminAndCustomer,
+    read:()=>true,
+    // read: isAdminAndCustomer,
     update: isAdminAndCustomer,
     create: anyone,
     delete: isAdmins,
   },
 
   auth: {
+// token expires after 10days
+    tokenExpiration:864000000,
+    maxLoginAttempts:7,
+    lockTime:600 * 1000,
     forgotPassword: {
       generateEmailHTML: (agrs) => {
         const req = agrs?.req;

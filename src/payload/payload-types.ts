@@ -21,10 +21,11 @@ export type CartItems =
 export interface Config {
   collections: {
     admins: Admin;
-    customers: Customer;
     products: Product;
-    media: Media;
+    orders: Order;
     reviews: Review;
+    customers: Customer;
+    media: Media;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -51,51 +52,13 @@ export interface Admin {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "customers".
- */
-export interface Customer {
-  id: string;
-  name: string;
-  phoneNumber?:
-    | {
-        isDefault?: boolean | null;
-        phoneNumber: string;
-        id?: string | null;
-      }[]
-    | null;
-  address?:
-    | {
-        isDefault?: boolean | null;
-        address: string;
-        id?: string | null;
-      }[]
-    | null;
-  cart?: {
-    items?: CartItems;
-  };
-  purchases?: (string | Product)[] | null;
-  cancelOrders?: number | null;
-  isTrusted?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  _verified?: boolean | null;
-  _verificationToken?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
 export interface Product {
   id: string;
   title: string;
+  _inStock?: boolean | null;
+  priority: boolean;
   originalPrice: number;
   discount?: number | null;
   priceAfterDiscount?: number | null;
@@ -111,6 +74,9 @@ export interface Product {
   productImgs: (string | Media)[];
   benefitImg: string | Media;
   discountCode?: string | null;
+  reviewQuantity?: number | null;
+  ratingAvarage?: number | null;
+  relativeProducts?: (string | Product)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -155,6 +121,67 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: string;
+  orderBy: string | Customer;
+  total: number;
+  _isPaid?: boolean | null;
+  status?: ('pending' | 'delivering' | 'canceled' | 'confirmed') | null;
+  items?:
+    | {
+        product: string | Product;
+        price?: number | null;
+        quantity?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: string;
+  name: string;
+  phoneNumber?:
+    | {
+        isDefault?: boolean | null;
+        phoneNumber: string;
+        id?: string | null;
+      }[]
+    | null;
+  address?:
+    | {
+        isDefault?: boolean | null;
+        address: string;
+        id?: string | null;
+      }[]
+    | null;
+  cart?: {
+    items?: CartItems;
+  };
+  purchases?: (string | Product)[] | null;
+  cancelOrders?: number | null;
+  isTrusted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

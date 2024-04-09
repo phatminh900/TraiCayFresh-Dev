@@ -54,8 +54,11 @@
 @layer base {
   * {
     @apply border-border;
+      animation: name duration timing-function delay iteration-count direction fill-mode;
   }
   body {
     @apply bg-background text-foreground;
   }
 }
+
+

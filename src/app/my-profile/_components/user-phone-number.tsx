@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { ZodError } from "zod";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import { handleTrpcErrors } from "@/utils/error.util";
 
 interface UserPhoneNumberProps {
   phoneNumber: Customer["phoneNumber"];
@@ -24,37 +25,21 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
     mutate: setDefaultPhoneNumber,
   } = trpc.user.setDefaultPhoneNumber.useMutation({
     onError: (err) => {
-      if (err.data?.code === "UNAUTHORIZED" || err.data?.code === "CONFLICT") {
-        toast.error(err.message);
-        return;
-      }
-      if (err instanceof ZodError) {
-        toast.error(err.issues[0].message);
-      }
-      toast.error(GENERAL_ERROR_MESSAGE);
+      handleTrpcErrors(err);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       router.refresh();
-      toast.success("Đổi số điện thoại mặc định thành công");
+      toast.success(data?.message);
     },
   });
   const { isPending: isDeletingPhoneNumber, mutate: deletePhoneNumber } =
     trpc.user.deletePhoneNumber.useMutation({
       onError: (err) => {
-        if (err.data?.code === "UNAUTHORIZED" || err.data?.code === "CONFLICT") {
-          toast.error(err.message);
-          return;
-        }
-        if (err instanceof ZodError) {
-          toast.error(err.issues[0].message);
-        }
-        toast.error(GENERAL_ERROR_MESSAGE);
+        handleTrpcErrors(err);
       },
       onSuccess: (data) => {
         router.refresh();
-        toast.success(
-          `Xóa số điện thoại ${data.deletedPhoneNumber} thành công`
-        );
+        toast.success(data?.message);
       },
     });
   const sortedPhoneNumber = useMemo(() => {
@@ -74,7 +59,7 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
         <>
           <div className='flex gap-4'>
             <p className='font-bold'>SĐT</p>
-            <ul className='w-full space-y-2'>
+            <ul data-cy='phone-number-list-my-profile' className='w-full space-y-2'>
               {sortedPhoneNumber?.map((number, i) => {
                 const phoneNumber = number.phoneNumber.replace("84", "0");
                 return (

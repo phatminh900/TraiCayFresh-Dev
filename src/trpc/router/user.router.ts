@@ -3,8 +3,12 @@ import { privateProcedure, router } from "../trpc";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { TRPCError } from "@trpc/server";
 import { PhoneValidationSchema } from "../../validations/user-infor.valiator";
+import { SignUpCredentialSchema } from "../../validations/auth.validation";
+import { CartItems } from "@/payload/payload-types";
 
-const getUserProcedure=privateProcedure.use(async({ctx,next})=>{
+const CartItemSchema=z.object({ product: z.string(), quantity: z.number() })
+
+const getUserProcedure = privateProcedure.use(async ({ ctx, next }) => {
   const { user } = ctx;
   const payload = await getPayloadClient();
   const userInDb = await payload.findByID({
@@ -16,8 +20,8 @@ const getUserProcedure=privateProcedure.use(async({ctx,next})=>{
       code: "NOT_FOUND",
       message: "Không có người dùng nào với tài khoản này",
     });
-    return next({ctx:{user:userInDb}})
-})
+  return next({ ctx: { user: userInDb } });
+});
 
 const UserRouter = router({
   addNewPhoneNumber: getUserProcedure
@@ -28,7 +32,7 @@ const UserRouter = router({
       const { phoneNumber } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
-    
+
       // with the same phoneNumber
       const isTheSamePhoneNumber = user.phoneNumber?.find(
         (number) => number.phoneNumber === phoneNumber
@@ -51,8 +55,37 @@ const UserRouter = router({
               : [{ isDefault: true, phoneNumber }],
           },
         });
-        return { success: true };
+        return { success: true, message: "Cập nhật số điện thoại thành công" };
       } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
+  changeUserName: getUserProcedure
+    .input(SignUpCredentialSchema.pick({ name: true }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { name } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
+      if (name === user.name) return;
+      try {
+        await payload.update({
+          collection: "customers",
+          where: {
+            id: {
+              equals: user.id,
+            },
+          },
+          data: {
+            name,
+          },
+        });
+        return { success: true, message: "Thay đổi tên thành công" };
+      } catch (error) {
+        console.log(error);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Something went wrong",
@@ -66,7 +99,7 @@ const UserRouter = router({
       const { phoneNumber } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
-    
+
       const phoneNumberUpdatedToDefault = user.phoneNumber?.find(
         (number) => number.phoneNumber === phoneNumber
       );
@@ -92,6 +125,10 @@ const UserRouter = router({
             phoneNumber: updatedToDefault,
           },
         });
+        return {
+          success: true,
+          message: "Đổi số điện thoại mặc định thành công",
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -107,7 +144,7 @@ const UserRouter = router({
       const { phoneNumber } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
-     
+
       if (!user)
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -137,7 +174,14 @@ const UserRouter = router({
             phoneNumber: updatedPhoneNumbers,
           },
         });
-        return { deletedPhoneNumber: phoneNumber };
+        return {
+          deletedPhoneNumber: phoneNumber,
+          success: true,
+          message: `Xóa số điện thoại ${phoneNumber.replace(
+            "84",
+            "0"
+          )} thành công`,
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -146,6 +190,39 @@ const UserRouter = router({
         });
       }
     }),
+  setUserCart: getUserProcedure
+    .input(z.array(CartItemSchema))
+    .mutation(async ({ input, ctx }) => {
+      const { user } = ctx;
+
+      const payload = await getPayloadClient();
+      const updatedCart: CartItems = input;
+      // TODO: should i extend with the existing one or simply replace it 
+      console.log('------')
+      console.log(updatedCart)
+      try {
+        await payload.update({
+          collection: "customers",
+          where: {
+            id: {
+              equals: user.id,
+            },
+          },
+          data: {
+            cart: {
+              items: updatedCart,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
+
 });
 
 export default UserRouter;

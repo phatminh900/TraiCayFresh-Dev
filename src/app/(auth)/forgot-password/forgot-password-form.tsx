@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ErrorMsg from "../_component/error-msg";
 import { useEffect, useState } from "react";
+import { handleTrpcErrors } from "@/utils/error.util";
 
 const TIMER_SEND_REQUEST_AGAIN = 5;
 const EmailValidationSchema = AuthCredentialSchema.pick({ email: true });
@@ -39,11 +40,7 @@ const ForgotPasswordForm = () => {
     isSuccess: isCheckingEmailExistsSuccess,
   } = trpc.auth.checkIfEmailExist.useMutation({
     onError: (err) => {
-      if (err?.data?.code === "NOT_FOUND") {
-        toast.error(err.message);
-        return;
-      }
-      toast.error(GENERAL_ERROR_MESSAGE);
+     handleTrpcErrors(err)
     },
   });
   const {

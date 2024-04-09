@@ -52,3 +52,12 @@ export const forgotPassword = async (email: string) => {
 //   });
 //   return result;
 // };
+
+
+
+export const getUserServer=async(cookies: NextRequest["cookies"] | ReadonlyRequestCookies)=>{
+
+  const userData = await getMeServer(cookies);
+  const user = userData.result?.user;
+  return user
+}

@@ -32,15 +32,20 @@ const LINKS: ILink[] = [
 
 const HeaderNavMobile = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const pathName=usePathname()
-  const  toggleOpenState = () => setIsOpen((prev) => !prev);
+  const toggleOpenState = () => setIsOpen((prev) => !prev);
   return (
     <div>
-      <button onClick={toggleOpenState}>
+      <button
+        disabled={isOpen}
+        data-cy='nav-mobile-open-btn'
+        onClick={toggleOpenState}
+        className={cn({ invisible: isOpen })}
+      >
         <IoMenuOutline className='w-7 h-7 text-gray-900 hover:text-gray-800' />
       </button>
       {/* Nav bar  */}
       <nav
+        data-cy='nav-mobile'
         className={cn(
           "w-screen-h-screen inset-0 flex justify-center z-50 bg-white/90 fixed inset-y-0 translate-x-full duration-500",
           {
@@ -48,15 +53,28 @@ const HeaderNavMobile = () => {
           }
         )}
       >
-        <button onClick={toggleOpenState}>
+        <button
+          className='z-50'
+          disabled={!isOpen}
+          data-cy='nav-mobile-close-btn'
+          onClick={toggleOpenState}
+        >
           <IoCloseOutline className='absolute w-7 h-7 top-3 right-6 hover:text-red-600 ' />
         </button>
         <ul className='flex flex-col gap-5 mt-20'>
           {LINKS.map((link) => (
-            <NavItem  onClose={toggleOpenState} key={link.label} {...link} />
+            <NavItem onClose={toggleOpenState} key={link.label} {...link} />
           ))}
-          <NavItem  onClose={toggleOpenState} label='Login' href={APP_URL.login} />
-          <NavItem   onClose={toggleOpenState}label='Sign up' href={APP_URL.signUp} />
+          <NavItem
+            onClose={toggleOpenState}
+            label='Login'
+            href={APP_URL.login}
+          />
+          <NavItem
+            onClose={toggleOpenState}
+            label='Sign up'
+            href={APP_URL.signUp}
+          />
         </ul>
       </nav>
     </div>
@@ -66,12 +84,23 @@ const HeaderNavMobile = () => {
 export default HeaderNavMobile;
 
 interface NavItemProps extends ILink {
-  onClose:()=>void
+  onClose: () => void;
 }
-const NavItem = ({onClose, href, label }: NavItemProps) => {
+const NavItem = ({ onClose, href, label }: NavItemProps) => {
+  const pathName = usePathname();
+
   return (
-    <li className='text-2xl font-semibold text-center'>
-      <Link onClick={onClose} href={href}>{label}</Link>
+    <li
+      data-cy='nav-item-mobile'
+      className='text-2xl font-semibold text-center'
+    >
+      <Link
+        className={cn({ "text-primary": pathName === href })}
+        onClick={onClose}
+        href={href}
+      >
+        {label}
+      </Link>
     </li>
   );
 };

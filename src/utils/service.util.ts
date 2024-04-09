@@ -8,7 +8,7 @@ export async function callApi<T>(
   }
 ): Promise<{ ok: boolean; result?: T }> {
   try {
-    const response = await fetch(`${BASE_URL}/${config.url}`, {
+    const response = await fetch(`${BASE_URL}${config.url}`, {
       credentials: config.credentials || "include",
       method: config.method || "GET",
       headers: config.headers,
@@ -17,7 +17,6 @@ export async function callApi<T>(
     if (!response.ok) {
       return { ok: false };
     }
-
     const result = await response.json();
     return { ok: true, result };
   } catch (error) {

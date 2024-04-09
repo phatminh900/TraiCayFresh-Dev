@@ -1,7 +1,14 @@
 import { CollectionConfig } from "payload/types";
+import { isAdmins } from "../access/isAdmin";
 
 export const Media: CollectionConfig = {
   slug: "media",
+  access: {
+    read: () => true,
+    update: isAdmins,
+    delete: isAdmins,
+    create: isAdmins,
+  },
   hooks: {},
   upload: {
     staticURL: "/media",
@@ -31,7 +38,7 @@ export const Media: CollectionConfig = {
   fields: [
     {
       name: "alt",
-      label:'Alt',
+      label: "Alt",
       type: "text",
       required: true,
     },

@@ -18,6 +18,9 @@ import {
   IoCheckmarkCircleSharp,
 } from "react-icons/io5";
 import { trpc } from "@/trpc/trpc-client";
+import { useEffect } from "react";
+import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface VerifyEmailPageProps {
   searchParams: {
@@ -28,46 +31,58 @@ interface VerifyEmailPageProps {
 const VerifyEmailPage = ({ searchParams }: VerifyEmailPageProps) => {
   const token = (searchParams?.token as string) || "";
   const emailTo = (searchParams?.toEmail as string) || "";
-  const { data, isLoading, isError } = trpc.auth.verifyEmail.useQuery({
-    token,
-  });
-  let content= <>
-  <Breadcrumb>
-    <BreadcrumbList>
-      <BreadcrumbItem>
-        <BreadcrumbLink href={APP_URL.home}>Trang chủ</BreadcrumbLink>
-      </BreadcrumbItem>
-      <BreadcrumbSeparator />
+  const pathName = usePathname();
+  const { refetch, data, isLoading, isError } = trpc.auth.verifyEmail.useQuery(
+    {
+      token,
+    },
+    { enabled: false }
+  );
+  useEffect(() => {
+    if (token) {
+      refetch();
+    }
+  }, [token, refetch]);
 
-      <BreadcrumbItem>
-        <BreadcrumbPage>Xác thực tài khoản</BreadcrumbPage>
-      </BreadcrumbItem>
-    </BreadcrumbList>
-  </Breadcrumb>
-  <div className='flex flex-col gap-4 items-center'>
-    <h2 className='text-2xl text-center max-w-64 font-bold mt-10 text-gray-800'>
-      Kiểm tra email của bạn
-    </h2>
-    <IoMailOutline className='block w-44 h-44' />
-    <p className='text-center'>
-      Link xác thực tài khoản đã được gửi đến email của bạn{" "}
-      <span className='font-bold'>{emailTo ? emailTo : null}</span>{" "}
-    </p>
-    <p className='text-muted-foreground text-center'>
-      Nhanh chóng xác thực tài khoản và mua hàng nào
-    </p>
-    <Link
-      href={APP_URL.home}
-      className={buttonVariants({ variant: "link" })}
-    >
-      Trờ lại trang chủ
-    </Link>
-  </div>
-</>
-  if(!token) return content
+  const href=!token?`/verify-email?emailTo=${emailTo}`:`/verify-email?emailTo=${emailTo}&token=${token}`
+  let content = (
+    <>
+      <BreadCrumbLinks
+        links={[
+          {
+            label: "Xác thực tài khoản",
+            href,
+          },
+        ]}
+      />
+      <div className='flex flex-col gap-4 items-center'>
+        <h2 className='text-2xl text-center max-w-64 font-bold mt-10 text-gray-800'>
+          Kiểm tra email của bạn
+        </h2>
+        <IoMailOutline
+          data-cy='email-icon-verify-email'
+          className='block w-44 h-44'
+        />
+        <p className='text-center'>
+          Link xác thực tài khoản đã được gửi đến email của bạn{" "}
+          <span className='font-bold'>{emailTo ? emailTo : null}</span>{" "}
+        </p>
+        <p className='text-muted-foreground text-center'>
+          Nhanh chóng xác thực tài khoản và mua hàng nào
+        </p>
+        <Link
+          href={APP_URL.home}
+          className={buttonVariants({ variant: "link" })}
+        >
+          Trở lại trang chủ
+        </Link>
+      </div>
+    </>
+  );
+  if (!token) return content;
 
   if (isError) {
-    content= (
+    content = (
       <div className='flex flex-col items-center gap-2'>
         <IoCloseCircleOutline className='h-8 w-8 text-red-600' />
         <h3 className='font-semibold text-xl'>
@@ -80,7 +95,7 @@ const VerifyEmailPage = ({ searchParams }: VerifyEmailPageProps) => {
     );
   }
   if (data?.success) {
-    content= (
+    content = (
       <div className='flex h-full flex-col items-center justify-center'>
         <div className='relative mb-4 text-muted-foreground'>
           <IoCheckmarkCircleSharp className='w-8 h-8 text-primary' />
@@ -98,7 +113,7 @@ const VerifyEmailPage = ({ searchParams }: VerifyEmailPageProps) => {
   }
 
   if (isLoading) {
-    content= (
+    content = (
       <div className='flex flex-col items-center gap-2'>
         <IoFingerPrint className='animate-ping h-8 w-8 text-zinc-300' />
         <h3 className='font-semibold text-xl'>Đang xác thực</h3>
@@ -106,11 +121,7 @@ const VerifyEmailPage = ({ searchParams }: VerifyEmailPageProps) => {
       </div>
     );
   }
-  return  <div className="mt-6">
-    {content}
-  </div>
-   
-  
+  return <div className='mt-6'>{content}</div>;
 };
 
 export default VerifyEmailPage;

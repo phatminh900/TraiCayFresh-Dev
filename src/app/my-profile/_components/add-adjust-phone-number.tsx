@@ -13,6 +13,7 @@ import ErrorMsg from "@/app/(auth)/_component/error-msg";
 import { useRouter } from "next/navigation";
 import { IoCreateOutline } from "react-icons/io5";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import { handleTrpcErrors } from "@/utils/error.util";
 
 const validateNumericInput = (value: string) => {
   // Regular expression to match only numeric characters
@@ -48,19 +49,12 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
   const router = useRouter();
   const { mutate, isPending } = trpc.user.addNewPhoneNumber.useMutation({
     onError: (err) => {
-      if (err.data?.code === "UNAUTHORIZED" ||err.data?.code==='CONFLICT') {
-        toast.error(err.message);
-        return;
-      }
-      if (err instanceof ZodError) {
-        toast.error(err.issues[0].message);
-      }
-      toast.error(GENERAL_ERROR_MESSAGE);
+     handleTrpcErrors(err)
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       router.refresh();
       onExpand(-1)
-      toast.success("Cập nhật số điện thoại thành công");
+      toast.success(data?.message);
     },
   });
 

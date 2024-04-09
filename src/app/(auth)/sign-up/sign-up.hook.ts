@@ -1,6 +1,6 @@
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
 import { APP_PARAMS } from "@/constants/navigation.constant";
 import { trpc } from "@/trpc/trpc-client";
+import { handleTrpcErrors } from "@/utils/error.util";
 import {
   ISignUpCredential,
   SignUpCredentialSchema,
@@ -10,9 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ZodError } from "zod";
 import useCheckPasswordAndPasswordConfirm from "../hooks/useCheckPasswordAndPasswordConfirm";
-import { handleTrpcErrors } from "@/utils/error.util";
 
 const useSignUp = () => {
   const {
