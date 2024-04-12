@@ -9,4 +9,17 @@ export const PhoneValidationSchema = z.object({
     )
     .trim(),
 });
-export type IPhoneNumberValidation=z.infer<typeof PhoneValidationSchema>
+export const AddressValidationSchema = z.object({
+  district:z.string().min(5,'Vui lòng chọn Quận / Huyện').trim(),
+  
+  ward:z.string().min(5,'Vui lòng chọn Phường / Xã').trim(),
+  street: z
+    .string()
+    .regex(
+      new RegExp(/^[0-9]+(\/[0-9]+)?(\s+[A-Za-zÀ-ỹ\s\d-]+)+$/),
+      "Vui lòng nhập đúng địa chỉ"
+    )
+    .trim(),
+});
+export type IAddressValidation = z.infer<typeof AddressValidationSchema>;
+export type IPhoneNumberValidation = z.infer<typeof PhoneValidationSchema>;

@@ -163,7 +163,9 @@ export interface Customer {
   address?:
     | {
         isDefault?: boolean | null;
-        address: string;
+        district: string;
+        ward: string;
+        street: string;
         id?: string | null;
       }[]
     | null;
@@ -208,7 +210,6 @@ export interface Otp {
   id: string;
   otp?: string | null;
   phoneNumber?: string | null;
-  expiresAfter?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -223,7 +224,9 @@ export interface CustomerPhoneNumber {
   address?:
     | {
         isDefault?: boolean | null;
-        address: string;
+        district: string;
+        ward: string;
+        street: string;
         id?: string | null;
       }[]
     | null;

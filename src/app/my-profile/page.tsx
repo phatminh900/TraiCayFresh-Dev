@@ -15,7 +15,7 @@ import AddNewAddress from "./_components/add-new-address";
 const MyProfilePage = async () => {
   const nextCookies = cookies();
   const user = await getUserServer(nextCookies);
-  console.log(user)
+  
   if (!user) {
     redirect(APP_URL.login + `?origin=${APP_URL.myProfile.slice(1)}`);
   }
@@ -41,27 +41,27 @@ const MyProfilePage = async () => {
             </>
           )}
         </p>
-        <UserName userName={user.name || ""} />
+        <UserName user={user} />
         <UserPhoneNumber phoneNumber={user.phoneNumber || []} />
       </div>
       {/* Address */}
       <div className='space-y-2'>
        <PageSubTitle>Địa chỉ nhận hàng</PageSubTitle>
-       <AddNewAddress />
+       <AddNewAddress  user={user}/>
       </div>
       {/* actions */}
-      <div className='space-y-8 mt-10 flex flex-col items-center'>
+      <div className='space-y-8 mt-12 flex flex-col items-center'>
         <Link
           href={APP_URL.myOrders}
           className={buttonVariants({
             variant: "outline",
             size: "lg",
-            className: "w-full",
+            className: "w-full mt-6",
           })}
         >
           Tất cả đơn hàng của bạn
         </Link>
-        <Logout />
+        <Logout user={user} />
       </div>
     </>
   );

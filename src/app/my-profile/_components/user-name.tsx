@@ -14,25 +14,26 @@ import ErrorMsg from "@/app/(auth)/_component/error-msg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Customer } from "@/payload/payload-types";
+import { IUser } from "@/types/common-types";
 
-interface UserNameProps {
-  userName: Customer["name"];
+interface UserNameProps  extends IUser{
+  
 }
-const UserName = ({ userName }: UserNameProps) => {
+const UserName = ({ user }: UserNameProps) => {
   const router = useRouter();
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm<{ name: string }>({
-    defaultValues: { name: userName },
+    defaultValues: { name: user?.name||'' },
     resolver: zodResolver(SignUpCredentialSchema.pick({ name: true })),
   });
   const [isExpanded, setIsExpanded] = useState(false);
   const handleToggleExpand = () => {
     setIsExpanded((prev) => !prev);
   };
+
   const { isPending: isChangingUserName, mutateAsync: changeUserName } =
     trpc.user.changeUserName.useMutation({
       onError: (err) => {
@@ -44,37 +45,69 @@ const UserName = ({ userName }: UserNameProps) => {
       },
     });
 
+    
+  const { isPending: isAddingUserName, mutateAsync: changeUserNamePhoneNumber } =
+    trpc.customerPhoneNumber.changeUserName.useMutation({onSuccess(data) {
+      router.refresh();
+      toast.success(data?.message);
+    },});
   const handleChangeUserName = handleSubmit(async ({ name }) => {
-    if (name === userName) return;
-    await changeUserName({ name });
+    if (name === user?.name) return;
+    if(!user) return
+    // normal login by email
+    if('email' in user){
+      await changeUserName({ name });
     setIsExpanded(false);
+
+    }
+    if(!('email' in user)){
+     await  changeUserNamePhoneNumber({name})
+      setIsExpanded(false);
+
+    }
+  });
+
+  const handleAddUserName = handleSubmit(async ({ name }) => {
+    if (!name) return;
+    if (name === user?.name) return;
+   await  changeUserNamePhoneNumber({ name });
+    setIsExpanded(false);
+    router.refresh()
   });
   return (
-    <div className=''>
-      <div className='flex gap-4'>
-        <p className='font-bold min-w-[50px]'>Tên:</p>
+    <div >
+      <div className='flex gap'>
+        <p className='min-w-[50px]'>Tên:</p>
         <div className='flex'>
-          <p data-cy='user-name-my-profile' className='font-normal min-w-[170px]  whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px] block'>
-            {userName}
+          <p
+            data-cy='user-name-my-profile'
+            className={cn(
+              "font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px] block",
+              {
+                "min-w-[170px]": user?.name,
+              }
+            )}
+          >
+            {user?.name}
           </p>
-          {!isExpanded && (
-            <button
+          <button
             data-cy='adjust-user-name-my-profile'
-              onClick={handleToggleExpand}
-              className='flex items-center gap-2'
-            >
-              <IoCreateOutline className='text-primary' />{" "}
-              <span className='text-primary'>Sửa</span>{" "}
-            </button>
-          )}
+            onClick={handleToggleExpand}
+            className='flex items-center gap-2'
+          >
+            <IoCreateOutline className='text-primary' />{" "}
+            <span className='text-primary'>
+              {!user?.name ? "Thêm tên của bạn" : "Sửa"}
+            </span>{" "}
+          </button>
         </div>
       </div>
       <div className='flex gap-4'>
-        <div className='min-w-[50px]'>&nbsp;</div>
+        {/* <div className='min-w-[50px]'>&nbsp;</div> */}
         {isExpanded && (
           <form
-          data-cy='user-name-form-my-profile'
-            onSubmit={handleChangeUserName}
+            data-cy='user-name-form-my-profile'
+            onSubmit={!user?.name ? handleAddUserName : handleChangeUserName}
             className='my-4 w-full fade-in-15'
           >
             <Input
@@ -84,14 +117,17 @@ const UserName = ({ userName }: UserNameProps) => {
               })}
               {...register("name")}
             />
-            {errors.name && <ErrorMsg msg={errors.name.message}/>}
+            {errors.name && <ErrorMsg msg={errors.name.message} />}
             <div className='mt-4 flex gap-3'>
-              <Button disabled={isChangingUserName} className='flex-1'>
+              <Button
+                disabled={isChangingUserName || isAddingUserName}
+                className='flex-1'
+              >
                 {isChangingUserName ? "Đang thay đổi..." : "Xác nhận"}
               </Button>
               <Button
                 onClick={handleToggleExpand}
-                disabled={isChangingUserName}
+                disabled={isChangingUserName || isAddingUserName}
                 type='button'
                 className='flex-1'
                 variant='destructive'
@@ -102,7 +138,6 @@ const UserName = ({ userName }: UserNameProps) => {
           </form>
         )}
       </div>
-      
     </div>
   );
 };

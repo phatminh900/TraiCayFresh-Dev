@@ -2,9 +2,10 @@ import { z } from "zod";
 import { privateProcedure, router } from "../trpc";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { TRPCError } from "@trpc/server";
-import { PhoneValidationSchema } from "../../validations/user-infor.valiator";
+import { AddressValidationSchema, PhoneValidationSchema } from "../../validations/user-infor.valiator";
 import { SignUpCredentialSchema } from "../../validations/auth.validation";
 import { CartItems } from "@/payload/payload-types";
+import { NOT_FOUND_USER_WITH_THIS_TOKEN_MESSAGE } from "../../constants/constants.constant";
 
 const CartItemSchema=z.object({ product: z.string(), quantity: z.number() })
 
@@ -18,7 +19,7 @@ const getUserProcedure = privateProcedure.use(async ({ ctx, next }) => {
   if (!userInDb)
     throw new TRPCError({
       code: "NOT_FOUND",
-      message: "Không có người dùng nào với tài khoản này",
+      message: NOT_FOUND_USER_WITH_THIS_TOKEN_MESSAGE,
     });
   return next({ ctx: { user: userInDb } });
 });
@@ -184,6 +185,45 @@ const UserRouter = router({
         };
       } catch (error) {
         console.log(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
+    addNewAddress: getUserProcedure
+    .input(AddressValidationSchema)
+    .mutation(async ({ ctx, input }) => {
+      // TODO: add middleware for this
+      const { user } = ctx;
+      const { district,street,ward } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
+
+      // with the same address
+      const isTheSameAddress = user.address?.find(
+        (ad) => (ad.district === district) && (ad.ward===ward) && (ad.street===street)
+      );
+      if (isTheSameAddress)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Bạn đã thêm số địa chỉ này trước rồi!",
+        });
+
+      try {
+        await payload.update({
+          collection: "customers",
+          where: {
+            id: { equals: user.id },
+          },
+          data: {
+            address: user.address?.length
+              ? [...user.address, { isDefault: false, district,street,ward }]
+              : [{ isDefault: true,  district,street,ward}],
+          },
+        });
+        return { success: true, message: "Cập nhật địa chỉ thành công" };
+      } catch (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Something went wrong",

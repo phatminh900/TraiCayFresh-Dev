@@ -30,6 +30,7 @@ import {
 } from "@/validations/user-infor.valiator";
 
 import VerifyOtp from "./verify-otp";
+import SeparatorOption from "@/components/ui/separator-option";
 
 interface CartRequestLoginProps {
   isOpen: boolean;
@@ -119,15 +120,7 @@ export function CartRequestLogin({
               Đăng nhập
             </Link>
           </DrawerHeader>
-          <div id='recaptcha-container'></div>
-          <div className='relative flex justify-center items-center mt-3 mb-8'>
-            <span className='absolute inset-0 border border-t-gray-300' />
-            <p className='flex items-center justify-center'>
-              <span className='absolute block px-2 bg-background text-xs'>
-                Hoặc
-              </span>
-            </p>
-          </div>
+         <SeparatorOption />
           {!isShowOtp && (
             <form
               onSubmit={handleSendPhoneVerification}

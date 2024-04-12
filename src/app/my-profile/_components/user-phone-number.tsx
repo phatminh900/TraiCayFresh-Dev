@@ -59,9 +59,9 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
     <div>
       {(phoneNumber?.length || 0) > 0 ? (
         <>
-          <div className='flex gap-4'>
-            <p className='font-bold'>SĐT</p>
-            {typeof phoneNumber==='string'&&<p>{phoneNumber.replace('84','0')}</p>}
+          <div className='flex gap'>
+            <p className='min-w-[50px]'>SĐT</p>
+            {typeof phoneNumber==='string'&&<p className="font-bold">{phoneNumber.replace('84','0')}</p>}
             {Array.isArray(sortedPhoneNumber) &&     <ul data-cy='phone-number-list-my-profile' className='w-full space-y-2'>
               { sortedPhoneNumber?.map((number, i) => {
                 const phoneNumber = number.phoneNumber.replace("84", "0");
@@ -78,7 +78,7 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
                     <div className='inline-block min-w-[170px] max-w-[250px]'>
                       <div className='font-normal'>
                         {/* replace 84 to 0 */}
-                        <p>
+                        <p className="font-bold">
                           {phoneNumber}{" "}
                           {number.isDefault && (
                             <span className='text-xs'>(Mặc định)</span>

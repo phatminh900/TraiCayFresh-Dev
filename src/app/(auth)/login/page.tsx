@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import Auth from "../_component/auth";
 import ErrorMsg from "../_component/error-msg";
 import { useCart } from "@/store/cart.store";
+import SeparatorOption from "@/components/ui/separator-option";
 
 
 
@@ -129,6 +130,10 @@ const LoginPage = () => {
           Chưa có tài khoản. Đăng kí ngay &rarr;
         </Link>
       </form>
+      <div className="flex justify-center">
+      <SeparatorOption className="mt-12 w-4/5" />
+            
+      </div>
     </Auth>
   );
 };

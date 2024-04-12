@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useCart } from "@/store/cart.store";
 import { IUser } from "@/types/common-types";
 import { formatPriceToVND } from "@/utils/util.utls";
 import CartRequestLogin from "./cart-request-login";
+import Link from "next/link";
+import { APP_URL } from "@/constants/navigation.constant";
 
 interface CartSummaryProps extends IUser {}
 const CartSummary = ({ user }: CartSummaryProps) => {
@@ -28,7 +30,7 @@ const CartSummary = ({ user }: CartSummaryProps) => {
         </p>
       </div>
       {user ? (
-        <Button className='mt-4'>Thanh toán ngay</Button>
+        <Link href={APP_URL.checkout} className={buttonVariants({variant:'default',className:'mt-4'})}>Thanh toán ngay</Link>
       ) : (
         <CartRequestLogin
           isOpen={isOpenLoginRequest}

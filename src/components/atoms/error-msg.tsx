@@ -1,14 +1,20 @@
+import { cn } from "@/lib/utils";
 import { IAuthCredential } from "@/validations/auth.validation";
-
-const ErrorMsg = ({
-  msg,
-  field,
-}: {
+interface ErrorMsgProps {
   field?: keyof IAuthCredential;
   msg?: string;
-}) => {
+  className?: string;
+}
+
+const ErrorMsg = ({className, msg, field }: ErrorMsgProps) => {
   return (
-    <p data-cy='form-error-msg' className='text-sm font-semi-bold text-red-500 mt-2'>
+    <p
+      data-cy='form-error-msg'
+      className={cn(
+        "whitespace-nowrap text-sm font-semi-bold text-red-500 mt-2",
+        className
+      )}
+    >
       {msg === "Required" ? `Vui lòng nhập ${field}` : msg}
     </p>
   );

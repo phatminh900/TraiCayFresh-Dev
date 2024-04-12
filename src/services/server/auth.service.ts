@@ -1,15 +1,17 @@
-import type { Customer } from "@/payload/payload-types";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import 'server-only';
+
 import { NextRequest } from "next/server";
+
 import { API_ROUTES } from "@/constants/api-route.constant";
-import { callApi } from "@/utils/service.util";
 import {
-  COOKIE_USER_PHONE_NUMBER_TOKEN,
   COOKIE_PAYLOAD_TOKEN,
+  COOKIE_USER_PHONE_NUMBER_TOKEN,
 } from "@/constants/constants.constant";
 import { getPayloadClient } from "@/payload/get-client-payload";
-import { decodeJwt } from "jose";
+import type { Customer } from "@/payload/payload-types";
 import { verifyToken } from "@/utils/auth.util";
+import { callApi } from "@/utils/service.util";
+import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 export const getUserPhoneNumberProfile = async (token: string) => {
     const payload = await getPayloadClient();

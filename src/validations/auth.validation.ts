@@ -17,7 +17,7 @@ export const AuthCredentialSchema = z.object({
 
 export const SignUpCredentialSchema = AuthCredentialSchema.extend({
   name: z.string().min(2, "Tên phải từ 2 chữ cái").trim() .regex(
-    new RegExp(/^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/),
+    new RegExp(/^[a-zA-ZÀ-ỹ]+(?:[\s-][a-zA-ZÀ-ỹ]+)*$/),
     "Vui lòng nhập tên của bạn"
   ),
   passwordConfirm: z

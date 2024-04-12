@@ -1,4 +1,4 @@
-import { jwtVerify, SignJWT } from "jose";
+import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import { v4 as uuidv4 } from "uuid";
 
 export const verifyToken = async (token: string) => {
@@ -7,7 +7,7 @@ export const verifyToken = async (token: string) => {
       token,
       new TextEncoder().encode(process.env.JWT_SECRET)
     );
-    return verified.payload;
+    return verified.payload as JWTPayload & {userId:string};
   } catch (error) {
     throw new Error("Mã đăng nhập hết hạn");
   }

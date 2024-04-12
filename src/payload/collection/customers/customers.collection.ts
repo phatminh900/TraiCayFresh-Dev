@@ -7,7 +7,6 @@ import { Customer } from "../../payload-types";
 export const Customers: CollectionConfig = {
   slug: "customers",
   access: {
-
     read: isAdminAndCustomer,
     update: isAdminAndCustomer,
     create: anyone,
@@ -15,10 +14,10 @@ export const Customers: CollectionConfig = {
   },
 
   auth: {
-// token expires after 30days
-    tokenExpiration:2592000000,
-    maxLoginAttempts:7,
-    lockTime:600 * 1000,
+    // token expires after 30days
+    tokenExpiration: 2592000000,
+    maxLoginAttempts: 7,
+    lockTime: 600 * 1000,
     forgotPassword: {
       generateEmailHTML: (agrs) => {
         const req = agrs?.req;
@@ -43,7 +42,6 @@ export const Customers: CollectionConfig = {
       },
     },
     verify: {
-    
       generateEmailHTML(token) {
         return `<p>Hi please verify your email ${token}</p>`;
       },
@@ -86,12 +84,17 @@ export const Customers: CollectionConfig = {
           label: "Is Default Address",
           type: "checkbox",
         },
-        {
-          name: "address",
-          label: "Address",
-          type: "text",
-          required: true,
-        },
+        { name: "district", label: "District", type: "text", required: true },
+        { name: "ward", label: "Ward", type: "text", required: true },
+
+        { name: "street", label: "Street", type: "text", required: true },
+
+        // {
+        //   name: "address",
+        //   label: "Address",
+        //   type: "text",
+        //   required: true,
+        // },
       ],
     },
     {
