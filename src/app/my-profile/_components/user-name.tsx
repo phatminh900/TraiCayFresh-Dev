@@ -1,9 +1,5 @@
 "use client";
-import ErrorMsg from "@/app/(auth)/_component/error-msg";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { Customer } from "@/payload/payload-types";
+
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { SignUpCredentialSchema } from "@/validations/auth.validation";
@@ -13,6 +9,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoCreateOutline } from "react-icons/io5";
 import { toast } from "sonner";
+
+import ErrorMsg from "@/app/(auth)/_component/error-msg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Customer } from "@/payload/payload-types";
 
 interface UserNameProps {
   userName: Customer["name"];
@@ -100,63 +102,7 @@ const UserName = ({ userName }: UserNameProps) => {
           </form>
         )}
       </div>
-      {/* <div className='flex gap-4 font-bold whitespace-nowrap overflow-hidden text-ellipsis'>
-          Tên: <p className='font-normal min-w-[180px] block'>{userName}</p>
-        </div>
-        <button className='flex items-center gap-2'>
-          <IoCreateOutline className='text-primary' />{" "}
-          <span className='text-primary'>Sửa</span>{" "}
-        </button>
-        <form>
-        <Input
-          className={cn("bg-stale-200", {
-            "focus-visible:ring-red-500 ring-1 ring-red-400 w-full": errors.userName,
-          })}
-          {...register("userName")}
-        />
-        <div className='mt-4 flex gap-3'>
-          <Button className='flex-1'>
-            {true ? "Đang thêm..." : "Xác nhận"}
-          </Button>
-          <Button
-            // onClick={() => onExpand(-1)}
-            // disabled={isPending}
-            type='button'
-            className='flex-1'
-            variant='destructive'
-          >
-            Hủy
-          </Button>
-        </div>
-      </form>  */}
-      {/* <div className='flex items-center'>
-        <div className='flex gap-4 font-bold whitespace-nowrap overflow-hidden text-ellipsis'>
-          Tên: <p className='font-normal min-w-[180px] block'>{userName}</p>
-        </div>
-       
-      </div>
-      <form>
-        <Input
-          className={cn("bg-stale-200", {
-            "focus-visible:ring-red-500 ring-1 ring-red-400 w-full": errors.userName,
-          })}
-          {...register("userName")}
-        />
-        <div className='mt-4 flex gap-3'>
-          <Button className='flex-1'>
-            {true ? "Đang thêm..." : "Xác nhận"}
-          </Button>
-          <Button
-            // onClick={() => onExpand(-1)}
-            // disabled={isPending}
-            type='button'
-            className='flex-1'
-            variant='destructive'
-          >
-            Hủy
-          </Button>
-        </div>
-      </form> */}
+      
     </div>
   );
 };

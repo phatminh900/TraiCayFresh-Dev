@@ -1,22 +1,24 @@
+import { cookies } from "next/headers";
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import { buttonVariants } from "@/components/ui/button";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getUserServer } from "@/services/auth.service";
-import { cookies } from "next/headers";
+import { getUserServer } from "@/services/server/auth.service";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Logout from "./_components/logout-btn";
 import UserName from "./_components/user-name";
 import UserPhoneNumber from "./_components/user-phone-number";
+import PageSubTitle from "@/components/ui/page-subTitle";
+import AddNewAddress from "./_components/add-new-address";
 
 const MyProfilePage = async () => {
   const nextCookies = cookies();
- const user=await getUserServer(nextCookies)
-  if ( !user) {
+  const user = await getUserServer(nextCookies);
+  console.log(user)
+  if (!user) {
     redirect(APP_URL.login + `?origin=${APP_URL.myProfile.slice(1)}`);
   }
-
   return (
     <>
       <BreadCrumbLinks
@@ -26,22 +28,26 @@ const MyProfilePage = async () => {
       <PageTitle>Quản lý tài khoản</PageTitle>
       {/* General information */}
       <div className='space-y-2 mb-4'>
-        <h3 className='font-bold text-lg mb-2 mt-6'>Thông tin cá nhân</h3>
-        <p data-cy='email-my-profile' className='font-bold min-w-[200px] max-w-[250px] whitespace-nowrap overflow-hidden text-ellipsis'>
-          Email: <span className='font-normal'>{user?.email}</span>
+        <PageSubTitle>
+        Thông tin cá nhân
+        </PageSubTitle>
+        <p
+          data-cy='email-my-profile'
+          className='font-bold min-w-[200px] max-w-[250px] whitespace-nowrap overflow-hidden text-ellipsis'
+        >
+          {"email" in user && (
+            <>
+              Email: <span className='font-normal'>{user?.email}</span>
+            </>
+          )}
         </p>
-        <UserName userName={user.name} />
-        <UserPhoneNumber phoneNumber={user.phoneNumber} />
+        <UserName userName={user.name || ""} />
+        <UserPhoneNumber phoneNumber={user.phoneNumber || []} />
       </div>
       {/* Address */}
       <div className='space-y-2'>
-        <h3 className='font-bold text-lg mb-2 mt-6'>Địa chỉ nhận hàng</h3>
-        <div className='flex flex-col gap-2'>
-        
-          <button className='text-primary self-start mt-1'>
-            Thêm địa chỉ mới
-          </button>
-        </div>
+       <PageSubTitle>Địa chỉ nhận hàng</PageSubTitle>
+       <AddNewAddress />
       </div>
       {/* actions */}
       <div className='space-y-8 mt-10 flex flex-col items-center'>

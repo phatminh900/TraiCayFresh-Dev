@@ -9,7 +9,9 @@ export const Media: CollectionConfig = {
     delete: isAdmins,
     create: isAdmins,
   },
-  hooks: {},
+  hooks: {
+   
+  },
   upload: {
     staticURL: "/media",
     staticDir: "media",

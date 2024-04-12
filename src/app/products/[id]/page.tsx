@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { IoCardOutline, IoPricetagOutline, IoSync } from "react-icons/io5";
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import { Button } from "@/components/ui/button";
@@ -14,8 +15,7 @@ import QuantityOptions from "./_components/product-quantity-option";
 import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
-import { cookies } from "next/headers";
-import { getUserServer } from "@/services/auth.service";
+import { getUserServer } from "@/services/server/auth.service";
 
 const ProductPage = async ({
   searchParams,

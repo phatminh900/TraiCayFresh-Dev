@@ -22,6 +22,7 @@ import useCheckPasswordAndPasswordConfirm from "../hooks/useCheckPasswordAndPass
 import { InputPassword } from "@/components/ui/input-password";
 import { handleTrpcErrors } from "@/utils/error.util";
 import Link from "next/link";
+import PageTitle from "@/components/ui/page-title";
 
 const ResetPassword = () => {
   const searchParams = useSearchParams();
@@ -81,9 +82,9 @@ const ResetPassword = () => {
       <BreadCrumbLinks
         links={[{ href: APP_URL.resetPassword, label: "Đặt lại mặt khẩu" }]}
       />
-      <h2 className='text-2xl font-bold mt-4 text-gray-800'>
+      <PageTitle >
         Đặt lại mật khẩu
-      </h2>
+      </PageTitle>
       <form onSubmit={handleResetPassword} className='mt-8 grid gap-y-4'>
         <div>
           <Label htmlFor='password' className='block mb-2'>

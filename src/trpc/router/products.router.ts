@@ -2,7 +2,7 @@ import { z } from "zod";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { publicProcedure, router } from "../trpc";
 
-export const ProductRouter = router({
+ const ProductRouter = router({
   getProductsPrice: publicProcedure
     .input(z.object({ ids: z.array(z.string()) }))
     .query(async ({ input }) => {
@@ -23,3 +23,4 @@ export const ProductRouter = router({
     return { products };
   }),
 });
+export default ProductRouter

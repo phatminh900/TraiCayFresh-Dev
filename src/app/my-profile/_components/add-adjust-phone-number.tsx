@@ -6,7 +6,7 @@ import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z, ZodError } from "zod";
 
-import { PhoneValidationSchema } from "@/validations/user-infor.valiator";
+import { IPhoneNumberValidation, PhoneValidationSchema } from "@/validations/user-infor.valiator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import ErrorMsg from "@/app/(auth)/_component/error-msg";
@@ -14,12 +14,9 @@ import { useRouter } from "next/navigation";
 import { IoCreateOutline } from "react-icons/io5";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
 import { handleTrpcErrors } from "@/utils/error.util";
+import { validateNumericInput } from "@/utils/util.utls";
 
-const validateNumericInput = (value: string) => {
-  // Regular expression to match only numeric characters
-  const numericRegex = /^[0-9]*$/;
-  return numericRegex.test(value);
-};
+
 interface AddNewPhoneNumberProps<Type extends "add-new" | "adjust"> {
   type: Type | "add-new";
   phoneCount?: Type extends "adjust" ? undefined : number;
@@ -41,9 +38,7 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<{
-    phoneNumber: string;
-  }>();
+  } = useForm<IPhoneNumberValidation>();
   const [phoneNumber, setPhoneNumber] = useState(phoneAdjust || "");
 
   const router = useRouter();

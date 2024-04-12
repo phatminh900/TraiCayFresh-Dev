@@ -15,6 +15,8 @@ import { Products } from "./collection/products.collection";
 import { Media } from "./collection/media.collection";
 import { Reviews } from "./collection/reviews.collection";
 import { Orders } from "./collection/orders.collection";
+import { Otp } from "./collection/otp.collection";
+import { CustomerPhoneNumber } from "./collection/customer-phone-number.collection";
 
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
@@ -50,7 +52,7 @@ export default buildConfig({
     url: process.env.DATABASE_URI!,
   }),
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
-  collections: [Admins, Products, Orders, Reviews, Customers, Media],
+  collections: [Admins, Products, Orders, Reviews, Customers, Media,Otp,CustomerPhoneNumber],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },

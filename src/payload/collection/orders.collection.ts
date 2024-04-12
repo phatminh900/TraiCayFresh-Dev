@@ -11,6 +11,7 @@ export const Orders: CollectionConfig = {
       hasMany: false,
       required: true,
     },
+    { name: "orderNotes", label: "Order Notes", type: "text" },
     {
       name: "total",
       label: "Total",

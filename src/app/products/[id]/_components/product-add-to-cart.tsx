@@ -2,12 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import useAddToCart from "@/hooks/use-add-to-cart";
-import { Customer } from "@/payload/payload-types";
 import { CartProductItem } from "@/store/cart.store";
-interface ProductAddToCartProps {
+import { IUser } from "@/types/common-types";
+
+interface ProductAddToCartProps  extends IUser{
   product: CartProductItem;
-  user?:Customer
 }
+
 const ProductAddToCart = ({user, product }: ProductAddToCartProps) => {
   const { handleAddItemToCart, isAddingError, isAddingToCart } =
     useAddToCart({product,user});

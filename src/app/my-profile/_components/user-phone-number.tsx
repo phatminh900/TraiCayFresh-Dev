@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { IoTrashOutline } from "react-icons/io5";
-import { Customer } from "@/payload/payload-types";
+import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
 import AddAdjustPhoneNumber from "./add-adjust-phone-number";
 import { trpc } from "@/trpc/trpc-client";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
 import { handleTrpcErrors } from "@/utils/error.util";
 
 interface UserPhoneNumberProps {
-  phoneNumber: Customer["phoneNumber"];
+  phoneNumber:CustomerPhoneNumber['phoneNumber']| Customer["phoneNumber"];
 }
 const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
   const router = useRouter();
@@ -43,6 +43,7 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
       },
     });
   const sortedPhoneNumber = useMemo(() => {
+    if(Array.isArray(phoneNumber))
     return phoneNumber?.slice().sort((a, b) => {
       if (a.isDefault && !b.isDefault) {
         return -1;
@@ -52,6 +53,7 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
         return 0;
       }
     });
+    
   }, [phoneNumber]);
   return (
     <div>
@@ -59,8 +61,9 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
         <>
           <div className='flex gap-4'>
             <p className='font-bold'>SĐT</p>
-            <ul data-cy='phone-number-list-my-profile' className='w-full space-y-2'>
-              {sortedPhoneNumber?.map((number, i) => {
+            {typeof phoneNumber==='string'&&<p>{phoneNumber.replace('84','0')}</p>}
+            {Array.isArray(sortedPhoneNumber) &&     <ul data-cy='phone-number-list-my-profile' className='w-full space-y-2'>
+              { sortedPhoneNumber?.map((number, i) => {
                 const phoneNumber = number.phoneNumber.replace("84", "0");
                 return (
                   <li
@@ -127,28 +130,29 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
                   </li>
                 );
               })}
-            </ul>
+            </ul>}
+        
           </div>
-          <AddAdjustPhoneNumber
+              {Array.isArray(phoneNumber) &&  <AddAdjustPhoneNumber
             key={expandedIndex}
             index={phoneNumber?.length || 0}
             isExpanded={phoneNumber?.length === expandedIndex}
             onExpand={handleExpand}
             phoneCount={phoneNumber?.length || 0}
             type='add-new'
-          />
+          />}
         </>
       ) : (
-        <div className='flex w-full flex-col gap-2 items-start mt-2'>
-          <p>Bạn chưa thêm số điện thoại </p>
-          <AddAdjustPhoneNumber
-            index={0}
-            isExpanded={0 === expandedIndex}
-            onExpand={handleExpand}
-            phoneCount={0}
-            type='add-new'
-          />
-        </div>
+        Array.isArray(phoneNumber) ?   <div className='flex w-full flex-col gap-2 items-start mt-2'>
+        <p>Bạn chưa thêm số điện thoại </p>
+        <AddAdjustPhoneNumber
+          index={0}
+          isExpanded={0 === expandedIndex}
+          onExpand={handleExpand}
+          phoneCount={0}
+          type='add-new'
+        />
+      </div>:null
       )}
     </div>
   );

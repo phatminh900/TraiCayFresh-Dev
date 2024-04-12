@@ -1,22 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import isEqual from "lodash/isEqual";
-import debounce from "lodash/debounce";
-import { Customer, Product } from "@/payload/payload-types";
+import { Product } from "@/payload/payload-types";
 import { CartProductItem, useCart } from "@/store/cart.store";
 import { trpc } from "@/trpc/trpc-client";
+import { IUser } from "@/types/common-types";
+import isEqual from "lodash/isEqual";
+import { useEffect, useRef, useState } from "react";
 import { UserCart } from "../types/user-cart.type";
 import CartItem from "./cart-item";
 import EmptyCart from "./empty-cart";
-interface CartListProps {
-  user?: Customer;
+
+interface CartListProps extends IUser{
   userCart: UserCart;
 }
+
 let init=true
 const CartList = ({ user, userCart }: CartListProps) => {
-  console.log('-----------')
-  console.log(user)
   const [isSetTheLocal, setIsSetTheLocal] = useState(false);
   const cartItemLocal = useCart((store) => store.items);
   // use ref to keep track the previous value

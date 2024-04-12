@@ -11,3 +11,9 @@ export function formatPriceToVND(price: number) {
 export const getImgUrlMedia = (img: string | Media) => {
   return typeof img === "string" ? img : img.url;
 };
+
+export const validateNumericInput = (value: string) => {
+  // Regular expression to match only numeric characters
+  const numericRegex = /^[0-9]*$/;
+  return numericRegex.test(value);
+};

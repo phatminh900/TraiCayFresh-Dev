@@ -1,7 +1,7 @@
 import ProductItem from "@/components/molecules/product-item";
 import { APP_URL } from "@/constants/navigation.constant";
 import { Product } from "@/payload/payload-types";
-import { getUserServer } from "@/services/auth.service";
+import { getUserServer } from "@/services/server/auth.service";
 import { getImgUrlMedia } from "@/utils/util.utls";
 import { cookies } from "next/headers";
 

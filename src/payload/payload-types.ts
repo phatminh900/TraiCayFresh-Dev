@@ -26,6 +26,8 @@ export interface Config {
     reviews: Review;
     customers: Customer;
     media: Media;
+    otp: Otp;
+    'customer-phone-number': CustomerPhoneNumber;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -129,6 +131,7 @@ export interface Media {
 export interface Order {
   id: string;
   orderBy: string | Customer;
+  orderNotes?: string | null;
   total: number;
   _isPaid?: boolean | null;
   status?: ('pending' | 'delivering' | 'canceled' | 'confirmed') | null;
@@ -194,6 +197,42 @@ export interface Review {
   reviewImgs?: (string | Media)[] | null;
   product: string | Product;
   user: string | Customer;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "otp".
+ */
+export interface Otp {
+  id: string;
+  otp?: string | null;
+  phoneNumber?: string | null;
+  expiresAfter?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customer-phone-number".
+ */
+export interface CustomerPhoneNumber {
+  id: string;
+  phoneNumber?: string | null;
+  name?: string | null;
+  address?:
+    | {
+        isDefault?: boolean | null;
+        address: string;
+        id?: string | null;
+      }[]
+    | null;
+  cart?: {
+    items?: CartItems;
+  };
+  purchases?: (string | Product)[] | null;
+  cancelOrders?: number | null;
+  isTrusted?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }

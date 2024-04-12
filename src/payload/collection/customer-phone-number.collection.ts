@@ -1,80 +1,28 @@
 import { CollectionConfig } from "payload/types";
-import { isAdmins } from "../../access/isAdmin";
-import { isAdminAndCustomer } from "../../access/adminsOrLoggedIn";
-import { anyone } from "../../access/anyone";
-import { Customer } from "../../payload-types";
+import { isAdmins } from "../access/isAdmin";
+import { anyone } from "../access/anyone";
 
-export const Customers: CollectionConfig = {
-  slug: "customers",
+export const CustomerPhoneNumber: CollectionConfig = {
+  slug: "customer-phone-number",
   access: {
-
-    read: isAdminAndCustomer,
-    update: isAdminAndCustomer,
-    create: anyone,
+    read: anyone,
+    update: isAdmins,
     delete: isAdmins,
+    create: () => true,
   },
+  hooks: {},
 
-  auth: {
-// token expires after 30days
-    tokenExpiration:2592000000,
-    maxLoginAttempts:7,
-    lockTime:600 * 1000,
-    forgotPassword: {
-      generateEmailHTML: (agrs) => {
-        const req = agrs?.req;
-        const user = agrs?.user as Customer;
-        const token = agrs?.token;
-        // Use the token provided to allow your user to reset their password
-        const resetPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/reset-password?token=${token}`;
-
-        return `
-          <!doctype html>
-          <html>
-            <body>
-              <h1>Here is my custom email template!</h1>
-              <p>Hello, ${user.email}!</p>
-              <p>Click below to reset your password.</p>
-              <p>
-                <a href="${resetPasswordURL}">${resetPasswordURL}</a>
-              </p>
-            </body>
-          </html>
-        `;
-      },
-    },
-    verify: {
-    
-      generateEmailHTML(token) {
-        return `<p>Hi please verify your email ${token}</p>`;
-      },
-    },
-  },
   fields: [
+    {
+      name: "phoneNumber",
+      type: "text",
+    },
     {
       name: "name",
       label: "Name",
       type: "text",
-      required: true,
     },
-    {
-      name: "phoneNumber",
-      label: "Phone Number",
-      type: "array",
-      maxRows: 3,
-      fields: [
-        {
-          name: "isDefault",
-          label: "Is Default Phone Number",
-          type: "checkbox",
-        },
-        {
-          name: "phoneNumber",
-          label: "Phone Number",
-          type: "text",
-          required: true,
-        },
-      ],
-    },
+
     {
       name: "address",
       label: "Address",

@@ -1,7 +1,7 @@
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getUserServer } from "@/services/auth.service";
+import { getUserServer } from "@/services/server/auth.service";
 import { getCartOfUser } from "@/services/cart.service";
 import { cookies } from "next/headers";
 import CartList from "./_components/cart-list";

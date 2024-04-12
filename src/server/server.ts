@@ -52,7 +52,7 @@ const start = async (): Promise<void> => {
       createContext,
     })
   )
-
+ 
   app.use((req, res) => nextHandler(req, res))
 
   nextApp.prepare().then(() => {

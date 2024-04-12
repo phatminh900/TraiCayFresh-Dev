@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/constants.constant";
 import { CartProductItem, useCart } from "@/store/cart.store";
 import { trpc } from "@/trpc/trpc-client";
-import { Customer } from "@/payload/payload-types";
+import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
 
-const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer}) => {
+const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|CustomerPhoneNumber}) => {
   const router = useRouter();
 
   const {

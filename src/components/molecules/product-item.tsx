@@ -1,14 +1,14 @@
 "use client";
+import useAddToCart from "@/hooks/use-add-to-cart";
+import { IUser } from "@/types/common-types";
+import { formatPriceToVND } from "@/utils/util.utls";
 import Image from "next/image";
 import Link from "next/link";
 import { IoBagAddOutline } from "react-icons/io5";
-import useAddToCart from "@/hooks/use-add-to-cart";
-import { formatPriceToVND } from "@/utils/util.utls";
 import { Button } from "../ui/button";
 import ReviewRating from "../ui/review-rating/review-rating";
-import { Customer } from "@/payload/payload-types";
 
-interface ProductItemProps {
+interface ProductItemProps  extends IUser{
   type?: "horizontal" | "vertical";
   title: string;
   subTitle?: string;
@@ -17,7 +17,7 @@ interface ProductItemProps {
   href: string;
   originalPrice: number;
   discount?: number;
-  user?:Customer
+  
   reviewQuantity?: number;
   priceAfterDiscount?: number | null;
   reviewRating?: number;

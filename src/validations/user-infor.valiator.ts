@@ -9,3 +9,4 @@ export const PhoneValidationSchema = z.object({
     )
     .trim(),
 });
+export type IPhoneNumberValidation=z.infer<typeof PhoneValidationSchema>

@@ -198,8 +198,6 @@ const UserRouter = router({
       const payload = await getPayloadClient();
       const updatedCart: CartItems = input;
       // TODO: should i extend with the existing one or simply replace it 
-      console.log('------')
-      console.log(updatedCart)
       try {
         await payload.update({
           collection: "customers",
