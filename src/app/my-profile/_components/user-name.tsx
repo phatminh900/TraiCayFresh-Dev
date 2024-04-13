@@ -82,9 +82,9 @@ const UserName = ({ user }: UserNameProps) => {
           <p
             data-cy='user-name-my-profile'
             className={cn(
-              "font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px] block",
+              "font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] block",
               {
-                "min-w-[170px]": user?.name,
+                "min-w-[150px]": user?.name,
               }
             )}
           >

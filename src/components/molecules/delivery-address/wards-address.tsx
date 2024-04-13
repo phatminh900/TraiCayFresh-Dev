@@ -31,7 +31,7 @@ const WardAddress = ({ onSetWard,districtId }: WardAddressProps) => {
   const [open, setOpen] = useState(false);
   const [wards, setWards] = useState<IWard[]>([]);
   // when change the district reset the value
-  const isDistrictsChange=wards.find(ward=>ward.WardName===value)
+  const isDistrictChange=wards.find(ward=>ward.WardName===value)
  
   useEffect(() => {
     const getWards = async (districtId: number) => {
@@ -46,11 +46,11 @@ const WardAddress = ({ onSetWard,districtId }: WardAddressProps) => {
     
   }, [districtId]);
   useEffect(()=>{
-    if(!isDistrictsChange){
+    if(!isDistrictChange){
       setValue('')
       onSetWard('')
     }
-  },[isDistrictsChange])
+  },[isDistrictChange,onSetWard])
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

@@ -203,7 +203,7 @@ const customerPhoneNumberRouter = router({
     if (isTheSameAddress)
       throw new TRPCError({
         code: "CONFLICT",
-        message: "Bạn đã thêm số địa chỉ này trước rồi!",
+        message: "Bạn đã thêm địa chỉ này trước rồi!",
       });
 
     try {
@@ -220,6 +220,107 @@ const customerPhoneNumberRouter = router({
       });
       return { success: true, message: "Cập nhật địa chỉ thành công" };
     } catch (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Something went wrong",
+      });
+    }
+  }),
+  setDefaultAddress: getUserProcedure
+  .input(z.object({id:z.string()}))
+  .mutation(async ({ ctx, input }) => {
+    const { user } = ctx;
+    const { id } = input;
+    // to make sure have actual user
+    const payload = await getPayloadClient();
+
+    const addressUpdateToDefault = user.address?.find(
+      (ad) => ad.id===id
+    );
+    if (!addressUpdateToDefault || addressUpdateToDefault.isDefault)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Không thể đặt làm mặc định vui lòng thử lại sau.",
+      });
+
+    const updatedToDefault = user.address?.map((ad) =>
+      ad.id===id
+        ? { ...ad, isDefault: true }
+        : { ...ad, isDefault: false }
+    );
+    try {
+      await payload.update({
+        collection: "customer-phone-number",
+        where: {
+          id: {
+            equals: user.id,
+          },
+        },
+        data: {
+          address: updatedToDefault,
+        },
+      });
+      return {
+        success: true,
+        message: "Đổi số điện thoại mặc định thành công",
+      };
+    } catch (error) {
+      console.log(error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Something went wrong",
+      });
+    }
+  }),
+  deleteAddress: getUserProcedure
+  .input(z.object({id:z.string()}))
+  .mutation(async ({ ctx, input }) => {
+    const { user } = ctx;
+    const { id } = input;
+    // to make sure have actual user
+    const payload = await getPayloadClient();
+
+    if (!user)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Không có người dùng nào với tài khoản này",
+      });
+
+    const doesAddressExist = user.address?.find(
+      (ad) => ad.id === id
+    );
+    if (!doesAddressExist || doesAddressExist.isDefault)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Không thể đặt làm mặc định vui lòng thử lại sau.",
+      });
+      // do not allow to delete default Address
+      if (doesAddressExist.isDefault)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Không xóa địa chỉ này vì đang là địa chỉ mặc định",
+        });
+    const updatedAddress = user.address?.filter(
+      (ad) => ad.id !== id
+    );
+    try {
+      await payload.update({
+        collection: "customer-phone-number",
+        where: {
+          id: {
+            equals: user.id,
+          },
+        },
+        data: {
+          address: updatedAddress,
+        },
+      });
+      return {
+        success: true,
+        message: `Xóa địa chỉ thành công`,
+      };
+    } catch (error) {
+      console.log(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Something went wrong",

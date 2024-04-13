@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { IoCheckmarkOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -12,6 +10,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { IoCheckmarkOutline } from "react-icons/io5";
 
 import {
   Popover,
@@ -20,18 +20,17 @@ import {
 } from "@/components/ui/popover";
 import { getHcmDistricts } from "@/services/address.service";
 import { IDistrict } from "@/types/service.type";
-import { FieldErrors } from "react-hook-form";
-import { IAddressValidation } from "@/validations/user-infor.valiator";
-import ErrorMsg from "@/components/atoms/error-msg";
 
 
 interface DistrictAddressProps{
+  currentSelectedDistrictId:number|null
   onSetDistrict:(district:string)=>void
   onSetDistrictId:(id:number)=>void
 }
- function DistrictAddress({onSetDistrict,onSetDistrictId}:DistrictAddressProps) {
+ function DistrictAddress({currentSelectedDistrictId,onSetDistrict,onSetDistrictId}:DistrictAddressProps) {
   const [value, setValue] = useState("");
   const [districts, setDistricts] = useState<IDistrict[]>([]);
+  const isDistrictChanged=districts.find(district=>district.DistrictID===currentSelectedDistrictId)
   useEffect(() => {
     async function getDistricts() {
       const result = await getHcmDistricts();
@@ -43,7 +42,13 @@ interface DistrictAddressProps{
     }
     getDistricts();
   }, []);
-
+ 
+  useEffect(()=>{
+    if(!isDistrictChanged){
+      // reset the selected District
+      onSetDistrict('')
+    }
+  },[isDistrictChanged,onSetDistrict])
   const [open, setOpen] = useState(false);
 
   return (

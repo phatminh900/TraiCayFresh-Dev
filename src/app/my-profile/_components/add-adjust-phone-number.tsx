@@ -1,84 +1,100 @@
 "use client";
+import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/trpc/trpc-client";
-import { ChangeEvent, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z, ZodError } from "zod";
-
-import { IPhoneNumberValidation, PhoneValidationSchema } from "@/validations/user-infor.valiator";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import ErrorMsg from "@/app/(auth)/_component/error-msg";
-import { useRouter } from "next/navigation";
-import { IoCreateOutline } from "react-icons/io5";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import { cn } from "@/lib/utils";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { validateNumericInput } from "@/utils/util.utls";
-
+import {
+  IPhoneNumberValidation,
+  PhoneValidationSchema,
+} from "@/validations/user-infor.valiator";
+import ButtonAdjust from "./atoms/button-adjust";
+import { handleTrpcSuccess } from "@/utils/success.util";
 
 interface AddNewPhoneNumberProps<Type extends "add-new" | "adjust"> {
   type: Type | "add-new";
   phoneCount?: Type extends "adjust" ? undefined : number;
   phoneAdjust?: Type extends "adjust" ? string : undefined;
-  index:number
-  isExpanded:boolean
-  onExpand:(index:number)=>void
+  index: number;
+  id?: string | null;
+  isExpanded: boolean;
+  onExpand: (index: number) => void;
 }
 
 const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
   phoneAdjust,
   index,
+  id,
   phoneCount = 0,
-  onExpand,isExpanded,
+  onExpand,
+  isExpanded,
   type = "add-new",
 }: AddNewPhoneNumberProps<Type>) => {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm<IPhoneNumberValidation>();
   const [phoneNumber, setPhoneNumber] = useState(phoneAdjust || "");
 
   const router = useRouter();
-  const { mutate, isPending } = trpc.user.addNewPhoneNumber.useMutation({
-    onError: (err) => {
-     handleTrpcErrors(err)
-    },
-    onSuccess: (data) => {
-      router.refresh();
-      onExpand(-1)
-      toast.success(data?.message);
-    },
-  });
-
+  const { mutate: addNewPhoneNumber, isPending: isAddingNewPhoneNumber } =
+    trpc.user.addNewPhoneNumber.useMutation({
+      onError: (err) => {
+        handleTrpcErrors(err);
+      },
+      onSuccess: (data) => {
+        router.refresh();
+        onExpand(-1);
+        toast.success(data?.message);
+      },
+    });
+  const { mutate: adjustPhoneNumber, isPending: isAdjustingPhoneNumber } =
+    trpc.user.changeUserPhoneNumber.useMutation({
+      onError: (err) => {
+        handleTrpcErrors(err);
+      },
+      onSuccess: (data) => {
+        onExpand(-1);
+        handleTrpcSuccess(router, data?.message);
+      },
+    });
   const validateIsNumberEntered = (e: ChangeEvent<HTMLInputElement>) => {
     if (validateNumericInput(e.target.value)) setPhoneNumber(e.target.value);
     return;
   };
 
-  if (!isExpanded )
+  if (!isExpanded)
     return (
       <>
-        <button
-          disabled={phoneCount >= 3}
-          className={cn("text-primary", {
-            "text-primary/70": phoneCount >= 3,
-            "mt-4":type==='add-new'
-          })}
-          onClick={() => {
-          onExpand(index)
-          }}
-        >
-          {type === "add-new" ? (
-            "Thêm số điện thoại mới"
-          ) : (
-            <span className='flex items-center gap-2'>
-              <IoCreateOutline /> <span className='text-primary'>Sửa</span>{" "}
-            </span>
-          )}
-        </button>
+        {type === "add-new" ? (
+          <button
+            disabled={phoneCount >= 3}
+            className={cn("text-primary mt-4", {
+              "text-primary/70": phoneCount >= 3,
+            })}
+            onClick={() => {
+              onExpand(index);
+            }}
+          >
+            Thêm số điện thoại mới
+          </button>
+        ) : (
+          <ButtonAdjust
+            disabled={phoneCount >= 3}
+            onClick={() => {
+              onExpand(index);
+            }}
+          />
+        )}
+
         {phoneCount >= 3 && (
           <p className='text-muted-foreground text-sm'>
             Mỗi tài khoản chỉ được thêm 3 số điện thoại
@@ -86,21 +102,26 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
         )}
       </>
     );
-  const addNewPhoneNumber = handleSubmit(({ phoneNumber }) => {
+  const handleAddNewPhoneNumber = handleSubmit(({ phoneNumber }) => {
     const rightFormatPhoneNumber = phoneNumber.replace("0", "84");
-    mutate({ phoneNumber: rightFormatPhoneNumber });
+    if (type === "add-new") {
+      addNewPhoneNumber({ phoneNumber: rightFormatPhoneNumber });
+      return;
+    }
+    if (id) {
+      adjustPhoneNumber({ phoneNumber: rightFormatPhoneNumber, id });
+    }
   });
   return (
     <>
-      <form className='w-full my-4' onSubmit={addNewPhoneNumber}>
+      <form className='w-full my-4' onSubmit={handleAddNewPhoneNumber}>
         <Input
           type='tel'
           value={phoneNumber}
           className={cn({
-            'bg-slate-200':type==='adjust',
+            "bg-slate-200": type === "adjust",
             "focus-visible:ring-red-500 ring-1 ring-red-400 w-full":
               errors.phoneNumber,
-          
           })}
           pattern='^[0-9]*$'
           {...register("phoneNumber", {
@@ -123,12 +144,17 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
         />
         {errors.phoneNumber && <ErrorMsg msg={errors.phoneNumber.message} />}
         <div className='mt-4 flex gap-3'>
-          <Button disabled={isPending} className='flex-1'>
-            {isPending ? "Đang thêm..." : "Xác nhận"}
+          <Button
+            disabled={isAddingNewPhoneNumber || isAdjustingPhoneNumber}
+            className='flex-1'
+          >
+            {isAddingNewPhoneNumber || isAdjustingPhoneNumber
+              ? "Đang thêm..."
+              : "Xác nhận"}
           </Button>
           <Button
             onClick={() => onExpand(-1)}
-            disabled={isPending}
+            disabled={isAddingNewPhoneNumber || isAdjustingPhoneNumber}
             type='button'
             className='flex-1'
             variant='destructive'

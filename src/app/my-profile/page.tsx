@@ -10,7 +10,7 @@ import Logout from "./_components/logout-btn";
 import UserName from "./_components/user-name";
 import UserPhoneNumber from "./_components/user-phone-number";
 import PageSubTitle from "@/components/ui/page-subTitle";
-import AddNewAddress from "./_components/add-new-address";
+import UserAddress from "./_components/user-address";
 
 const MyProfilePage = async () => {
   const nextCookies = cookies();
@@ -47,7 +47,7 @@ const MyProfilePage = async () => {
       {/* Address */}
       <div className='space-y-2'>
        <PageSubTitle>Địa chỉ nhận hàng</PageSubTitle>
-       <AddNewAddress  user={user}/>
+       <UserAddress  user={user}/>
       </div>
       {/* actions */}
       <div className='space-y-8 mt-12 flex flex-col items-center'>
