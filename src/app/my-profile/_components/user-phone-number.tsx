@@ -1,16 +1,13 @@
 "use client";
-import { useMemo, useState } from "react";
-import { IoTrashOutline } from "react-icons/io5";
-import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
-import AddAdjustPhoneNumber from "./add-adjust-phone-number";
-import { trpc } from "@/trpc/trpc-client";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { ZodError } from "zod";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
+import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { sortIsDefaultFirst } from "@/utils/util.utls";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import AddAdjustPhoneNumber from "./add-adjust-phone-number";
 import ButtonDelete from "./atoms/button-delete";
 
 interface UserPhoneNumberProps {

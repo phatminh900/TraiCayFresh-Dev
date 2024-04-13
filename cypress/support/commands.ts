@@ -52,5 +52,6 @@ Cypress.Commands.add("login", () => {
   cy.visit("/login");
   cy.get("[data-cy='input-email-login']").type("phatminh902@gmail.com");
   cy.get("[data-cy='input-password-login']").type("Ch@vameo5");
-  cy.contains("Đăng nhập").click();
+ cy.get("[data-cy='btn-submit-login']").click();
+  cy.location('pathname').should('eq','/')
 });

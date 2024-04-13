@@ -7,10 +7,11 @@ import { getUserServer } from "@/services/server/auth.service";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Logout from "./_components/logout-btn";
-import UserName from "./_components/user-name";
+import UserName from './_components/user-name'
 import UserPhoneNumber from "./_components/user-phone-number";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import UserAddress from "./_components/user-address";
+import UserEmail from "./_components/user-email";
 
 const MyProfilePage = async () => {
   const nextCookies = cookies();
@@ -31,16 +32,7 @@ const MyProfilePage = async () => {
         <PageSubTitle>
         Thông tin cá nhân
         </PageSubTitle>
-        <p
-          data-cy='email-my-profile'
-          className='font-bold min-w-[200px] max-w-[250px] whitespace-nowrap overflow-hidden text-ellipsis'
-        >
-          {"email" in user && (
-            <>
-              Email: <span className='font-normal'>{user?.email}</span>
-            </>
-          )}
-        </p>
+      <UserEmail user={user}/>
         <UserName user={user} />
         <UserPhoneNumber phoneNumber={user.phoneNumber || []} />
       </div>

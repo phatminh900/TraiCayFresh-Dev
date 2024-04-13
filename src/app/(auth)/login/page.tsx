@@ -1,11 +1,11 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
 import { Label } from "@/components/ui/label";
-import { APP_URL } from "@/constants/navigation.constant";
+import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
@@ -22,17 +22,28 @@ import Auth from "../_component/auth";
 import ErrorMsg from "../_component/error-msg";
 import { useCart } from "@/store/cart.store";
 import SeparatorOption from "@/components/ui/separator-option";
+import LoginByPhoneNumber from "@/components/molecules/login-by-phone-number";
+import LoginByPhoneNumberAlternative from "./__components/login-by-phone-number-alternative";
 
 
 
 const LoginPage = () => {
+  const router = useRouter();
+
+  const [isOpenLoginByPhoneNumber,setIsOpenByPhoneNumber]=useState(false)
+  const handleCloseLoginByPhoneNumber=()=>{
+    setIsOpenByPhoneNumber(false)
+    router.push(`?${APP_PARAMS.isOpenOtp}=false`)
+  }
+  const handleOpenLoginByPhoneNumber=()=>{
+    setIsOpenByPhoneNumber(true)
+
+  }
   const searchParams = useSearchParams();
   const cartItems = useCart((store) => store.items);
   const origin = searchParams.get("origin") || "";
-  const router = useRouter();
   const {
     register,
-    watch,
     formState: { errors },
     setFocus,
     handleSubmit,
@@ -130,9 +141,9 @@ const LoginPage = () => {
           Chưa có tài khoản. Đăng kí ngay &rarr;
         </Link>
       </form>
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center justify-center">
       <SeparatorOption className="mt-12 w-4/5" />
-            
+      <LoginByPhoneNumberAlternative origin={origin} isOpen={isOpenLoginByPhoneNumber} handleClose={handleCloseLoginByPhoneNumber} handleOpen={handleOpenLoginByPhoneNumber} />
       </div>
     </Auth>
   );

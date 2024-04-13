@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { APP_URL } from "@/constants/navigation.constant";
 import { useCart } from "@/store/cart.store";
 import { IUser } from "@/types/common-types";
 import { formatPriceToVND } from "@/utils/util.utls";
-import CartRequestLogin from "./cart-request-login";
 import Link from "next/link";
-import { APP_URL } from "@/constants/navigation.constant";
+import CartRequestLogin from "./cart-request-login";
 
 interface CartSummaryProps extends IUser {}
 const CartSummary = ({ user }: CartSummaryProps) => {
@@ -17,7 +17,7 @@ const CartSummary = ({ user }: CartSummaryProps) => {
     0
   );
   const [isOpenLoginRequest, setIsOpenLoginRequest] = useState(false);
-
+  if(!totalPrice) return null
   return (
     <div className='mt-10'>
       <div className='flex gap-2 flex-col'>

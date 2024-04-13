@@ -1,25 +1,25 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import OTPInput from "react-otp-input";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import PageSubTitle from "@/components/ui/page-subTitle";
+import { APP_URL } from "@/constants/navigation.constant";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { validateNumericInput } from "@/utils/util.utls";
-import { APP_URL } from "@/constants/navigation.constant";
+
 
 const TIME_TO_SEND_OTP_AGAIN = 90;
 
 interface VerifyOtpProps {
   phoneNumber: string;
-  onToggleShowOtp:()=>void,
-  routeToPush:keyof typeof APP_URL
+  onToggleShowOtp:()=>void
+  routeToPushAfterVerifying:keyof (typeof APP_URL)
 }
-function VerifyOtp({ routeToPush,phoneNumber,onToggleShowOtp }: VerifyOtpProps) {
+function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: VerifyOtpProps) {
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [disabled, setDisabled] = useState(false);
@@ -37,7 +37,7 @@ function VerifyOtp({ routeToPush,phoneNumber,onToggleShowOtp }: VerifyOtpProps) 
       handleTrpcErrors(err);
     },
     onSuccess: () => {
-      router.push(routeToPush)
+      router.push(routeToPushAfterVerifying)
 
       toast.success("Xác thực thành công");
       router.refresh();
