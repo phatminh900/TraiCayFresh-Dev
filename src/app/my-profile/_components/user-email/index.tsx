@@ -5,7 +5,7 @@ const UserEmail = ({ user }: UserEmail) => {
   return (
     <p
       data-cy='email-my-profile'
-      className='min-w-[200px] max-w-[250px] whitespace-nowrap overflow-hidden text-ellipsis'
+      className='min-w-[200px] max-w-[250px] md:max-w-[350px] whitespace-nowrap overflow-hidden text-ellipsis'
     >
       {user && "email" in user && (
         <>

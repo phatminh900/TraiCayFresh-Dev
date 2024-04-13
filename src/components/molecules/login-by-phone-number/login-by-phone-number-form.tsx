@@ -59,7 +59,7 @@ const LoginByPhoneNumber = ({
     return;
   };
   return (
-    <form onSubmit={handleSendPhoneVerification} className='flex flex-col '>
+    <form data-cy='login-by-phone-number-form' onSubmit={handleSendPhoneVerification} className='flex flex-col '>
       <p className='text-lg font-bold text-center mb-2 md:mb-6'>
         {title}
       </p>
@@ -82,7 +82,7 @@ const LoginByPhoneNumber = ({
             return (
               PhoneValidationSchema.safeParse({
                 phoneNumber: replace0To84,
-              }).success || "Vui lòng nhập đúng số điện thoại"
+              }).success || "Vui lòng nhập đúng định dạng số điện thoại"
             );
           },
         })}
@@ -91,6 +91,7 @@ const LoginByPhoneNumber = ({
 
       {errors.phoneNumber && <ErrorMsg msg={errors.phoneNumber.message} />}
       <Button
+      data-cy='login-by-phone-number-submit-btn'
         disabled={isSendingOtp}
         className='w-1/2 self-center mt-4 block md:mt-6'
       >

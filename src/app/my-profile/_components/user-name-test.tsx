@@ -77,7 +77,7 @@ const UserName = ({ user }: UserNameProps) => {
   return (
     <div >
       <div className='flex gap'>
-        <p data-cy='user-name-my-profile' className='min-w-[50px]'>Tên:</p>
+        <p data-cy='user-name-my-profile-container' className='min-w-[50px]'>Tên:</p>
         <div className='flex'>
           <p
             data-cy='user-name-my-profile'

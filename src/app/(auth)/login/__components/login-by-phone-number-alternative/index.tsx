@@ -40,23 +40,28 @@ export function LoginByPhoneNumberAlternative({
   const isOpenOtp=(searchParams.get(APP_PARAMS.isOpenOtp))
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+
   if (isDesktop) {
     return (
+      <div data-cy='login-by-phone-number-alternative'>
       <Dialog open={isOpen}>
-        <DialogTrigger asChild onClick={handleOpen}>
-          <Button variant='outline'>Đăng nhập bằng số điện thoại</Button>
-        </DialogTrigger>
-        <DialogContent className='sm:max-w-2xl'>
-          <LoginByPhoneNumber
-            title='Đăng nhập bằng số điện thoại'
-            routeToPushAfterVerifying={(origin || APP_URL.home) as APP_URL_KEY}
-          />
-        </DialogContent>
-      </Dialog>
+    <DialogTrigger asChild onClick={handleOpen}>
+      <Button variant='outline'>Đăng nhập bằng số điện thoại</Button>
+    </DialogTrigger>
+    <DialogContent className='sm:max-w-2xl'>
+      <LoginByPhoneNumber
+        title='Đăng nhập bằng số điện thoại'
+        routeToPushAfterVerifying={(origin || APP_URL.home) as APP_URL_KEY}
+      />
+    </DialogContent>
+  </Dialog>
+  </div>
     );
   }
 
   return (
+    <div data-cy='login-by-phone-number-alternative'>
+
     <Drawer open={isOpen}>
       <DrawerTrigger asChild onClick={handleOpen}>
         <Button variant='outline'>Đăng nhập bằng số điện thoại</Button>
@@ -80,6 +85,7 @@ export function LoginByPhoneNumberAlternative({
         </div>
       </DrawerContent>
     </Drawer>
+    </div>
   );
 }
 

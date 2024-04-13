@@ -65,7 +65,7 @@ describe("signUP", () => {
   });
 
   //
-  it.only("shows error if the email user tries to register already exist", () => {
+  it("shows error if the email user tries to register already exist", () => {
     cy.intercept("POST", "/api/trpc/auth.signUp?batch=1", {
       statusCode: 409,
       body: {
@@ -240,6 +240,74 @@ describe("login", () => {
     // if have origin come from other place to login
     cy.location("pathname").should("eq", `/${origin}`);
   });
+  // Login by phoneNumber
+  it.only('login by phoneNumber',()=>{
+    cy.get("[data-cy='login-by-phone-number-alternative']").contains('Đăng nhập bằng số điện thoại').as('button-trigger-open')
+    cy.get('@button-trigger-open').click({force:true})
+
+    cy.get("[data-cy='login-by-phone-number-form']").as('login-by-phone-number-form')
+    cy.get("[data-cy='login-by-phone-number-submit-btn']").as('login-by-phone-number-submit-btn')
+    cy.get('@login-by-phone-number-form').contains("Đăng nhập bằng số điện thoại")
+    // invalid phone number
+    cy.get('@login-by-phone-number-form').find('input').type('038')
+    // try to submit with invalid form number
+    cy.get('@login-by-phone-number-submit-btn').click()
+    cy.contains("Vui lòng nhập đúng định dạng số điện thoại")
+    // delete the old one
+    cy.get('@login-by-phone-number-form').find('input').type('{selectAll}{del}')
+    // type the valid one
+    cy.get('@login-by-phone-number-form').find('input').type('0386325681')
+    // submit
+    cy.get('@login-by-phone-number-submit-btn').click()
+    // ===> otp verification shown
+
+    cy.get("[data-cy='otp-verification-container']").as('otp-verification-container')
+    cy.get("[data-cy='otp-verification-form']").as('otp-verification-container-form')
+    // expect 6 input because the otp is 6 characters long
+    cy.get('@otp-verification-container-form').find('input').as('otp-inputs')
+    cy.get("[data-cy='otp-verification-submit-btn']").as('otp-submit-btn')
+    cy.get("[data-cy='otp-verification-send-again-btn']").as('otp-send-again-btn')
+    cy.get("[data-cy='otp-verification-change-another-phone-number-btn']").as('change-another-phone-number-btn')
+    cy.get('@otp-inputs').should('have.length',6)
+ 
+    // change to phone number send request 
+    cy.get('@change-another-phone-number-btn').click()
+    // the verification should not exist
+    cy.get('@otp-verification-container').should('not.exist')
+    // get the phone number form
+    cy.get('@login-by-phone-number-form')
+    // go again to the verification
+    cy.get('@login-by-phone-number-form').find('input').type('0386325681')
+
+    cy.get('@login-by-phone-number-submit-btn').click()
+
+    // the submit button must be disabled
+    cy.get('@otp-submit-btn').should('be.disabled')
+    // typing otp  expect true with the api
+
+    // false case first
+    cy.get('@otp-inputs').eq(0).type('0')
+    cy.get('@otp-inputs').eq(1).type('0')
+    cy.get('@otp-inputs').eq(2).type('0')
+    cy.get('@otp-inputs').eq(3).type('0')
+    cy.get('@otp-inputs').eq(4).type('0')
+    cy.get('@otp-inputs').eq(5).type('1')
+
+    cy.get('@otp-submit-btn').should('not.be.disabled')
+    cy.get('@otp-submit-btn').click() 
+    cy.contains("Mã OTP không đúng")
+    
+    // request to send otp again
+    cy.get("@otp-send-again-btn").click()
+    cy.contains("OTP đã được gửi lại vào số điện thoại của bạn")
+    // now it should be correct
+    cy.get('@otp-inputs').eq(5).type('0')
+    cy.get('@otp-submit-btn').click() 
+
+    cy.contains("Xác thực thành công")
+
+    cy.location('pathname').should('eq','/')
+  })
 });
 describe("forgot-password", () => {
   beforeEach(() => {

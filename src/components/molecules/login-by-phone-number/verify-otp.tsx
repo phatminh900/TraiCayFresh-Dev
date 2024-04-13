@@ -105,12 +105,12 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
     }, 3000);
   },[])
   return (
-    <div className='my-4 text-center '>
+    <div data-cy='otp-verification-container' className='my-4 text-center '>
       <PageSubTitle>Nhập mã xác nhận</PageSubTitle>
       <p className='mb-3 text-muted-foreground text-sm'>
         Mã xác nhận đã được gửi đến số điện thoại của bạn
       </p>
-      <form className="flex flex-col justify-center items-center" onSubmit={handleVerifyOTP}>
+      <form data-cy='otp-verification-form' className="flex flex-col justify-center items-center" onSubmit={handleVerifyOTP}>
         <OTPInput
           value={otp}
           shouldAutoFocus
@@ -121,11 +121,12 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
           )}
         />
         <div className='flex flex-col items-center mt-6'>
-          <Button disabled={otp.length !== 6 || isPending||isVerified}>Xác nhận</Button>
-          <div className='mt-4 flex gap-2'>
+          <Button  data-cy='otp-verification-submit-btn' disabled={otp.length !== 6 || isPending||isVerified}>Xác nhận</Button>
+          <div data-cy='otp-verification-not-receive-code' className='mt-4 flex gap-2'>
             {isSendingOptSuccess&&<>
               <p>Chưa nhận được mã</p>
             <button
+            data-cy="otp-verification-send-again-btn"
               type='button'
               onClick={handleSendRequestAgain}
               disabled={disabled || isPending || isSendingOtp || isVerified}
@@ -146,7 +147,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
           
         </div>
         <button
-          
+            data-cy='otp-verification-change-another-phone-number-btn'
               type='button'
               onClick={onToggleShowOtp}
               disabled={isVerified}

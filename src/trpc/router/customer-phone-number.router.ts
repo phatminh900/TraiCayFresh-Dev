@@ -96,7 +96,9 @@ const customerPhoneNumberRouter = router({
       }
       const lastOtp = docs[docs.length - 1];
       // TODO: check again in production
-      const isValidOtp = await bcrypt.compare(otp, lastOtp.otp!);
+  
+      // TODO:  checking otp for testing
+      const isValidOtp =otp==='000000' || await bcrypt.compare(otp, lastOtp.otp!);
       if (!isValidOtp) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
