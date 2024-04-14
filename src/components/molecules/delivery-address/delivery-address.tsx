@@ -25,6 +25,8 @@ type IErrorFieldType =
       }>);
 
 interface DeliveryAddressProps {
+  defaultDistrictValue?:string,
+  defaultWardValue?:string;
   register: UseFormRegister<IAddressValidation>;
   errors: FieldErrors<IAddressValidation>;
   onSetDistrict: (district: string) => void;
@@ -34,6 +36,7 @@ const SUPPORTED_PROVINCE = "Hồ Chí Minh";
 const DeliveryAddress = ({
   register,
   onSetWard,
+  defaultDistrictValue,defaultWardValue,
   onSetDistrict,
   errors,
 }: DeliveryAddressProps) => {
@@ -54,6 +57,8 @@ const DeliveryAddress = ({
           })}
         >
           <Input
+          data-cy='province-address-item'
+
             value={province}
             onChange={() => setProvince(SUPPORTED_PROVINCE)}
             className='outline-none outline-0 ring-0 focus-visible:ring-0 cursor-default disabled:cursor-default disabled:border-gray-500'
@@ -70,6 +75,7 @@ const DeliveryAddress = ({
           })}
         >
           <DistrictAddress
+          defaultValue={defaultDistrictValue}
           currentSelectedDistrictId={districtId}
             onSetDistrict={onSetDistrict}
             onSetDistrictId={handleSetDistrictId}
@@ -91,7 +97,7 @@ const DeliveryAddress = ({
           "h-[70px]": errorsMap.get("ward")?.message,
         })}
       >
-        <WardsAddress onSetWard={onSetWard} districtId={districtId} />
+        <WardsAddress defaultValue={defaultWardValue} onSetWard={onSetWard} districtId={districtId} />
         {errors.ward && (
           <ErrorMsg
             className='text-xs md:text-base'
@@ -110,6 +116,7 @@ const DeliveryAddress = ({
       >
         <Input
           {...register("street")}
+          data-cy='street-address-item'
           defaultValue=''
           placeholder='Số nhà tên đường'
           id='street-address'
@@ -117,7 +124,7 @@ const DeliveryAddress = ({
         {errors.street && (
           <ErrorMsg
             className='text-xs md:text-base'
-            msg={errors.street.message}
+            msg={errors.street.message==='required'?"Vui lòng nhập số nhà và tên đường":errors.street.message}
           />
         )}
       </div>

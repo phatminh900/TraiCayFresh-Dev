@@ -7,7 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-const useAddress = () => {
+
+
+const useAddress = (defaultValue?:IAddressValidation) => {
   const {
     register,
     handleSubmit,
@@ -16,7 +18,7 @@ const useAddress = () => {
     setError,
     formState: { errors },
   } = useForm<IAddressValidation>({
-    resolver: zodResolver(AddressValidationSchema),
+    resolver: zodResolver(AddressValidationSchema),defaultValues:defaultValue
   });
 
   const setDistrictValue = useCallback(
@@ -42,7 +44,7 @@ const useAddress = () => {
       if (wardValue) {
         setError("ward", { message: "" });
       }
-      if (streetValue) {
+      if (AddressValidationSchema.pick({street:true}).safeParse(streetValue).success) {
         setError("street", { message: "" });
       }
     }

@@ -13,7 +13,9 @@ export const handleTrpcErrors = (
     error.data?.code === "NOT_FOUND"
   ) {
     toast.error(error.message);
-console.log(error.message)
+    console.log(error.message);
+    toast.error(error.message);
+
     return;
   }
   if (error instanceof ZodError) {

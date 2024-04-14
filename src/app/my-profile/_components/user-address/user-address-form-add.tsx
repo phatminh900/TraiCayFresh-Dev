@@ -15,7 +15,7 @@ interface UserAddressFormAddProps extends IUser{
 
 }
 
-const UserAddressFormAdd = ({isExpanded,onExpand,user}:UserAddressFormAddProps) => {
+const UserAddressFormAdd = ({onExpand,user}:UserAddressFormAddProps) => {
   const { errors, handleSubmit, register, setDistrictValue, setWardValue } =
     useAddress();
 
@@ -29,8 +29,7 @@ const UserAddressFormAdd = ({isExpanded,onExpand,user}:UserAddressFormAddProps) 
   } = trpc.user.addNewAddress.useMutation({
     onError: (err) => handleTrpcErrors(err),
     onSuccess: (data) => {
-      router.refresh();
-      toast.message(data?.message);
+     handleTrpcSuccess(router,data?.message)
     },
   });
  
@@ -42,7 +41,11 @@ const UserAddressFormAdd = ({isExpanded,onExpand,user}:UserAddressFormAddProps) 
     isPending: isAddingNewAddressPhoneNumber,
     isSuccess: isSuccessUserPhoneNumber,
   } = trpc.customerPhoneNumber.addNewAddress.useMutation({
-    onError: (err) => handleTrpcErrors(err),
+    onError: (err) => {
+      console.log(err)
+      handleTrpcErrors(err)
+      return 
+    },
     onSuccess: (data) => {
       handleTrpcSuccess(router, data.message);
     },
@@ -57,16 +60,16 @@ const UserAddressFormAdd = ({isExpanded,onExpand,user}:UserAddressFormAddProps) 
       const address = { district, street, ward };
 
       if (user && "email" in user) {
-        await addNewAddressUserEmail(address);
+        await addNewAddressUserEmail(address).catch(err=>handleTrpcErrors(err));
         onExpand(false);
         return;
       }
-      await addNewAddressPhoneNumber(address);
+      await addNewAddressPhoneNumber(address).catch(err=>handleTrpcErrors(err));
       onExpand(false);
     }
   );
   return (
-    <form className='mt-2' onSubmit={handleAddNewAddress}>
+    <form data-cy='user-address-form-my-profile' className='mt-2' onSubmit={handleAddNewAddress}>
     <DeliveryAddress
       errors={errors}
       onSetDistrict={setDistrictValue}
@@ -75,6 +78,7 @@ const UserAddressFormAdd = ({isExpanded,onExpand,user}:UserAddressFormAddProps) 
     />
     <div className='mt-4 flex items-center w-full gap-4'>
       <Button
+      data-cy='user-address-add-btn-my-profile'
         disabled={
           isAddingNewAddressUserEmail ||
           isAddingNewAddressPhoneNumber ||
@@ -88,6 +92,8 @@ const UserAddressFormAdd = ({isExpanded,onExpand,user}:UserAddressFormAddProps) 
           : "Xác nhận"}
       </Button>
       <Button
+      data-cy='user-address-cancel-btn-my-profile'
+
         onClick={() => {
           onExpand(false);
         }}

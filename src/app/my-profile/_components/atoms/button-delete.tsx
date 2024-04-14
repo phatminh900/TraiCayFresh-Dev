@@ -14,7 +14,7 @@ const ButtonDelete = ({
   ...rest
 }: ButtonDeleteProps) => {
   return (
-    <button {...rest} disabled={disabled} onClick={onClick} className={className}>
+    <button {...rest} data-cy='delete-my-profile-item-btn' disabled={disabled} onClick={onClick} className={className}>
       <p className={"flex items-center gap-1.5 text-destructive"}>
         <IoTrashOutline className='text-destructive' size={sizeIcon}/>
         Xóa

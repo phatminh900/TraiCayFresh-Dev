@@ -85,29 +85,29 @@ const UserAddress = ({ user }: UserAddressProps) => {
       const address = { district, street, ward };
 
       if (user && "email" in user) {
-        await addNewAddressUserEmail(address);
+        await addNewAddressUserEmail(address).catch(err=>handleTrpcErrors(err));
         setIsExpanded(false);
         return;
       }
-      await addNewAddressPhoneNumber(address);
+      await addNewAddressPhoneNumber(address).catch(err=>handleTrpcErrors(err));;
       setIsExpanded(false);
     }
   );
   const handleSetDefaultAddress = async (id: string) => {
     const successMessage = "Thay đổi địa chỉ mặc định thành công";
     if (user && "email" in user) {
-      await setDefaultAddress({ id });
+      await setDefaultAddress({ id }).catch(err=>handleTrpcErrors(err));
       return;
     }
-    await setDefaultAddressUserPhoneNumber({ id });
+    await setDefaultAddressUserPhoneNumber({ id }).catch(err=>handleTrpcErrors(err));;
   };
 
   const handleDeleteUserAddress = async (id: string) => {
     if (user && "email" in user) {
-      await deleteUserAddress({ id });
+      await deleteUserAddress({ id }).catch(err=>handleTrpcErrors(err));;
       return;
     }
-    await deleteUserPhoneNumberAddress({ id });
+    await deleteUserPhoneNumberAddress({ id }).catch(err=>handleTrpcErrors(err));;
   };
 
   const sortedAddress = useMemo(() => {
@@ -128,7 +128,7 @@ const UserAddress = ({ user }: UserAddressProps) => {
                 <p>
                   {address}
 
-                  <span className='text-sm ml-2 text-primary'>( Mặc định)</span>
+                  <span className='text-sm ml-2 text-primary'>( Mặc định )</span>
                 </p>
               ) : (
                 <div>

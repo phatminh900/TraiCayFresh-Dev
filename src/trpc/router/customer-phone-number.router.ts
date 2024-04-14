@@ -5,7 +5,10 @@ import bcrypt from "bcryptjs";
 import cookie from "cookie";
 import otpGenerator from "otp-generator";
 import { publicProcedure, router } from "../trpc";
-import { AddressValidationSchema, PhoneValidationSchema } from "../../validations/user-infor.valiator";
+import {
+  AddressValidationSchema,
+  PhoneValidationSchema,
+} from "../../validations/user-infor.valiator";
 import { SignUpCredentialSchema } from "../../validations/auth.validation";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { signToken, verifyToken } from "../../utils/auth.util";
@@ -38,8 +41,6 @@ const getUserProcedure = publicProcedure.use(async ({ ctx, next, input }) => {
       message: NOT_FOUND_USER_WITH_THIS_TOKEN_MESSAGE,
     });
   return next({ ctx: { user } });
-
- 
 });
 
 const customerPhoneNumberRouter = router({
@@ -96,9 +97,10 @@ const customerPhoneNumberRouter = router({
       }
       const lastOtp = docs[docs.length - 1];
       // TODO: check again in production
-  
+
       // TODO:  checking otp for testing
-      const isValidOtp =otp==='000000' || await bcrypt.compare(otp, lastOtp.otp!);
+      const isValidOtp =
+        otp === "000000" || (await bcrypt.compare(otp, lastOtp.otp!));
       if (!isValidOtp) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -154,180 +156,223 @@ const customerPhoneNumberRouter = router({
         }
       }
     }),
-  
+
   logOut: publicProcedure.mutation(({ ctx }) => {
     const { res } = ctx;
     res.clearCookie(COOKIE_USER_PHONE_NUMBER_TOKEN);
     return { success: true };
   }),
   changeUserName: getUserProcedure
-  .input(SignUpCredentialSchema.pick({ name: true }))
-  .mutation(async ({ ctx, input }) => {
-    const { user } = ctx;
-    const { name } = input;
-    // to make sure have actual user
-    const payload = await getPayloadClient();
-    if (name === user.name) return;
-    try {
- await payload.update({
-        collection: "customer-phone-number",
-        where: {
-          id: {
-            equals: user.id,
+    .input(SignUpCredentialSchema.pick({ name: true }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { name } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
+      if (name === user.name) return;
+      try {
+        await payload.update({
+          collection: "customer-phone-number",
+          where: {
+            id: {
+              equals: user.id,
+            },
           },
-        },
-        data: {
-          name,
-        },
-      });
-      return { success: true, message: "Thay đổi tên thành công" };
-    } catch (error) {
-      console.log(error);
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Something went wrong",
-      });
-    }
-  }),
+          data: {
+            name,
+          },
+        });
+        return { success: true, message: "Thay đổi tên thành công" };
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
   addNewAddress: getUserProcedure
-  .input(AddressValidationSchema)
-  .mutation(async ({ ctx, input }) => {
-    // TODO: add middleware for this
-    const { user } = ctx;
-    const { district,street,ward } = input;
-    // to make sure have actual user
-    const payload = await getPayloadClient();
+    .input(AddressValidationSchema)
+    .mutation(async ({ ctx, input }) => {
+      // TODO: add middleware for this
+      const { user } = ctx;
+      const { district, street, ward } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
 
-    // with the same address
-    const isTheSameAddress = user.address?.find(
-      (ad) => (ad.district === district) && (ad.ward===ward) && (ad.street===street)
-    );
-    if (isTheSameAddress)
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "Bạn đã thêm địa chỉ này trước rồi!",
-      });
+      // with the same address
+      const isTheSameAddress = user.address?.find(
+        (ad) =>
+          ad.district === district && ad.ward === ward && ad.street === street
+      );
+      if (isTheSameAddress)
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Bạn đã thêm địa chỉ này trước rồi!",
+        });
 
-    try {
-      await payload.update({
-        collection: "customer-phone-number",
-        where: {
-          id: { equals: user.id },
-        },
-        data: {
-          address: user.address?.length
-            ? [...user.address, { isDefault: false, district,street,ward }]
-            : [{ isDefault: true,  district,street,ward}],
-        },
-      });
-      return { success: true, message: "Cập nhật địa chỉ thành công" };
-    } catch (error) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Something went wrong",
-      });
-    }
-  }),
-  setDefaultAddress: getUserProcedure
-  .input(z.object({id:z.string()}))
-  .mutation(async ({ ctx, input }) => {
-    const { user } = ctx;
-    const { id } = input;
-    // to make sure have actual user
-    const payload = await getPayloadClient();
-
-    const addressUpdateToDefault = user.address?.find(
-      (ad) => ad.id===id
-    );
-    if (!addressUpdateToDefault || addressUpdateToDefault.isDefault)
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Không thể đặt làm mặc định vui lòng thử lại sau.",
-      });
-
-    const updatedToDefault = user.address?.map((ad) =>
-      ad.id===id
-        ? { ...ad, isDefault: true }
-        : { ...ad, isDefault: false }
-    );
-    try {
-      await payload.update({
-        collection: "customer-phone-number",
-        where: {
-          id: {
-            equals: user.id,
+      try {
+        await payload.update({
+          collection: "customer-phone-number",
+          where: {
+            id: { equals: user.id },
           },
-        },
-        data: {
-          address: updatedToDefault,
-        },
-      });
-      return {
+          data: {
+            address: user.address?.length
+              ? [...user.address, { isDefault: false, district, street, ward }]
+              : [{ isDefault: true, district, street, ward }],
+          },
+        });
+        return { success: true, message: "Cập nhật địa chỉ thành công" };
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
+  setDefaultAddress: getUserProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { id } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
+
+      const addressUpdateToDefault = user.address?.find((ad) => ad.id === id);
+      if (!addressUpdateToDefault || addressUpdateToDefault.isDefault)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Không thể đặt làm mặc định vui lòng thử lại sau.",
+        });
+
+      const updatedToDefault = user.address?.map((ad) =>
+        ad.id === id ? { ...ad, isDefault: true } : { ...ad, isDefault: false }
+      );
+      try {
+        await payload.update({
+          collection: "customer-phone-number",
+          where: {
+            id: {
+              equals: user.id,
+            },
+          },
+          data: {
+            address: updatedToDefault,
+          },
+        });
+        return {
+          success: true,
+          message: "Đổi địa chỉ mặc định thành công",
+        };
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
+  adjustUserAddress: getUserProcedure
+    .input(AddressValidationSchema.extend({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { id, ward, district, street } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
+
+      const existingAddress = user.address?.find((ad) => ad.id === id);
+      if (!existingAddress)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Không thể cập nhật địa chỉ vui lòng thử lại sau.",
+        });
+      const isTheSameAddress = user.address?.find(
+        (ad) =>
+          ad.district === district && ad.ward === ward && ad.street === street
+      );
+      // TODO: THINK IF SHOULD NOTIFY USER OR NOT
+      if (isTheSameAddress)   return {
         success: true,
-        message: "Đổi số điện thoại mặc định thành công",
+        message: "Cập nhật địa chỉ thành công",
       };
-    } catch (error) {
-      console.log(error);
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Something went wrong",
-      });
-    }
-  }),
+      const updatedAddress = user.address?.map((ad) =>
+        ad.id === id ? { ...ad, ward, district, street } : { ...ad }
+      );
+      try {
+        await payload.update({
+          collection: "customer-phone-number",
+          where: {
+            id: {
+              equals: user.id,
+            },
+          },
+          data: {
+            address: updatedAddress,
+          },
+        });
+        return {
+          success: true,
+          message: "Cập nhật địa chỉ thành công",
+        };
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
   deleteAddress: getUserProcedure
-  .input(z.object({id:z.string()}))
-  .mutation(async ({ ctx, input }) => {
-    const { user } = ctx;
-    const { id } = input;
-    // to make sure have actual user
-    const payload = await getPayloadClient();
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { id } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
 
-    if (!user)
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Không có người dùng nào với tài khoản này",
-      });
+      if (!user)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Không có người dùng nào với tài khoản này",
+        });
 
-    const doesAddressExist = user.address?.find(
-      (ad) => ad.id === id
-    );
-    if (!doesAddressExist || doesAddressExist.isDefault)
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Không thể đặt làm mặc định vui lòng thử lại sau.",
-      });
+      const doesAddressExist = user.address?.find((ad) => ad.id === id);
+      if (!doesAddressExist || doesAddressExist.isDefault)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Không thể đặt làm mặc định vui lòng thử lại sau.",
+        });
       // do not allow to delete default Address
       if (doesAddressExist.isDefault)
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Không xóa địa chỉ này vì đang là địa chỉ mặc định",
         });
-    const updatedAddress = user.address?.filter(
-      (ad) => ad.id !== id
-    );
-    try {
-      await payload.update({
-        collection: "customer-phone-number",
-        where: {
-          id: {
-            equals: user.id,
+      const updatedAddress = user.address?.filter((ad) => ad.id !== id);
+      try {
+        await payload.update({
+          collection: "customer-phone-number",
+          where: {
+            id: {
+              equals: user.id,
+            },
           },
-        },
-        data: {
-          address: updatedAddress,
-        },
-      });
-      return {
-        success: true,
-        message: `Xóa địa chỉ thành công`,
-      };
-    } catch (error) {
-      console.log(error);
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Something went wrong",
-      });
-    }
-  }),
+          data: {
+            address: updatedAddress,
+          },
+        });
+        return {
+          success: true,
+          message: `Xóa địa chỉ thành công`,
+        };
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
 });
 export default customerPhoneNumberRouter;

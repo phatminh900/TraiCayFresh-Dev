@@ -46,8 +46,8 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add("getById", (selector, agr) => {
-  return cy.get(`[data-cy=${selector}]`, ...agr);
+Cypress.Commands.add("getById", (selector, agr = []) => {
+  return Array.isArray(agr) ? cy.get(`[data-cy=${selector}]`, ...agr) : cy.get(`[data-cy=${selector}]`);
 });
 
 Cypress.Commands.add("login", () => {

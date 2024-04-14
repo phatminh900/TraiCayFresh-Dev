@@ -9,13 +9,14 @@ interface UserAddressProps extends IUser {}
 const UserAddress = ({ user }: UserAddressProps) => {
   
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const handleExpand=(state:boolean)=>setIsExpanded(state)
   return (
     <div>
-      <UserAddressDetailList user={user} />
+      <UserAddressDetailList isExpanded={isExpanded} onExpand={handleExpand} user={user} />
       <div className='flex flex-col gap-2'>
         {!isExpanded && (
           <button
+            data-cy='add-new-address-my-profile'
             onClick={() => setIsExpanded((prev) => !prev)}
             className='text-primary text-lg self-start mt-4'
           >
@@ -25,12 +26,12 @@ const UserAddress = ({ user }: UserAddressProps) => {
         {isExpanded && (
           <>
             {Boolean(user?.address?.length) && (
-              <PageSubTitle className='mt-4 mb-0'>
+              <PageSubTitle className='mt-6 mb-0'>
                 {" "}
                 Thêm địa chỉ mới
               </PageSubTitle>
             )}
-         <UserAddressFormAdd isExpanded={isExpanded} user={user} onExpand={(state)=>setIsExpanded(state)}/>
+         <UserAddressFormAdd isExpanded={isExpanded} user={user} onExpand={handleExpand}/>
           </>
         )}
       </div>

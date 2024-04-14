@@ -17,6 +17,7 @@ const ButtonAdjust = ({
 }: ButtonAdjustProps) => {
   return (
     <button
+    data-cy='adjust-my-profile-item-btn'
       {...rest}
       disabled={disabled}
       className={cn("text-primary", className)}

@@ -74,7 +74,7 @@ const UserRouter = router({
       const { name } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
-      if (name === user.name) return;
+      if (name === user.name) return {success:true,message:"Thay đổi tên thành công"};
       try {
         await payload.update({
           collection: "customers",
@@ -309,6 +309,53 @@ const UserRouter = router({
         return {
           success: true,
           message: "Đổi số điện thoại mặc định thành công",
+        };
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
+    adjustUserAddress: getUserProcedure
+    .input(AddressValidationSchema.extend({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { id, ward, district, street } = input;
+      // to make sure have actual user
+      const payload = await getPayloadClient();
+
+      const existingAddress = user.address?.find((ad) => ad.id === id);
+      if (!existingAddress)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Không thể cập nhật địa chỉ vui lòng thử lại sau.",
+        });
+      const isTheSameAddress = user.address?.find(
+        (ad) =>
+          ad.district === district && ad.ward === ward && ad.street === street
+      );
+      // TODO: THINK IF SHOULD NOTIFY USER OR NOT
+      if (isTheSameAddress) return;
+      const updatedAddress = user.address?.map((ad) =>
+        ad.id === id ? { ...ad, ward, district, street } : { ...ad }
+      );
+      try {
+        await payload.update({
+          collection: "customers",
+          where: {
+            id: {
+              equals: user.id,
+            },
+          },
+          data: {
+            address: updatedAddress,
+          },
+        });
+        return {
+          success: true,
+          message: "Cập nhật địa chỉ thành công",
         };
       } catch (error) {
         console.log(error);
