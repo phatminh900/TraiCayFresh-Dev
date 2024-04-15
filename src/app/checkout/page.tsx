@@ -1,11 +1,13 @@
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
-import DeliveryAddress from "@/components/molecules/delivery-address/delivery-address";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import PageSubTitle from "@/components/ui/page-subTitle";
+import { Button } from "@/components/ui/button";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
 import CheckoutAddress from "./_components/checkout-address";
+import CheckoutDiscount from "./_components/checkout-discount";
+import CheckoutListCart from "./_components/checkout-list-cart";
+import CheckoutNote from "./_components/checkout-note";
+import CheckoutPaymentMethods from "./_components/checkout-payment-methods";
+import CheckoutUserInfo from "./_components/checkout-user-infor";
 
 const CheckoutPage = async() => {
   return (
@@ -14,8 +16,13 @@ const CheckoutPage = async() => {
         links={[{ href: APP_URL.checkout, label: "Thanh toán" }]}
       />
       <PageTitle>Thanh toán</PageTitle>
-      <PageSubTitle>Thông tin khách hàng</PageSubTitle>
+    <CheckoutUserInfo />      
       <CheckoutAddress />
+      <CheckoutListCart />
+      <CheckoutNote />
+      <CheckoutDiscount />
+      <CheckoutPaymentMethods />
+      <Button data-cy="submit-btn-checkout">Thanh toan</Button>
     </div>
   );
 };

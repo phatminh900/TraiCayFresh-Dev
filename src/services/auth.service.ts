@@ -1,4 +1,4 @@
-import { API_ROUTES } from "@/constants/api-route.constant";
+import { API_ROUTES } from "@/constants/api-routes.constant";
 import { callApi } from "@/utils/service.util";
 
 

@@ -89,7 +89,7 @@ const VerifyEmailPage = ({ searchParams }: VerifyEmailPageProps) => {
           Có lỗi xảy ra vui lòng thử lại
         </h3>
         <p className='text-muted-foreground text-sm'>
-          Link xác thực có thể hết hạn hoặc không đúng. Vui lòng kiểm tra lịa
+          Link xác thực có thể hết hạn hoặc không đúng. Vui lòng kiểm tra lại
         </p>
       </div>
     );

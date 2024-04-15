@@ -12,7 +12,7 @@ dotenv.config({
 import express from 'express'
 import payload from 'payload'
 import { appRouter } from '../trpc'
-import { createContext } from '..//trpc/context'
+import { createContext } from '../trpc/context'
 
 
 const app = express()

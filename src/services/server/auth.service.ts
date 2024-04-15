@@ -2,7 +2,7 @@ import 'server-only';
 
 import { NextRequest } from "next/server";
 
-import { API_ROUTES } from "@/constants/api-route.constant";
+import { API_ROUTES } from "@/constants/api-routes.constant";
 import {
   COOKIE_PAYLOAD_TOKEN,
   COOKIE_USER_PHONE_NUMBER_TOKEN,

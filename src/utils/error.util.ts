@@ -1,9 +1,8 @@
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
-import type { TRPCClientErrorLike } from "@trpc/client";
-import { AnyTRPCClientTypes } from "@trpc/server";
 import { toast } from "sonner";
 import { ZodError } from "zod";
-
+import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import type { TRPCClientErrorLike } from "@trpc/client";
+import { AnyTRPCClientTypes, TRPCError } from "@trpc/server";
 export const handleTrpcErrors = (
   error: TRPCClientErrorLike<AnyTRPCClientTypes>
 ) => {

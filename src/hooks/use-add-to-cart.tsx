@@ -7,8 +7,12 @@ import { trpc } from "@/trpc/trpc-client";
 import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
 
 const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|CustomerPhoneNumber}) => {
-  const router = useRouter();
-
+    const router = useRouter();
+    const {
+      mutateAsync: setUserPhoneNumberCart,
+      isPending: isAddingToUserPhoneNumberCart,
+      isError: isAddingUserCartNumberError,
+    } = trpc.customerPhoneNumber.setUserCart.useMutation();
   const {
     mutateAsync: setUserCart,
     isPending: isAddingToCart,
@@ -25,6 +29,22 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
     discount,
     priceAfterDiscount,
   } = product ?? {};
+
+
+  const addItemToCart=()=>{
+    addItem({
+      id,
+      originalPrice,
+      quantity,
+      thumbnailImg,
+      title,
+      discount,
+      priceAfterDiscount,
+    });
+  
+    toast.success("Thêm vào giỏ hàng thành công", { duration: 1000 });
+    router.refresh();
+  }
   const handleAddItemToCart = async () => {
     const productInTheCart = cartItemsLocal.find(
       (item) => item.id === product.id
@@ -53,7 +73,16 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
           { product: product.id, quantity },
         ];
     if (user) {
-      await setUserCart(updatedUserCart);
+      if('email' in user){
+
+        await setUserCart(updatedUserCart);
+       
+      }
+      if(!('email'in user)){
+        await setUserPhoneNumberCart(updatedUserCart)
+       
+      }
+     
     }
     addItem({
       id,
@@ -64,11 +93,11 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
       discount,
       priceAfterDiscount,
     });
-
+  
     toast.success("Thêm vào giỏ hàng thành công", { duration: 1000 });
     router.refresh();
   };
-  return { handleAddItemToCart, isAddingError, isAddingToCart };
+  return { handleAddItemToCart, isAddingError, isAddingToCart ,isAddingToUserPhoneNumberCart,isAddingUserCartNumberError};
 };
 
 export default useAddToCart;

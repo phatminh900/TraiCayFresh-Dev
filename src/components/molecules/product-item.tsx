@@ -36,7 +36,7 @@ const ProductItem = ({
   reviewQuantity = 1,
   reviewRating = 5,
 }: ProductItemProps) => {
-  const { handleAddItemToCart, isAddingError, isAddingToCart } = useAddToCart({
+  const { handleAddItemToCart, isAddingError, isAddingToCart,isAddingToUserPhoneNumberCart,isAddingUserCartNumberError } = useAddToCart({
    product:{ id,
     originalPrice,
     quantity: 1,
@@ -83,7 +83,7 @@ const ProductItem = ({
               e.preventDefault();
               handleAddItemToCart();
             }}
-            disabled={isAddingToCart || isAddingError}
+            disabled={isAddingToCart || isAddingError||isAddingToUserPhoneNumberCart||isAddingUserCartNumberError}
             className='flex-1'
             variant={"outline"}
           >

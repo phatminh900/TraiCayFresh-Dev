@@ -16,5 +16,5 @@ export const APP_PARAMS = {
   token: "token=",
   toEmail: "toEmail=",
   currentQuantityOption: "currentQuantityOption",
-  isOpenOtp:'isOpenOtp'
+  isOpenOtp:'isOpenOtp',
 } as const;

@@ -10,12 +10,12 @@ interface ProductAddToCartProps  extends IUser{
 }
 
 const ProductAddToCart = ({user, product }: ProductAddToCartProps) => {
-  const { handleAddItemToCart, isAddingError, isAddingToCart } =
+  const { handleAddItemToCart, isAddingError, isAddingToCart ,isAddingToUserPhoneNumberCart,isAddingUserCartNumberError} =
     useAddToCart({product,user});
   return (
     <Button
     data-cy='add-to-cart-product'
-      disabled={isAddingError || isAddingToCart}
+      disabled={isAddingError || isAddingToCart||isAddingUserCartNumberError||isAddingToUserPhoneNumberCart}
       onClick={handleAddItemToCart}
       size='lg'
       className='mt-2 w-full'

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { validateNumericInput } from "@/utils/util.utls";
+import { useCart } from "@/store/cart.store";
 
 
 const TIME_TO_SEND_OTP_AGAIN = 90;
@@ -20,6 +21,8 @@ interface VerifyOtpProps {
   routeToPushAfterVerifying:keyof (typeof APP_URL)
 }
 function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: VerifyOtpProps) {
+  // FIXME: decouple cart added when login 
+  const cartItems = useCart((store) => store.items);
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [disabled, setDisabled] = useState(false);
@@ -28,6 +31,9 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
   const handleChangeOtpInput = (input: string) => {
     if (validateNumericInput(input)) setOtp(input);
   };
+
+  const {mutate:setUserCart}=trpc.customerPhoneNumber.setUserCart.useMutation()
+
   const {
     mutate: verifyOtp,
     isPending,
@@ -37,10 +43,19 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
       handleTrpcErrors(err);
     },
     onSuccess: () => {
-      router.push(routeToPushAfterVerifying)
-
+      
       toast.success("Xác thực thành công");
       router.refresh();
+      if (cartItems.length) {
+        const cartItemUser = cartItems.map((item) => ({
+          product: item.id ,
+          quantity: item.quantity,
+        })) 
+        setUserCart(cartItemUser);
+      }
+      router.push(routeToPushAfterVerifying)
+      // set cart user after login 
+
     },
   });
   const { mutateAsync: sendOtpAgain, isPending: isSendingOtp } =

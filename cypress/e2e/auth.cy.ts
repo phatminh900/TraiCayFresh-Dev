@@ -65,34 +65,33 @@ describe("signUP", () => {
   });
 
   //
-  it("shows error if the email user tries to register already exist", () => {
-    cy.intercept("POST", "/api/trpc/auth.signUp?batch=1", {
-      statusCode: 409,
-      body: {
-        error: {
-          message: "Email này đã đăng kí rồi. Thử đăng nhập lại nhé.",
-          code: -32009,
-          data: {
-            code: "CONFLICT",
-            httpStatus: 409,
-          },
-        },
-      },
-    }).as('signUpProcess');
-
-    cy.get('[data-cy="input-name-sign-up"]').as("input-name").type("Phattran");
+  it.only("shows error if the email user tries to register already exist", () => {
+    // cy.intercept("POST", "/api/trpc/auth.signUp?batch=1", {
+    //   statusCode: 409,
+    //   body: {
+    //     error: {
+    //       message: "Email này đã đăng kí rồi. Thử đăng nhập lại nhé.",
+    //       code: -32009,
+    //       data: {
+    //         code: "CONFLICT",
+    //         httpStatus: 409,
+    //       },
+    //     },
+    //   },
+    // }).as('signUpProcess');
+    const testUserEmail='testuser1@gmail.com'
+    cy.get('[data-cy="input-name-sign-up"]').as("input-name").type("Phat");
     cy.get('[data-cy="input-email-sign-up"]')
       .as("input-email")
-      .type("exampleEmail@gmail.com");
+      .type(testUserEmail);
     cy.get('[data-cy="input-password-sign-up"]')
       .as("input-password")
-      .type("mypassword123");
+      .type("test12345");
     cy.get('[data-cy="input-password-confirm-sign-up"]')
       .as("input-password-confirm")
-      .type("mypassword123");
+      .type("test12345");
     cy.get("form").contains("Đăng kí").as("submitBtn");
     cy.get("@submitBtn").click();
-    cy.get('@signUpProcess').should('have.a.property','response.body')
     cy.contains("Email này đã đăng kí rồi. Thử đăng nhập lại nhé.");
   });
   it("signup successfully and shows success message then navigate to the verifyEmail Page", () => {
@@ -216,32 +215,32 @@ describe("login", () => {
     cy.get("form").submit();
     cy.contains("Tài khoản hoặc mật khẩu sai.");
   });
-  it("login successfully it the credential was correct and navigate", () => {
-    cy.intercept("POST", "/api/trpc/auth.login?batch=1", {
-      statusCode: 200,
-      body: {
-        result: {
-          data: {
-            success: true,
-          },
-        },
-      },
-    });
-    const origin = "products";
+  it.only("login successfully it the credential was correct and navigate", () => {
+    // cy.intercept("POST", "/api/trpc/auth.login?batch=1", {
+    //   statusCode: 200,
+    //   body: {
+    //     result: {
+    //       data: {
+    //         success: true,
+    //       },
+    //     },
+    //   },
+    // });
+    const origin = "my-profile";
     cy.visit(`/login?origin=${origin}`);
     cy.get('[data-cy="input-email-login"]')
       .as("input-email")
-      .type("email@gmail.com");
+      .type("testuser1@gmail.com");
     cy.get('[data-cy="input-password-login"]')
       .as("input-password")
-      .type("password12345");
+      .type("test12345");
     cy.get("form").submit();
     cy.contains("Đăng nhập thành công");
     // if have origin come from other place to login
     cy.location("pathname").should("eq", `/${origin}`);
   });
   // Login by phoneNumber
-  it.only('login by phoneNumber',()=>{
+  it('login by phoneNumber',()=>{
     cy.get("[data-cy='login-by-phone-number-alternative']").contains('Đăng nhập bằng số điện thoại').as('button-trigger-open')
     cy.get('@button-trigger-open').click({force:true})
 

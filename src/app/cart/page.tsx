@@ -4,7 +4,8 @@ import { APP_URL } from "@/constants/navigation.constant";
 import { getUserServer } from "@/services/server/auth.service";
 import { getCartOfUser } from "@/services/cart.service";
 import { cookies } from "next/headers";
-import CartList from "./_components/cart-list";
+import CartList from "@/components/molecules/cart-list";
+// import CartList from "./_components/cart-list";
 import CartSummary from "./_components/cart-summary";
 
 export const dynamic = "force-dynamic";

@@ -1,4 +1,4 @@
-import { API_ROUTES } from "@/constants/api-route.constant";
+import { API_ROUTES } from "@/constants/api-routes.constant";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
 import { getPayloadClient } from "@/payload/get-client-payload";
 import { CartItems, Product } from "@/payload/payload-types";

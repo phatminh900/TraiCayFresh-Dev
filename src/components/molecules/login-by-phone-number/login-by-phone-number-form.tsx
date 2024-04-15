@@ -18,7 +18,7 @@ import {
 interface LoginByPhoneNumberProps {
   onSetIsShowOtp: (state: boolean) => void;
   onSetPhoneNumber: (phoneNumber: string) => void;
-  title:string
+  title: string;
 }
 const LoginByPhoneNumber = ({
   onSetPhoneNumber,
@@ -59,10 +59,12 @@ const LoginByPhoneNumber = ({
     return;
   };
   return (
-    <form data-cy='login-by-phone-number-form' onSubmit={handleSendPhoneVerification} className='flex flex-col '>
-      <p className='text-lg font-bold text-center mb-2 md:mb-6'>
-        {title}
-      </p>
+    <form
+      data-cy='login-by-phone-number-form'
+      onSubmit={handleSendPhoneVerification}
+      className='flex flex-col '
+    >
+      <p className='text-lg font-bold text-center mb-2 md:mb-6'>{title}</p>
       <Input
         type='tel'
         value={phoneNumber}
@@ -91,7 +93,7 @@ const LoginByPhoneNumber = ({
 
       {errors.phoneNumber && <ErrorMsg msg={errors.phoneNumber.message} />}
       <Button
-      data-cy='login-by-phone-number-submit-btn'
+        data-cy='login-by-phone-number-submit-btn'
         disabled={isSendingOtp}
         className='w-1/2 self-center mt-4 block md:mt-6'
       >

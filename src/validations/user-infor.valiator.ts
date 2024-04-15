@@ -21,5 +21,6 @@ export const AddressValidationSchema = z.object({
     )
     .trim(),
 });
+
 export type IAddressValidation = z.infer<typeof AddressValidationSchema>;
 export type IPhoneNumberValidation = z.infer<typeof PhoneValidationSchema>;

@@ -64,7 +64,7 @@ const CartItem = ({
       data-cy='cart-item'
       className='border border-gray-200 h-28 shadow-lg rounded-md overflow-hidden'
     >
-      <Link className="flex w-full h-full" href={`${APP_URL.products}/${id}`}>
+      <Link   className="flex w-full h-full" href={`${APP_URL.products}/${id}`}>
       <div className='relative w-[30%] min-w-[30%] aspect-square overflow-hidden'>
         <Image
           fill
