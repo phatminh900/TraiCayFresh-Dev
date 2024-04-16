@@ -17,6 +17,7 @@ import { Reviews } from "./collection/reviews.collection";
 import { Orders } from "./collection/orders.collection";
 import { Otp } from "./collection/otp.collection";
 import { CustomerPhoneNumber } from "./collection/customer-phone-number.collection";
+import { Coupons } from "./collection/coupon.collection";
 
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
@@ -43,7 +44,7 @@ export default buildConfig({
       ogImage: "/thumbnail.jpg",
     },
   },
- 
+
   rateLimit: {
     max: 3000,
   },
@@ -52,7 +53,17 @@ export default buildConfig({
     url: process.env.DATABASE_URI!,
   }),
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
-  collections: [Admins, Products, Orders, Reviews, Customers, Media,Otp,CustomerPhoneNumber],
+  collections: [
+    Admins,
+    Products,
+    Orders,
+    Reviews,
+    Customers,
+    Media,
+    Otp,
+    CustomerPhoneNumber,
+    Coupons,
+  ],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },

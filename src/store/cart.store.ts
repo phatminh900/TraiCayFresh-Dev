@@ -3,7 +3,9 @@ import { Product } from "@/payload/payload-types";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/constants.constant";
 
-export type CartProductItem = { quantity: number } & Pick<
+
+export type CartProductDetails={ quantity: number,priceAfterCoupon?:number,totalPrice:number,shippingCost?:number,discountAmount?:number,isAppliedCoupon?:boolean }
+export type CartProductItem = CartProductDetails & Pick<
   Product,
   | "id"
   | "title"
@@ -46,14 +48,19 @@ export const useCart = create<CartState>()(
               title,
               discount,
               priceAfterDiscount,
+              totalPrice,discountAmount,isAppliedCoupon,shippingCost,
+              priceAfterCoupon,
             } = product;
             return {
               id,
               originalPrice,
+              totalPrice,discountAmount,isAppliedCoupon,shippingCost,
               quantity,
               thumbnailImg,
               title,
               discount,
+              priceAfterCoupon,
+
               priceAfterDiscount,
             };
           });

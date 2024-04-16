@@ -1,10 +1,11 @@
 import { CollectionConfig } from "payload/types";
 import { isAdmins } from "../access/isAdmin";
+import { anyone } from "../access/anyone";
 
 export const Products: CollectionConfig = {
   slug: "products",
   access: {
-    read: isAdmins,
+    read: anyone,
     update: isAdmins,
     create: isAdmins,
     delete: isAdmins,
@@ -31,7 +32,16 @@ export const Products: CollectionConfig = {
       min: 0,
       required: true,
     },
-    { name: "discount", label: "Discount", type: "number", min: 0 },
+    {
+      name: "discount",
+      label: "Discount",
+      type: "number",
+      min: 0,
+      access: {
+        read: isAdmins,
+      },
+    },
+
     {
       name: "priceAfterDiscount",
       label: "Price After Discount",
@@ -85,12 +95,7 @@ export const Products: CollectionConfig = {
       required: true,
     },
 
-    {
-      name: "discountCode",
-      label: "Discount Code",
-      type: "text",
-      required: false,
-    },
+   
     {
       name: "reviewQuantity",
       label: "Review Quantity",

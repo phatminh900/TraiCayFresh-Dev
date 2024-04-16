@@ -63,6 +63,7 @@ export const getUserCartServer = async ({
     });
     return { cart: cartItems };
   } catch (error) {
+    console.log(error)
     throw new Error(GENERAL_ERROR_MESSAGE);
   }
 };

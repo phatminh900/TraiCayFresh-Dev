@@ -4,8 +4,8 @@ import { useState } from "react";
 
 const CheckoutNote = () => {
   const [notes, setNotes] = useState("");
-  return <div data-cy='note-box-checkout' className="mb-6">
-    <Textarea  placeholder='Thời gian nhận hàng mong muốn (...)' />;
+  return <div data-cy='note-box-checkout' className="mb-6 mt-6">
+    <Textarea value={notes} onChange={(e)=>setNotes(e.target.value)}  placeholder='Thời gian nhận hàng mong muốn (...)' />
   </div>
 };
 

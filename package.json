@@ -10,7 +10,8 @@
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:types",
     "lint": "next lint",
     "cypress:open": "cypress open",
-    "test:open": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts dotenv dotenv -e .env.test -- concurrently \"dotenv -e .env.test npm run dev\" \"cypress open\" "
+    "test:open": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts dotenv dotenv -e .env.test -- concurrently \"dotenv -e .env.test npm run dev\" \"cypress open\" ",
+    "test:run": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts dotenv dotenv -e .env.test -- concurrently \"dotenv -e .env.test npm run dev\"  "
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -53,6 +54,7 @@
     "nodemailer": "^6.9.13",
     "otp-generator": "^4.0.1",
     "payload": "^2.11.2",
+    "rate-limiter-flexible": "^5.0.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.2",

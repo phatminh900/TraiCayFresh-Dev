@@ -45,6 +45,16 @@ const start = async (): Promise<void> => {
   })
 
   const nextHandler = nextApp.getRequestHandler()
+  // const limiter = rateLimit({
+  //   windowMs:  30 * 1000, // 15 minutes
+  //   max: 3, // limit each IP to 100 requests per window
+  //   handler:(req,res)=>{
+  //     res.status(429).json({
+  //       message:"Too many requests try again later"
+  //     })
+  //   }
+  // });
+  // limit the rate limit for applying coupon
   app.use(
     '/api/trpc',
     trpcExpress.createExpressMiddleware({

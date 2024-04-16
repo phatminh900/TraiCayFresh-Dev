@@ -14,6 +14,11 @@ export type CartItems =
   | {
       product?: (string | null) | Product;
       quantity?: number | null;
+      isAppliedCoupon?: boolean | null;
+      priceAfterCoupon?: number | null;
+      totalPrice?: number | null;
+      discountAmount?: number | null;
+      shippingCost?: number | null;
       id?: string | null;
     }[]
   | null;
@@ -28,6 +33,7 @@ export interface Config {
     media: Media;
     otp: Otp;
     'customer-phone-number': CustomerPhoneNumber;
+    coupons: Coupon;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -75,7 +81,6 @@ export interface Product {
   thumbnailImg: string | Media;
   productImgs: (string | Media)[];
   benefitImg: string | Media;
-  discountCode?: string | null;
   reviewQuantity?: number | null;
   ratingAvarage?: number | null;
   relativeProducts?: (string | Product)[] | null;
@@ -236,6 +241,20 @@ export interface CustomerPhoneNumber {
   purchases?: (string | Product)[] | null;
   cancelOrders?: number | null;
   isTrusted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coupons".
+ */
+export interface Coupon {
+  id: string;
+  coupon?: string | null;
+  discount: number;
+  expiryDate: string;
+  usageCount?: number | null;
+  usageLimit?: number | null;
   updatedAt: string;
   createdAt: string;
 }

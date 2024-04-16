@@ -50,7 +50,7 @@ export const seedDb = async () => {
     await payload.create({
       collection: "customer-phone-number",
       data: {
-        phoneNumber: "0985215845",
+        phoneNumber: "84985215845",
         cart: {
           items: [
             { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },

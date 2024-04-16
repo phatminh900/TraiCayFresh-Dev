@@ -40,3 +40,9 @@ export const ADDRESS_MESSAGE={
 } as const
 
 
+export const COUPON_MESSAGE={
+    SUCCESS:"Đã áp dụng mã giảm giá",
+    INVALID:'Mã giảm giá không đúng vui lòng thử lại.',
+    EXPIRED:'Mã giảm giá đã hết hạn',
+    ALREADY_APPLIED:"Mã giảm giá đã được áp dụng cho tất cả sản phẩm trong giỏ hàng của bạn"
+}

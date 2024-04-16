@@ -122,6 +122,28 @@ export const Customers: CollectionConfig = {
                 step: 0.5,
               },
             },
+            {
+              name: "isAppliedCoupon",
+              type: "checkbox",
+              defaultValue: false,
+            },
+            {
+              name: "priceAfterCoupon",
+              type: "number",
+            },
+            {
+              name: "totalPrice",
+              type: "number",
+            },
+           
+            {
+              name: "discountAmount",
+              type: "number",
+            },
+            {
+              name: "shippingCost",
+              type: "number",
+            },
           ],
         },
         // If you wanted to maintain a 'created on'

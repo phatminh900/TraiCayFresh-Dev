@@ -13,7 +13,7 @@ interface CartSummaryProps extends IUser {}
 const CartSummary = ({ user }: CartSummaryProps) => {
   const cartItems = useCart((store) => store.items);
   const totalPrice = cartItems.reduce(
-    (total, item) => total + item.quantity * item.originalPrice,
+    (total, item) => total + item.quantity * (item?.priceAfterDiscount|| item.originalPrice),
     0
   );
   const [isOpenLoginRequest, setIsOpenLoginRequest] = useState(false);

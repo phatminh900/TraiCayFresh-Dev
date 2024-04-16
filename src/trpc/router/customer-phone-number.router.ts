@@ -27,11 +27,7 @@ const CartItemSchema = z.object({ product: z.string(), quantity: z.number() });
 const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const headerCookie = ctx.req.headers.cookie;
   const parsedCookie = cookie.parse(headerCookie || "");
-  console.log('----------why not work?')
-  console.log(headerCookie)
-  console.log(parsedCookie)
   const token = parsedCookie[COOKIE_USER_PHONE_NUMBER_TOKEN];
-  console.log(token)
   if (!token)
     throw new TRPCError({
       code: "UNAUTHORIZED",
@@ -52,7 +48,7 @@ const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
   return next({ ctx: { user } });
 });
 
-const customerPhoneNumberRouter = router({
+const CustomerPhoneNumberRouter = router({
   requestOtp: publicProcedure
     .input(PhoneValidationSchema)
     .mutation(async ({ input }) => {
@@ -389,4 +385,4 @@ const customerPhoneNumberRouter = router({
       }
     }),
 });
-export default customerPhoneNumberRouter;
+export default CustomerPhoneNumberRouter;

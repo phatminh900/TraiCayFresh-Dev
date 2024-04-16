@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ErrorMsg from "@/components/atoms/error-msg";
@@ -44,6 +44,7 @@ const LoginByPhoneNumber = ({
   const {
     register,
     handleSubmit,
+    setFocus,
     formState: { errors },
   } = useForm<IPhoneNumberValidation>({});
   const handleSendPhoneVerification = handleSubmit(({ phoneNumber }) => {
@@ -58,13 +59,16 @@ const LoginByPhoneNumber = ({
     }
     return;
   };
+  useEffect(()=>{
+    setFocus('phoneNumber')
+  },[setFocus])
   return (
     <form
       data-cy='login-by-phone-number-form'
       onSubmit={handleSendPhoneVerification}
       className='flex flex-col '
     >
-      <p className='text-lg font-bold text-center mb-2 md:mb-6'>{title}</p>
+      <p className='text-lg font-bold text-center mb-4 md:mb-6'>{title}</p>
       <Input
         type='tel'
         value={phoneNumber}

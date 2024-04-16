@@ -61,8 +61,8 @@ export function CartRequestLogin({
           <Button variant='outline'>Thanh toán</Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-2xl'>
-          <DialogHeader>
-            <DialogTitle className='text-lg font-semibold'>
+          <DialogHeader className="text-center">
+            <DialogTitle className='text-lg text-center font-semibold'>
               Bạn chưa đăng nhập
             </DialogTitle>
             <DialogDescription className='text-sm sm:text-base'>
@@ -85,11 +85,11 @@ export function CartRequestLogin({
       </DrawerTrigger>
       <DrawerContent style={{ height: "60vh" }}>
         <div className='mx-auto w-4/5 pb-6 max-w-sm h-[50vh]'>
-          <DrawerHeader className='text-center'>
-            <DrawerTitle className='text-lg font-semibold'>
+          <DrawerHeader >
+            <DrawerTitle className='text-lg text-center font-semibold'>
               Bạn chưa đăng nhập
             </DrawerTitle>
-            <DrawerDescription className='text-sm sm:text-base'>
+            <DrawerDescription className='text-sm text-center sm:text-base'>
               Vui lòng đăng nhập tại đây
             </DrawerDescription>
             {LinkLogin}
