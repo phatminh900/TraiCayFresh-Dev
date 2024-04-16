@@ -3,43 +3,18 @@ import PageSubTitle from "@/components/ui/page-subTitle";
 import { useCart } from "@/store/cart.store";
 import { IUser } from "@/types/common-types";
 import { formatPriceToVND } from "@/utils/util.utls";
-import { useEffect, useState } from "react";
 
-interface CheckoutDetailsProps extends IUser {
-  // total
-}
 
-const CheckoutDetails = ({ user }: CheckoutDetailsProps) => {
+
+const CheckoutDetails = () => {
   const cartItems = useCart((store) => store.items);
-  const totalPriceInit = user!.cart!.items!.reduce(
-    (total, item) => total + item.totalPrice!,
-    0
-  );
-  const priceAfterCouponInit = user!.cart!.items!.reduce((total, item) => {
-    if (item?.priceAfterCoupon) {
-      return total + item.priceAfterCoupon;
+  const cartTotalPrice=cartItems.reduce((total,item)=>total+(item.quantity*(item.priceAfterDiscount||item.originalPrice)),0)
+  const saleAmount=cartItems.reduce((total,item)=>{
+    if(item.discountAmount){
+      return total+(item.discountAmount*item.quantity*(item.priceAfterDiscount||item.originalPrice)/100)
     }
-    return total;
-  }, 0);
-  const [cartTotalPrice, setCartTotalPrice] = useState(totalPriceInit);
-  const [decreasedAmount, setDecreasedAmount] = useState(totalPriceInit);
-  useEffect(() => {
-    const totalPrice = cartItems.reduce(
-      (total, item) => total + (item.quantity*(item?.priceAfterDiscount||item.originalPrice)),
-      0
-    );
-    setCartTotalPrice(totalPrice);
-    if (priceAfterCouponInit) {
-      const decreasedAmount = cartItems.reduce((total, item) => {
-        if (item.discountAmount) {
-          return total + (totalPrice* item.discountAmount/100)
-        }
-        return total;
-      }, 0);
-      setDecreasedAmount(decreasedAmount);
-    }
-  }, [cartItems, priceAfterCouponInit]);
-  console.log(cartTotalPrice,priceAfterCouponInit)
+    return total
+  },0)
   return (
     <div>
       <PageSubTitle>Chi tiết thanh toán</PageSubTitle>
@@ -57,8 +32,8 @@ const CheckoutDetails = ({ user }: CheckoutDetailsProps) => {
         >
           <p className='font-bold'>Giảm giá</p>
           <p className='text-primary font-semibold'>
-            {decreasedAmount
-              ? `-${formatPriceToVND( decreasedAmount)}`
+            {saleAmount
+              ? `-${formatPriceToVND( saleAmount)}`
               : 0}
           </p>
         </div>
@@ -75,7 +50,7 @@ const CheckoutDetails = ({ user }: CheckoutDetailsProps) => {
         >
           <p className='font-bold text-lg'>Thành tiền</p>
           <p className='text-destructive font-bold text-lg'>
-            {formatPriceToVND(cartTotalPrice-decreasedAmount)}
+            {formatPriceToVND(cartTotalPrice-saleAmount)}
           </p>
         </div>
       </div>

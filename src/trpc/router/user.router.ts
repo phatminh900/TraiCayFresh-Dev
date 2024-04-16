@@ -11,7 +11,7 @@ import { CartItems, Product } from "../../payload/payload-types";
 import {  ADDRESS_MESSAGE, NAME_MESSAGE, PHONE_NUMBER_MESSAGE, USER_MESSAGE } from "../../constants/api-messages.constant";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 
-const CartItemSchema = z.object({ product: z.string(), quantity: z.number() });
+const CartItemSchema = z.object({ product: z.string(), quantity: z.number() ,coupon:z.string().nullable().optional(),discountAmount:z.number().nullable().optional(),isAppliedCoupon:z.boolean().nullable().optional(),shippingCost:z.number().nullable().optional()});
 
 const getUserProcedure = privateProcedure.use(async ({ ctx, next }) => {
   const { user } = ctx;
@@ -393,49 +393,11 @@ const UserRouter = router({
     .mutation(async ({ input, ctx }) => {
       const { user } = ctx;
       const payload = await getPayloadClient();
-      const cartInput: CartItems = input;
-      const populatedUserCart=(await payload.findByID({collection:'customers',depth:2,id:user.id})).cart
+      const updatedCart: CartItems = input;
+
       
-      let updatedCart=cartInput
-      const totalPrice=populatedUserCart?.items?.reduce((total,item)=>{
-        const product=item.product as Product
-        const quantity=item.quantity!
-        const productPrice=product?.priceAfterDiscount||product.originalPrice
-        return total+(productPrice*quantity)
-
-      },0)
-      const isInCartHasCouponCodeApplied=populatedUserCart?.items?.some(item=>item.isAppliedCoupon)
-      if(!isInCartHasCouponCodeApplied){
-       updatedCart=cartInput.map(item=>({...item,totalPrice}))
-
-      }
-      if(populatedUserCart&& isInCartHasCouponCodeApplied){
-        updatedCart =populatedUserCart.items!.map(
-          ({ product, quantity, isAppliedCoupon, priceAfterCoupon,discountAmount,...rest }) => {
-            const cartProduct = product! as Product;
-            if (isAppliedCoupon) {
-              const totalPrice =
-                (cartProduct.priceAfterDiscount || cartProduct.originalPrice) *
-                quantity!;
-              const priceAfterCoupon =
-                totalPrice - (discountAmount! * totalPrice) / 100;
-              return {
-                ...rest,
-                product: cartProduct.id,
-                quantity,
-                priceAfterCoupon,
-              };
-            }
-            return {
-              ...rest,
-              product: cartProduct.id,
-              quantity,
-              isAppliedCoupon,
-              priceAfterCoupon,
-            };
-          }
-        );
-      }
+      console.log(updatedCart)
+    
       // TODO: should i extend with the existing one or simply replace it
       try {
         await payload.update({

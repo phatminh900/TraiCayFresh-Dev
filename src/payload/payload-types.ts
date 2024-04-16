@@ -15,8 +15,7 @@ export type CartItems =
       product?: (string | null) | Product;
       quantity?: number | null;
       isAppliedCoupon?: boolean | null;
-      priceAfterCoupon?: number | null;
-      totalPrice?: number | null;
+      coupon?: string | null;
       discountAmount?: number | null;
       shippingCost?: number | null;
       id?: string | null;

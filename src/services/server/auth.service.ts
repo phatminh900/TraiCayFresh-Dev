@@ -28,7 +28,7 @@ export const getUserPhoneNumberProfile = async (token: string) => {
 export const getMeServer = async (token?: string) => {
     if (!token) return { ok: false };
     const data = await callApi<{ user: Customer }>({
-      url: `${API_ROUTES.me}?depth=2`,
+      url: `${API_ROUTES.me}`,
       credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -45,7 +45,6 @@ export const getUserServer = async (
     if (payloadToken) {
       const userData = await getMeServer(payloadToken);
       const user = userData.result?.user;
-  
       return user;
     }
   

@@ -107,21 +107,17 @@ const CouponRouter = router({
 
       // apply coupon
       const updatedUserCart: CartItems = user.cart!.items!.map(
-        ({ product, quantity, isAppliedCoupon, priceAfterCoupon,...rest }) => {
+        ({ product, quantity, isAppliedCoupon,...rest }) => {
           const cartProduct = product! as Product;
           if (!isAppliedCoupon) {
-            const totalPrice =
-              (cartProduct.priceAfterDiscount || cartProduct.originalPrice) *
-              quantity!;
-            const priceAfterCoupon =
-              totalPrice - (couponInDb.discount * totalPrice) / 100;
+            
             return {
               ...rest,
               product: cartProduct.id,
               discountAmount:couponInDb.discount,
+              coupon,
               quantity,
               isAppliedCoupon: true,
-              priceAfterCoupon,
             };
           }
           return {
@@ -129,7 +125,6 @@ const CouponRouter = router({
             product: cartProduct.id,
             quantity,
             isAppliedCoupon,
-            priceAfterCoupon,
           };
         }
       );
@@ -140,15 +135,15 @@ const CouponRouter = router({
             where: { id: { equals: user.id } },
             data: { cart: { items: updatedUserCart } },
           });
-          return { success: true, message: COUPON_MESSAGE.SUCCESS };
+          return { success: true, message: COUPON_MESSAGE.SUCCESS ,updatedUserCart};
         }
         if (type === USER_TYPE.phoneNumber) {
           await payload.update({
             collection: "customer-phone-number",
             where: { id: { equals: user.id } },
-            data: { cart: { items: [] } },
+            data: { cart: { items: updatedUserCart} },
           });
-          return { success: true, message: COUPON_MESSAGE.SUCCESS };
+          return { success: true, message: COUPON_MESSAGE.SUCCESS ,updatedUserCart};
         }
       } catch (error) {
         throwTrpcInternalServer(error);

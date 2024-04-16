@@ -49,6 +49,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
       if (cartItems.length) {
         const cartItemUser = cartItems.map((item) => ({
           product: item.id ,
+          ...item,
           quantity: item.quantity,
         })) 
         setUserCart(cartItemUser);

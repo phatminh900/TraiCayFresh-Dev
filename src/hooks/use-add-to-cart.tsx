@@ -57,17 +57,19 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
             ? // Make sure not over 15kg
               {
                 product: item.id,
+                ...item,
                 quantity:
                   item.quantity + product.quantity >=
                   MAXIMUN_KG_CAN_BUY_THROUGH_WEB
                     ? 15
                     : item.quantity + product.quantity,
               }
-            : { product: product.id, quantity: product.quantity }
+            : { product: product.id,...item, quantity: product.quantity }
         )
       : [
           ...cartItemsLocal.map((item) => ({
             product: item.id,
+            ...item,
             quantity: item.quantity,
           })),
           { product: product.id, quantity },

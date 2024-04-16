@@ -19,7 +19,7 @@ interface CartListProps extends IUser {
 
 let init = true;
 const CartList = ({ user, userCart }: CartListProps) => {
-  const router=useRouter()
+  const router = useRouter();
   const [isSetTheLocal, setIsSetTheLocal] = useState(false);
   const cartItemLocal = useCart((store) => store.items);
   // use ref to keep track the previous value
@@ -33,11 +33,12 @@ const CartList = ({ user, userCart }: CartListProps) => {
       { ids: cartItemIds },
       { enabled: false }
     );
-  const { mutate: setUserCart,isPending:isSettingUserCart } = trpc.user.setUserCart.useMutation({
-  });
-  const { mutate: setUserPhoneNumberCart,isPending:isSettingUserPhoneNumberCart } =
-    trpc.customerPhoneNumber.setUserCart.useMutation({
-    });
+  const { mutate: setUserCart, isPending: isSettingUserCart } =
+    trpc.user.setUserCart.useMutation({});
+  const {
+    mutate: setUserPhoneNumberCart,
+    isPending: isSettingUserPhoneNumberCart,
+  } = trpc.customerPhoneNumber.setUserCart.useMutation({});
   const updateCartItem = useCart((store) => store.updateItem);
   const setCartItem = useCart((store) => store.setItem);
   useEffect(() => {
@@ -55,16 +56,14 @@ const CartList = ({ user, userCart }: CartListProps) => {
             priceAfterDiscount,
           },
           quantity,
-          totalPrice,
           discountAmount,
+          coupon,
           isAppliedCoupon,
           shippingCost,
-          priceAfterCoupon,
         }) => ({
           id,
-          priceAfterCoupon,
-          totalPrice,
           isAppliedCoupon,
+          coupon,
           discountAmount,
           shippingCost,
           originalPrice,
@@ -174,20 +173,21 @@ const CartList = ({ user, userCart }: CartListProps) => {
       !isEqual(cartItemLocal, cartItemLocalRef.current) &&
       user
     ) {
+     const timer=setTimeout(()=>{
       const cartItemProducts = cartItemLocal.map((item) => ({
         product: item.id,
+        ...item,
         quantity: item.quantity,
       }));
-      const timer = setTimeout(() => {
-        // only last time being sent
-        if (user && "email" in user) {
-          setUserCart(cartItemProducts);
-          return;
-        }
-        setUserPhoneNumberCart(cartItemProducts);
-      }, 400);
-
-      return () => clearTimeout(timer);
+      if (user && "email" in user) {
+        console.log('go in here when update???')
+        console.log(cartItemProducts)
+        setUserCart(cartItemProducts);
+        return;
+      }
+      setUserPhoneNumberCart(cartItemProducts);
+     },100)
+     return ()=>clearTimeout(timer)
     }
   }, [cartItemLocal, isSetTheLocal, user, setUserCart, setUserPhoneNumberCart]);
 
@@ -196,10 +196,9 @@ const CartList = ({ user, userCart }: CartListProps) => {
     <ul data-cy='cart-list' className='mt-6 space-y-6'>
       {cartItems.map((item) => (
         <CartItem
-        isSettingQuantity={isSettingUserPhoneNumberCart||isSettingUserCart}
+          isMutatingUserCart={isSettingUserPhoneNumberCart || isSettingUserCart}
           key={item.id}
           id={item.id}
-          priceAfterCoupon={item.priceAfterCoupon}
           priceAfterDiscount={item.priceAfterDiscount}
           originalPrice={item.originalPrice}
           quantity={item.quantity}

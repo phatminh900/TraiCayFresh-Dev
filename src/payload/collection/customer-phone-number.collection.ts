@@ -70,14 +70,9 @@ export const CustomerPhoneNumber: CollectionConfig = {
               type: "checkbox",
               defaultValue: false,
             },
-            {
-              name: "priceAfterCoupon",
-              type: "number",
-            },
-            {
-              name: "totalPrice",
-              type: "number",
-            },
+          
+          
+            { name: "coupon", type: "text" },
             {
               name: "discountAmount",
               type: "number",

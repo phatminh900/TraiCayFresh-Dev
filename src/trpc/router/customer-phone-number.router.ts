@@ -22,7 +22,8 @@ import {
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { CartItems } from "../../payload/payload-types";
 
-const CartItemSchema = z.object({ product: z.string(), quantity: z.number() });
+const CartItemSchema = z.object({ product: z.string(), quantity: z.number() ,coupon:z.string().nullable().optional(),discountAmount:z.number().nullable().optional(),isAppliedCoupon:z.boolean().nullable().optional(),shippingCost:z.number().nullable().optional()});
+
 
 const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const headerCookie = ctx.req.headers.cookie;
@@ -365,6 +366,7 @@ const CustomerPhoneNumberRouter = router({
 
       const payload = await getPayloadClient();
       const updatedCart: CartItems = input;
+      console.log(updatedCart)
       // TODO: should i extend with the existing one or simply replace it
       try {
         await payload.update({

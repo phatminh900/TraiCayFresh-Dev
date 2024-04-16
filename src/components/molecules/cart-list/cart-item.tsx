@@ -17,11 +17,10 @@ import { IoAddOutline, IoRemoveOutline, IoTrashOutline } from "react-icons/io5";
 import { toast } from "sonner";
 
 interface CartItemProps {
-  isSettingQuantity:boolean
+  isMutatingUserCart:boolean
   src: Product["thumbnailImg"];
   title: string;
   originalPrice: number;
-  priceAfterCoupon?: number | null;
   quantity: number;
   priceAfterDiscount?: number | null;
   id: string;
@@ -29,13 +28,13 @@ interface CartItemProps {
 const CartItem = ({
   id,
   src,
-  priceAfterCoupon,
-  isSettingQuantity,
+  isMutatingUserCart,
   title,
   priceAfterDiscount,
   originalPrice,
   quantity,
 }: CartItemProps) => {
+  console.log(isMutatingUserCart)
   const router = useRouter();
   const currentPrice = priceAfterDiscount || originalPrice;
   const updateCartItem = useCart((state) => state.updateItem);
@@ -102,6 +101,7 @@ const CartItem = ({
           </div>
           <div className='flex flex-col items-end justify-between'>
             <button
+            disabled={isMutatingUserCart}
               data-cy='delete-btn-cart-item'
               onClick={handleRemoveCartItem}
               className='hover:scale-105'
@@ -110,7 +110,7 @@ const CartItem = ({
             </button>
             <div className='rounded-md border border-gray-200 h-[35px] flex items-center'>
               <button
-              disabled={isSettingQuantity}
+              disabled={isMutatingUserCart}
                 data-cy='decrease-quantity-btn-cart-item'
                 onClick={handleDecreaseQuantity}
                 className='border-r border-r-gray-400 p-1 flex h-full items-center justify-center hover:bg-gray-100'
@@ -119,7 +119,7 @@ const CartItem = ({
               </button>
               <p className='p-2 font-bold flex-1'>{curQuantity}KG</p>
               <button
-              disabled={isSettingQuantity}
+              disabled={isMutatingUserCart}
                 data-cy='increase-quantity-btn-cart-item'
                 onClick={handleIncreaseQuantity}
                 className='border-l border-l-gray-400 p-1 flex h-full items-center justify-center hover:bg-gray-100'
