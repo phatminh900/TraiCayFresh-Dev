@@ -32,15 +32,7 @@ export const Products: CollectionConfig = {
       min: 0,
       required: true,
     },
-    {
-      name: "discount",
-      label: "Discount",
-      type: "number",
-      min: 0,
-      access: {
-        read: isAdmins,
-      },
-    },
+   
 
     {
       name: "priceAfterDiscount",

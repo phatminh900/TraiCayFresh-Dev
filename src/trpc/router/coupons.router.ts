@@ -104,7 +104,7 @@ const CouponRouter = router({
           code: "CONFLICT",
           message: COUPON_MESSAGE.ALREADY_APPLIED,
         });
-
+        console.log('-----------send ')
       // apply coupon
       const updatedUserCart: CartItems = user.cart!.items!.map(
         ({ product, quantity, isAppliedCoupon,...rest }) => {
@@ -137,6 +137,8 @@ const CouponRouter = router({
           });
           return { success: true, message: COUPON_MESSAGE.SUCCESS ,updatedUserCart};
         }
+        console.log('--------------------------------')
+        console.log(type)
         if (type === USER_TYPE.phoneNumber) {
           await payload.update({
             collection: "customer-phone-number",
@@ -146,6 +148,8 @@ const CouponRouter = router({
           return { success: true, message: COUPON_MESSAGE.SUCCESS ,updatedUserCart};
         }
       } catch (error) {
+        console.log('---------------error')
+        console.log(error)
         throwTrpcInternalServer(error);
       }
     }),

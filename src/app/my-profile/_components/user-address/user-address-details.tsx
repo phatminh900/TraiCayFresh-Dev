@@ -102,7 +102,7 @@ const UserAddressDetails = ({
       await deleteUserAddress({ id }).catch(err=>handleTrpcErrors(err));;
       return;
     }
-    await deleteUserPhoneNumberAddress({ id });
+    await deleteUserPhoneNumberAddress({ id }).catch(err=>handleTrpcErrors(err));
   };
   const handleAdjustAddress = handleSubmit(
     async ({ ward, district, street }) => {

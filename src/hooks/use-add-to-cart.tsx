@@ -5,6 +5,7 @@ import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/constants.constant";
 import { CartProductItem, useCart } from "@/store/cart.store";
 import { trpc } from "@/trpc/trpc-client";
 import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
+import { handleTrpcErrors } from "@/utils/error.util";
 
 const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|CustomerPhoneNumber}) => {
     const router = useRouter();
@@ -77,11 +78,11 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
     if (user) {
       if('email' in user){
 
-        await setUserCart(updatedUserCart);
+        await setUserCart(updatedUserCart).catch(err=>handleTrpcErrors(err));
        
       }
       if(!('email'in user)){
-        await setUserPhoneNumberCart(updatedUserCart)
+        await setUserPhoneNumberCart(updatedUserCart).catch(err=>handleTrpcErrors(err))
        
       }
      

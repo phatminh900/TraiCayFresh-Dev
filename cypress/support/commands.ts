@@ -56,11 +56,12 @@ Cypress.Commands.add("getById", (selector, agr = []) => {
 
 Cypress.Commands.add("login", () => {
   cy.visit("/login");
-  cy.get("[data-cy='input-email-login']").type("testUserCart@gmail.com");
+  cy.get("[data-cy='input-email-login']").type("testuser1@gmail.com");
   cy.get("[data-cy='input-password-login']").type("test12345");
   cy.get("[data-cy='btn-submit-login']").click();
   cy.location("pathname").should("eq", "/");
 });
+
 
 Cypress.Commands.add("loginByPhoneNumber", () => {
   cy.visit("/login");
@@ -96,13 +97,19 @@ Cypress.Commands.add("loginByPhoneNumber", () => {
 });
 
 
+
+
 Cypress.Commands.add("loginByEmailHavingCartItem", () => {
   cy.visit("/login");
-  cy.get("[data-cy='input-email-login']").type("testuser1@gmail.com");
+  cy.get("[data-cy='input-email-login']").type("testUserCart@gmail.com");
   cy.get("[data-cy='input-password-login']").type("test12345");
   cy.get("[data-cy='btn-submit-login']").click();
   cy.location("pathname").should("eq", "/");
 });
+
+
+
+
 Cypress.Commands.add("loginByPhoneNumberHavingCartItem", () => {
   cy.visit("/login");
 

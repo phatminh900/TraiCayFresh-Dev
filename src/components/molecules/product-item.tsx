@@ -8,7 +8,7 @@ import { IoBagAddOutline } from "react-icons/io5";
 import { Button } from "../ui/button";
 import ReviewRating from "../ui/review-rating/review-rating";
 
-interface ProductItemProps  extends IUser{
+interface ProductItemProps extends IUser {
   type?: "horizontal" | "vertical";
   title: string;
   subTitle?: string;
@@ -17,7 +17,7 @@ interface ProductItemProps  extends IUser{
   href: string;
   originalPrice: number;
   discount?: number;
-  
+
   reviewQuantity?: number;
   priceAfterDiscount?: number | null;
   reviewRating?: number;
@@ -36,19 +36,27 @@ const ProductItem = ({
   reviewQuantity = 1,
   reviewRating = 5,
 }: ProductItemProps) => {
-  const { handleAddItemToCart, isAddingError, isAddingToCart,isAddingToUserPhoneNumberCart,isAddingUserCartNumberError } = useAddToCart({
-   product:{ id,
-    originalPrice,
-    quantity: 1,
-    thumbnailImg: src,
-    title,
-    discount,
-    priceAfterDiscount,},
-    user
+  const {
+    handleAddItemToCart,
+    isAddingError,
+    isAddingToCart,
+    isAddingToUserPhoneNumberCart,
+    isAddingUserCartNumberError,
+  } = useAddToCart({
+    product: {
+      id,
+      originalPrice,
+      quantity: 1,
+      thumbnailImg: src,
+      title,
+      discount,
+      priceAfterDiscount,
+    },
+    user,
   });
   let content = (
     <Link
-    data-cy='product-item-home'
+      data-cy='product-item-home'
       href={href}
       className='flex w-full h-[240px] shadow bg-white border rounded-lg'
     >
@@ -78,12 +86,17 @@ const ProductItem = ({
         <div className='flex flex-col gap-2 mt-auto sm:flex-row'>
           <Button className='flex-1'>Mua ngay</Button>
           <Button
-          data-cy='product-item-add-to-cart-home'
+            data-cy='product-item-add-to-cart-home'
             onClick={(e) => {
               e.preventDefault();
               handleAddItemToCart();
             }}
-            disabled={isAddingToCart || isAddingError||isAddingToUserPhoneNumberCart||isAddingUserCartNumberError}
+            disabled={
+              isAddingToCart ||
+              isAddingError ||
+              isAddingToUserPhoneNumberCart ||
+              isAddingUserCartNumberError
+            }
             className='flex-1'
             variant={"outline"}
           >

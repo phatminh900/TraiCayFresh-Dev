@@ -6,13 +6,14 @@ import { AnyTRPCClientTypes, TRPCError } from "@trpc/server";
 export const handleTrpcErrors = (
   error: TRPCClientErrorLike<AnyTRPCClientTypes>
 ) => {
+  console.error(error);
+  
   if (
     error.data?.code === "CONFLICT" ||
     error.data?.code === "BAD_REQUEST" ||
     error.data?.code === "NOT_FOUND"
   ) {
     toast.error(error.message);
-    console.log(error.message);
     toast.error(error.message);
 
     return;

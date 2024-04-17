@@ -80,7 +80,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
     setRequestCount((prevCount) => prevCount + 1);
 
     // Increase waiting time if user sends requests frequently
-    await sendOtpAgain({ phoneNumber: validPhoneNumber });
+    await sendOtpAgain({ phoneNumber: validPhoneNumber }).catch(err=>handleTrpcErrors(err));
     if (requestCount >= 5 && waitingTime < 60) {
         // if access 5 time increase 150 seconds
       setWaitingTime((prevTime) => prevTime + 150);

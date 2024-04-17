@@ -60,7 +60,7 @@ const ForgotPasswordForm = () => {
     },
   });
   const handleSendForgetPasswordRequest = handleSubmit(async ({ email }) => {
-    await checkEmailExists({ email });
+    await checkEmailExists({ email }).catch((err)=>handleTrpcErrors(err));
     forgotPassword(email);
   });
   const handleSendRequestAgain = async () => {

@@ -394,10 +394,6 @@ const UserRouter = router({
       const { user } = ctx;
       const payload = await getPayloadClient();
       const updatedCart: CartItems = input;
-
-      
-      console.log(updatedCart)
-    
       // TODO: should i extend with the existing one or simply replace it
       try {
         await payload.update({

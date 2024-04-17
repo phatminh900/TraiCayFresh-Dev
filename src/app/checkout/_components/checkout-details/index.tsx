@@ -1,56 +1,73 @@
 "use client";
 import PageSubTitle from "@/components/ui/page-subTitle";
+import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart.store";
 import { IUser } from "@/types/common-types";
 import { formatPriceToVND } from "@/utils/util.utls";
 
-
-
 const CheckoutDetails = () => {
   const cartItems = useCart((store) => store.items);
-  const cartTotalPrice=cartItems.reduce((total,item)=>total+(item.quantity*(item.priceAfterDiscount||item.originalPrice)),0)
-  const saleAmount=cartItems.reduce((total,item)=>{
-    if(item.discountAmount){
-      return total+(item.discountAmount*item.quantity*(item.priceAfterDiscount||item.originalPrice)/100)
+  const cartTotalPrice = cartItems.reduce(
+    (total, item) =>
+      total + item.quantity * (item.priceAfterDiscount || item.originalPrice),
+    0
+  );
+  const saleAmount = cartItems.reduce((total, item) => {
+    if (item.discountAmount) {
+      return (
+        total +
+        (item.discountAmount *
+          item.quantity *
+          (item.priceAfterDiscount || item.originalPrice)) /
+          100
+      );
     }
-    return total
-  },0)
+    return total;
+  }, 0);
   return (
     <div>
       <PageSubTitle>Chi tiết thanh toán</PageSubTitle>
-      <div data-cy='payment-details-box space-y-2'>
+      <div data-cy='payment-details-box' className='space-y-2'>
         <div
           data-cy='payment-detail'
           className='flex items-center justify-between'
         >
-          <p className='font-bold'>Tổng tiền thanh toán</p>
-          <p>{formatPriceToVND(cartTotalPrice)}</p>
+          <p data-cy='payment-detail-title' className='font-bold'>
+          Tổng tiền sản phẩm
+          </p>
+          <p data-cy='payment-detail-value'>{formatPriceToVND(cartTotalPrice)}</p>
         </div>
         <div
           data-cy='payment-detail'
           className='flex items-center justify-between'
         >
-          <p className='font-bold'>Giảm giá</p>
-          <p className='text-primary font-semibold'>
-            {saleAmount
-              ? `-${formatPriceToVND( saleAmount)}`
-              : 0}
+          <p data-cy='payment-detail-title' className='font-bold'>
+            Giảm giá
+          </p>
+          <p data-cy='payment-detail-value' className={cn('font-semibold',{
+            'text-primary':saleAmount
+          })}>
+            {saleAmount ? `-${formatPriceToVND(saleAmount)}` : 0}
           </p>
         </div>
         <div
           data-cy='payment-detail'
           className='flex items-center justify-between'
         >
-          <p className='font-bold'>Phí vận chuyển</p>
-          <p>0</p>
+          <p data-cy='payment-detail-title' className='font-bold'>
+            Phí vận chuyển
+          </p>
+          <p data-cy='payment-detail-value' >0</p>
         </div>
         <div
           data-cy='payment-detail'
           className='flex items-center justify-between mt-2'
         >
-          <p className='font-bold text-lg'>Thành tiền</p>
-          <p className='text-destructive font-bold text-lg'>
-            {formatPriceToVND(cartTotalPrice-saleAmount)}
+          <p data-cy='payment-detail-title' className='font-bold text-xl'>
+            Thành tiền
+          </p>
+          <p data-cy='payment-detail-value' className='text-destructive font-bold text-xl mt-2'>
+            {formatPriceToVND(cartTotalPrice - saleAmount)}
           </p>
         </div>
       </div>

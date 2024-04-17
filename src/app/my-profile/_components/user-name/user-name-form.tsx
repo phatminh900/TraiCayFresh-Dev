@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { IUser } from "@/types/common-types";
+import { handleTrpcSuccess } from "@/utils/success.util";
 interface UserNameFormProps extends IUser {
   onExpand: (state: boolean) => void;
 }
@@ -33,8 +34,7 @@ const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
         handleTrpcErrors(err);
       },
       onSuccess: (data) => {
-        router.refresh();
-        toast.success(data?.message);
+        handleTrpcSuccess(router,data?.message)
       },
     });
 
@@ -52,11 +52,11 @@ const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
     if (!user) return;
     // normal login by email
     if ("email" in user) {
-      await changeUserName({ name });
+      await changeUserName({ name }).catch(err=>handleTrpcErrors(err));
       onExpand(false);
     }
     if (!("email" in user)) {
-      await changeUserNamePhoneNumber({ name });
+      await changeUserNamePhoneNumber({ name }).catch(err=>handleTrpcErrors(err));
       onExpand(false);
     }
   });
@@ -64,7 +64,7 @@ const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
   const handleAddUserName = handleSubmit(async ({ name }) => {
     if (!name) return;
     if (name === user?.name) return;
-    await changeUserNamePhoneNumber({ name });
+    await changeUserNamePhoneNumber({ name }).catch(err=>handleTrpcErrors(err));;
     onExpand(false);
     router.refresh();
   });

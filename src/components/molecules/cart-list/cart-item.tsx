@@ -5,9 +5,8 @@ import {
   MAXIMUN_KG_CAN_BUY_THROUGH_WEB,
 } from "@/constants/constants.constant";
 import { APP_URL } from "@/constants/navigation.constant";
-import { cn } from "@/lib/utils";
 import type { Product } from "@/payload/payload-types";
-import { useCart } from "@/store/cart.store";
+import { CartProductItem, useCart } from "@/store/cart.store";
 import { formatPriceToVND, getImgUrlMedia } from "@/utils/util.utls";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,9 +16,10 @@ import { IoAddOutline, IoRemoveOutline, IoTrashOutline } from "react-icons/io5";
 import { toast } from "sonner";
 
 interface CartItemProps {
-  isMutatingUserCart:boolean
   src: Product["thumbnailImg"];
+  isMutatingUserCart: boolean;
   title: string;
+  onSetUserCart: (cartItems: (CartProductItem & { product: string })[]) => void;
   originalPrice: number;
   quantity: number;
   priceAfterDiscount?: number | null;
@@ -28,17 +28,19 @@ interface CartItemProps {
 const CartItem = ({
   id,
   src,
+  onSetUserCart,
   isMutatingUserCart,
   title,
   priceAfterDiscount,
   originalPrice,
   quantity,
 }: CartItemProps) => {
-  console.log(isMutatingUserCart)
   const router = useRouter();
   const currentPrice = priceAfterDiscount || originalPrice;
-  const updateCartItem = useCart((state) => state.updateItem);
-  const removeCartItem = useCart((state) => state.removeItem);
+
+  const cartItems = useCart((store) => store.items);
+  const updateCartItem = useCart((store) => store.updateItem);
+  const removeCartItem = useCart((store) => store.removeItem);
 
   const [curQuantity, setCurQuantity] = useState(quantity);
   const handleDecreaseQuantity = (e: MouseEvent) => {
@@ -47,6 +49,12 @@ const CartItem = ({
     const updatedQuantity = curQuantity - AMOUNT_PER_ADJUST_QUANTITY;
     setCurQuantity(updatedQuantity);
     updateCartItem({ id, data: { quantity: updatedQuantity } });
+    const cartItemProducts = cartItems.map((item) => (item.id===id?{
+      product: item.id,
+      ...item,
+      quantity: updatedQuantity,
+    }:{product:item.id,...item}));
+    onSetUserCart(cartItemProducts);
   };
   const handleIncreaseQuantity = (e: MouseEvent) => {
     e.preventDefault();
@@ -55,14 +63,29 @@ const CartItem = ({
     const updatedQuantity = curQuantity + AMOUNT_PER_ADJUST_QUANTITY;
     setCurQuantity(updatedQuantity);
     updateCartItem({ id, data: { quantity: updatedQuantity } });
+
+    const cartItemProducts = cartItems.map((item) => (item.id===id?{
+      product: item.id,
+      ...item,
+      quantity: updatedQuantity,
+    }:{product:item.id,...item}));
+    onSetUserCart(cartItemProducts);
+
   };
   const handleRemoveCartItem = (e: MouseEvent) => {
     e.preventDefault();
     removeCartItem(id);
     router.refresh();
+    const cartItemProducts = cartItems
+      .filter((item) => item.id !== id)
+      .map((item) => ({
+        product: item.id,
+        ...item,
+        quantity: item.quantity,
+      }));
+    onSetUserCart(cartItemProducts);
   };
   const imgSrc = getImgUrlMedia(src);
-
   // TODO: loading...
   return (
     <li
@@ -101,16 +124,16 @@ const CartItem = ({
           </div>
           <div className='flex flex-col items-end justify-between'>
             <button
-            disabled={isMutatingUserCart}
+              disabled={isMutatingUserCart}
               data-cy='delete-btn-cart-item'
               onClick={handleRemoveCartItem}
-              className='hover:scale-105'
+              className='hover:scale-105 disabled:cursor-progress'
             >
               <IoTrashOutline size={30} className='text-destructive' />
             </button>
             <div className='rounded-md border border-gray-200 h-[35px] flex items-center'>
               <button
-              disabled={isMutatingUserCart}
+                disabled={isMutatingUserCart}
                 data-cy='decrease-quantity-btn-cart-item'
                 onClick={handleDecreaseQuantity}
                 className='border-r border-r-gray-400 p-1 flex h-full items-center justify-center hover:bg-gray-100'
@@ -119,7 +142,7 @@ const CartItem = ({
               </button>
               <p className='p-2 font-bold flex-1'>{curQuantity}KG</p>
               <button
-              disabled={isMutatingUserCart}
+                disabled={isMutatingUserCart}
                 data-cy='increase-quantity-btn-cart-item'
                 onClick={handleIncreaseQuantity}
                 className='border-l border-l-gray-400 p-1 flex h-full items-center justify-center hover:bg-gray-100'

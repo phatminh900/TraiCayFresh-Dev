@@ -42,12 +42,11 @@ const UserAddressFormAdd = ({onExpand,user}:UserAddressFormAddProps) => {
     isSuccess: isSuccessUserPhoneNumber,
   } = trpc.customerPhoneNumber.addNewAddress.useMutation({
     onError: (err) => {
-      console.log(err)
       handleTrpcErrors(err)
       return 
     },
     onSuccess: (data) => {
-      handleTrpcSuccess(router, data.message);
+      handleTrpcSuccess(router, data?.message);
     },
   });
 
