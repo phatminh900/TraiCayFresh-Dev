@@ -7,30 +7,25 @@ describe("signUP", () => {
     cy.get('[data-cy="input-name-sign-up"]').should("have.focus");
   });
   it("shows errors for fields that are empty when submitting the form", () => {
-    cy.get('[data-cy="form-sign-up"] button[type="submit"]').click();
-
+    
+    cy.get('[data-cy="form-sign-up"]').find('button[type="submit"]').click({force:true});
     // name
     cy.get('[data-cy="input-name-sign-up"]').as("input-name");
-    cy.get("@input-name").should((input) => {
-      expect(input[0].className).to.contains("ring-red");
-    });
+    cy.get("@input-name").should('have.class','focus-visible:ring-red-500')
+    
     cy.get("@input-name")
       .next('[data-cy="form-error-msg"]')
       .should("have.text", "Tên phải từ 2 chữ cái");
     // email
     cy.get('[data-cy="input-email-sign-up"]').as("input-email");
-    cy.get("@input-email").should((input) => {
-      expect(input[0].className).to.contains("ring-red");
-    });
+    cy.get("@input-email").should('have.class','focus-visible:ring-red-500')
     cy.get("@input-email")
       .next('[data-cy="form-error-msg"]')
       .should("have.text", "Định dạng email không đúng");
 
     // // password
     cy.get('[data-cy="input-password-sign-up"]').as("input-password");
-    cy.get("@input-password").should((input) => {
-      expect(input[0].className).to.contains("ring-red");
-    });
+    cy.get("@input-password").should('have.class','focus-visible:ring-red-500')
     cy.get("@input-password")
       .parent()
       .next('[data-cy="form-error-msg"]')
@@ -40,9 +35,7 @@ describe("signUP", () => {
     cy.get('[data-cy="input-password-confirm-sign-up"]').as(
       "input-password-confirm"
     );
-    cy.get("@input-password-confirm").should((input) => {
-      expect(input[0].className).to.contains("ring-red");
-    });
+    cy.get("@input-password-confirm").should('have.class','focus-visible:ring-red-500')
     // pass word and password confirm siblings are another buttons
     cy.get("@input-password-confirm")
       .parent()
@@ -54,31 +47,17 @@ describe("signUP", () => {
     cy.get("@input-password").should((el) => {
       expect(el.attr("type")).to.be.eq("password");
     });
-    cy.get("@input-password").next('button[type="button"]').click();
-    cy.get("@input-password").should((el) => {
-      expect(el.attr("type")).to.be.eq("text");
-    });
+    cy.get("@input-password").next('button[type="button"]').click({force:true});
+    cy.get("@input-password").should('have.attr','type','text')
   });
   it("navigate to the login page if clicking already have account", () => {
-    cy.get("[data-cy='link-to-login-instead']").click();
+    cy.get("[data-cy='link-to-login-instead']").click({force:true});
     cy.location("pathname").should("eq", "/login");
   });
 
   //
-  it.only("shows error if the email user tries to register already exist", () => {
-    // cy.intercept("POST", "/api/trpc/auth.signUp?batch=1", {
-    //   statusCode: 409,
-    //   body: {
-    //     error: {
-    //       message: "Email này đã đăng kí rồi. Thử đăng nhập lại nhé.",
-    //       code: -32009,
-    //       data: {
-    //         code: "CONFLICT",
-    //         httpStatus: 409,
-    //       },
-    //     },
-    //   },
-    // }).as('signUpProcess');
+  it("shows error if the email user tries to register already exist", () => {
+   
     const testUserEmail='testuser1@gmail.com'
     cy.get('[data-cy="input-name-sign-up"]').as("input-name").type("Phat");
     cy.get('[data-cy="input-email-sign-up"]')
@@ -138,33 +117,29 @@ describe("login", () => {
     cy.get('[data-cy="input-email-login"]').should("have.focus");
   });
   it("shows errors for fields that are empty when submitting the form", () => {
-    cy.get("form").contains("Đăng nhập").click();
+    cy.get("form").find("button").contains("Đăng nhập").click({force:true});
 
     // email
     cy.get('[data-cy="input-email-login"]').as("input-email");
-    cy.get("@input-email").should((input) => {
-      expect(input[0].className).to.contains("ring-red");
-    });
+    cy.get("@input-email").should('have.class','focus-visible:ring-red-500')
     cy.get("@input-email")
       .next('[data-cy="form-error-msg"]')
       .should("have.text", "Định dạng email không đúng");
 
     // // password
     cy.get('[data-cy="input-password-login"]').as("input-password");
-    cy.get("@input-password").should((input) => {
-      expect(input[0].className).to.contains("ring-red");
-    });
+    cy.get("@input-password").should('have.class','focus-visible:ring-red-500')
     cy.get("@input-password")
       .parent()
       .next('[data-cy="form-error-msg"]')
       .should("have.text", "Mật khẩu phải có ít nhất 6 kí tự");
   });
   it("navigates to the forgot-password when clicking forget-password btn", () => {
-    cy.get("[data-cy='forgot-password-link']").click();
+    cy.get("[data-cy='forgot-password-link']").click({force:true});
     cy.location("pathname").should("eq", "/forgot-password");
   });
   it("navigates to the login page when clicking not have an account yet", () => {
-    cy.get("a").contains("Chưa có tài khoản. Đăng kí ngay →").click();
+    cy.get("a").contains("Chưa có tài khoản. Đăng kí ngay →").click({force:true});
 
     cy.location("pathname").should("eq", "/sign-up");
   });
@@ -215,17 +190,8 @@ describe("login", () => {
     cy.get("form").submit();
     cy.contains("Tài khoản hoặc mật khẩu sai.");
   });
-  it.only("login successfully it the credential was correct and navigate", () => {
-    // cy.intercept("POST", "/api/trpc/auth.login?batch=1", {
-    //   statusCode: 200,
-    //   body: {
-    //     result: {
-    //       data: {
-    //         success: true,
-    //       },
-    //     },
-    //   },
-    // });
+  it("login successfully it the credential was correct and navigate", () => {
+   
     const origin = "my-profile";
     cy.visit(`/login?origin=${origin}`);
     cy.get('[data-cy="input-email-login"]')
@@ -322,33 +288,29 @@ describe("forgot-password", () => {
   });
   it("shows only 2 path in the breadcrumbs link if i navigate from login", () => {
     cy.visit("/login");
-    cy.get("[data-cy='forgot-password-link']").click();
+    cy.get("[data-cy='forgot-password-link']").click({force:true});
   
     // the home page and  the login page the actual path url
     cy.get('[data-cy="breadcrumb-list-item"]').should("have.length", 3);
   });
-  // it.skip("shows errors for fields that are empty when submitting the form", () => {
+  // it("shows errors for fields that are empty when submitting the form", () => {
   //   cy.get('form').contains("Đăng nhập").click();
 
   //   // email
   //   cy.get('[data-cy="input-email-login"]').as("input-email");
-  //   cy.get("@input-email").should((input) => {
-  //     expect(input[0].className).to.contains("ring-red");
-  //   });
+  //   cy.get("@input-email").should('have.class','focus-visible:ring-red-500')
   //   cy.get('@input-email').next('[data-cy="form-error-msg"]').should('have.text',"Định dạng email không đúng")
 
   //   // // password
   //   cy.get('[data-cy="input-password-login"]').as("input-password");
-  //   cy.get("@input-password").should((input) => {
-  //     expect(input[0].className).to.contains("ring-red");
-  //   });
+  //   cy.get("@input-password").should('have.class','focus-visible:ring-red-500')
   //   cy.get('@input-password').parent().next('[data-cy="form-error-msg"]').should('have.text',"Mật khẩu phải có ít nhất 6 kí tự")
 
   // });
-  // it.skip('navigates to the forgot-password when clicking forget-password btn',()=>{
-  //   cy.get("[data-cy='forgot-password-link']").click()
-  //   cy.location('pathname').should('eq','/forgot-password')
-  // })
+  it.skip('navigates to the forgot-password when clicking forget-password btn',()=>{
+    cy.get("[data-cy='forgot-password-link']").click({force:true})
+    cy.location('pathname').should('eq','/forgot-password')
+  })
 });
 
 describe("verify-email", () => {

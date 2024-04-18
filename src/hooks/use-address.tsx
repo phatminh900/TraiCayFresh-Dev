@@ -1,5 +1,4 @@
 "use client";
-import { setValidPhoneNumber, transformPhoneNumberFrom84To0 } from "@/utils/util.utls";
 import {
   AddressValidationSchema,
   IAddressValidation,
@@ -37,24 +36,21 @@ const useAddress = (defaultValue?: IAddressValidation) => {
     [setValue]
   );
   const setPhoneNumberValue = useCallback(
-    (phoneNumber: string) => setValue("phoneNumber", '84386325681'),
+    (phoneNumber: string) => setValue("phoneNumber", phoneNumber),
     [setValue]
   );
   const nameValue = watch("name");
-  const phoneNumberValue = setValidPhoneNumber(watch("phoneNumber"));
-  console.log(phoneNumberValue)
+  const phoneNumberValue = (watch("phoneNumber"));
   const districtValue = watch("district");
   const wardValue = watch("ward");
   const streetValue = watch("street");
-  console.log(PhoneValidationSchema.safeParse('843').success)
   useEffect(() => {
     // reset if the value is set
     if (Object.keys(errors).length) {
       if (nameValue) {
         setError("name", { message: "" });
       }
-      if (phoneNumberValue==='84386325681') {
-        console.log('safe pass')
+      if (PhoneValidationSchema.safeParse({phoneNumber:phoneNumberValue})) {
         setError("phoneNumber", { message: "" });
       }
       if (districtValue) {

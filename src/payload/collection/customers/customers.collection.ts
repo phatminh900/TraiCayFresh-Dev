@@ -58,7 +58,7 @@ export const Customers: CollectionConfig = {
       name: "phoneNumber",
       label: "Phone Number",
       type: "array",
-      maxRows: 3,
+      maxRows: 5,
       fields: [
         {
           name: "isDefault",
@@ -77,7 +77,7 @@ export const Customers: CollectionConfig = {
       name: "address",
       label: "Address",
       type: "array",
-      maxRows: 3,
+      maxRows: 5,
       fields: [
         {
           name: "isDefault",

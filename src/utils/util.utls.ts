@@ -36,18 +36,5 @@ export const sortIsDefaultFirst = <
     }) as T[];
 };
 
-export const setValidPhoneNumber = (phoneNumber: string) => {
-  if (phoneNumber.startsWith("84")) {
-    return phoneNumber;
-  }
-  if (phoneNumber[0] === "0") {
-    return phoneNumber.replace("0", "84");
-  }
-  return phoneNumber;
-};
-export const transformPhoneNumberFrom84To0 = (phoneNumber: string) => {
-  if (phoneNumber.startsWith("84")) {
-    return phoneNumber.replace("84", "0");
-  }
-  return phoneNumber;
-};
+
+

@@ -10,3 +10,6 @@ export const EXPIRATION_TIME_OTP=120
 export const JWT_EXPIRATION_TIME='30 days'
 
 export const SUPPORTED_PROVINCE = "Hồ Chí Minh";
+
+export const MAX_PHONE_NUMBER_ALLOWED=5
+export const MAX_ADDRESS_ALLOWED=5

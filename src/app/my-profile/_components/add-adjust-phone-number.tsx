@@ -10,13 +10,14 @@ import { trpc } from "@/trpc/trpc-client";
 import ErrorMsg from "@/app/(auth)/_component/error-msg";
 import { cn } from "@/lib/utils";
 import { handleTrpcErrors } from "@/utils/error.util";
-import { setValidPhoneNumber, validateNumericInput } from "@/utils/util.utls";
+import {  validateNumericInput } from "@/utils/util.utls";
 import {
   IPhoneNumberValidation,
   PhoneValidationSchema,
 } from "@/validations/user-infor.valiator";
 import ButtonAdjust from "./atoms/button-adjust";
 import { handleTrpcSuccess } from "@/utils/success.util";
+import { MAX_PHONE_NUMBER_ALLOWED } from "@/constants/configs.constant";
 
 interface AddNewPhoneNumberProps<Type extends "add-new" | "adjust"> {
   type: Type | "add-new";
@@ -76,7 +77,7 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
       <>
         {type === "add-new" ? (
           <button
-            disabled={phoneCount >= 3}
+            disabled={phoneCount >= MAX_PHONE_NUMBER_ALLOWED}
             className={cn("text-primary mt-4", {
               "text-primary/70": phoneCount >= 3,
             })}
@@ -88,28 +89,27 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
           </button>
         ) : (
           <ButtonAdjust
-            disabled={phoneCount >= 3}
+            disabled={phoneCount >= MAX_PHONE_NUMBER_ALLOWED}
             onClick={() => {
               onExpand(index);
             }}
           />
         )}
 
-        {phoneCount >= 3 && (
+        {phoneCount >= MAX_PHONE_NUMBER_ALLOWED && (
           <p className='text-muted-foreground text-sm'>
-            Mỗi tài khoản chỉ được thêm 3 số điện thoại
+            Mỗi tài khoản chỉ được thêm {MAX_PHONE_NUMBER_ALLOWED} số điện thoại
           </p>
         )}
       </>
     );
   const handleAddNewPhoneNumber = handleSubmit(({ phoneNumber }) => {
-    const rightFormatPhoneNumber =setValidPhoneNumber(phoneNumber)
     if (type === "add-new") {
-      addNewPhoneNumber({ phoneNumber: rightFormatPhoneNumber });
+      addNewPhoneNumber({ phoneNumber: phoneNumber });
       return;
     }
     if (id) {
-      adjustPhoneNumber({ phoneNumber: rightFormatPhoneNumber, id });
+      adjustPhoneNumber({ phoneNumber: phoneNumber, id });
     }
   });
   return (
@@ -132,7 +132,7 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
             validate: (val) => {
 
               return (
-                PhoneValidationSchema.safeParse({ phoneNumber: setValidPhoneNumber(val) })
+                PhoneValidationSchema.safeParse({ phoneNumber: (val) })
                   .success || "Vui lòng nhập đúng số điện thoại"
               );
             },

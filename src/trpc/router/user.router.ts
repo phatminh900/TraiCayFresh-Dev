@@ -15,7 +15,6 @@ import {
   USER_MESSAGE,
 } from "../../constants/api-messages.constant";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
-import { transformPhoneNumberFrom84To0 } from "../../utils/util.utls";
 
 const CartItemSchema = z.object({
   product: z.string(),
@@ -48,6 +47,7 @@ const UserRouter = router({
       // TODO: add middleware for this
       const { user } = ctx;
       const { phoneNumber } = input;
+      console.log(phoneNumber)
       // to make sure have actual user
       const payload = await getPayloadClient();
 
@@ -183,10 +183,10 @@ const UserRouter = router({
       }
     }),
   deletePhoneNumber: getUserProcedure
-    .input(PhoneValidationSchema.extend({ id: z.string() }))
+    .input(z.object({id:z.string()}))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const { phoneNumber, id } = input;
+      const {  id } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
 
@@ -227,11 +227,11 @@ const UserRouter = router({
           },
         });
         return {
-          deletedPhoneNumber: phoneNumber,
+          deletedPhoneNumber: doesPhoneNumberExist.phoneNumber,
           success: true,
-          message: `Xóa số điện thoại ${transformPhoneNumberFrom84To0(
-            phoneNumber
-          )} thành công`,
+          message: `Xóa số điện thoại 
+            ${doesPhoneNumberExist.phoneNumber}
+           thành công`,
         };
       } catch (error) {
         throwTrpcInternalServer(error);

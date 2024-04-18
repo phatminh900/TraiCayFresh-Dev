@@ -94,7 +94,6 @@ const UserPhoneNumberDetails = ({
           <ButtonDelete
             onClick={() =>
               deletePhoneNumber({
-                phoneNumber: phoneNumber,
                 id: id!,
               })
             }

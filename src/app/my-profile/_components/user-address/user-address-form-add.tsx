@@ -5,7 +5,6 @@ import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
-import { setValidPhoneNumber } from "@/utils/util.utls";
 import { useRouter } from "next/navigation";
 
 interface UserAddressFormAddProps extends IUser {
@@ -14,7 +13,10 @@ interface UserAddressFormAddProps extends IUser {
 }
 
 const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
-  const defaultPhoneNumber = !("email" in user!) ? user!.phoneNumber! : "";
+  const defaultUserName = user?.name || "";
+  const defaultPhoneNumber = !("email" in user!)
+    ? user!.phoneNumber!
+    : user!.phoneNumber?.find((number) => number.isDefault)?.phoneNumber || "";
   const {
     errors,
     handleSubmit,
@@ -25,7 +27,7 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
     setWardValue,
   } = useAddress({
     district: "",
-    name: "",
+    name: defaultUserName,
     phoneNumber: defaultPhoneNumber,
     street: "",
     ward: "",
@@ -59,19 +61,19 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
       handleTrpcSuccess(router, data?.message);
     },
   });
-  console.log(errors)
   const handleAddNewAddress = handleSubmit(async (data) => {
-    console.log(data)
-    console.log('--------')
     // if email in user ==> login by email
-    // const validPhoneNumber=setValidPhoneNumber(data.phoneNumber)
-    // if (user && "email" in user) {
-    //   await addNewAddressUserEmail({...data,phoneNumber:validPhoneNumber}).catch((err) => handleTrpcErrors(err));
-    //   onExpand(false);
-    //   return;
-    // }
-    // await addNewAddressPhoneNumber({...data,phoneNumber:validPhoneNumber}).catch((err) => handleTrpcErrors(err));
-    // onExpand(false);
+    if (user && "email" in user) {
+      await addNewAddressUserEmail({ ...data }).catch((err) =>
+        handleTrpcErrors(err)
+      );
+      onExpand(false);
+      return;
+    }
+    await addNewAddressPhoneNumber({ ...data }).catch((err) =>
+      handleTrpcErrors(err)
+    );
+    onExpand(false);
   });
   return (
     <form
@@ -80,8 +82,10 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
       onSubmit={handleAddNewAddress}
     >
       <DeliveryAddress
+        phoneNumberList={"email" in user! ? user.phoneNumber : undefined}
         errors={errors}
         onSetName={setNameValue}
+        defaultUserName={defaultUserName}
         defaultUserPhoneNumber={defaultPhoneNumber}
         onSetPhoneNumber={setPhoneNumberValue}
         onSetDistrict={setDistrictValue}

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import Logout from "./_components/logout-btn";
 import UserName from "./_components/user-name";
-import UserPhoneNumber from "./_components/user-phone-number";
+import UserPhoneNumbers from "./_components/user-phone-numbers";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import UserAddress from "./_components/user-address";
 import UserEmail from "./_components/user-email";
@@ -31,7 +31,7 @@ const MyProfilePage = async () => {
         <PageSubTitle>Thông tin cá nhân</PageSubTitle>
         <UserEmail user={user} />
         <UserName user={user} />
-        <UserPhoneNumber phoneNumber={user.phoneNumber || []} />
+        <UserPhoneNumbers phoneNumber={user.phoneNumber || []} />
       </div>
       {/* Address */}
       <div className='space-y-2'>

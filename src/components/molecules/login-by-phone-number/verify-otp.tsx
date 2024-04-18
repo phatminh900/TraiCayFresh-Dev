@@ -14,7 +14,7 @@ import { useCart } from "@/store/cart.store";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
-import { setValidPhoneNumber, validateNumericInput } from "@/utils/util.utls";
+import {  validateNumericInput } from "@/utils/util.utls";
 
 
 interface VerifyOtpProps {
@@ -28,7 +28,6 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const validPhoneNumber = setValidPhoneNumber(phoneNumber)
   const [isSendingOptSuccess,setIsSendingOptSuccess]=useState(false)
   const handleChangeOtpInput = (input: string) => {
     if (validateNumericInput(input)) setOtp(input);
@@ -74,14 +73,14 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
   const handleVerifyOTP = (e: FormEvent) => {
     e.preventDefault();
     if (!otp || !validateNumericInput(otp)) return;
-    verifyOtp({ otp, phoneNumber: validPhoneNumber });
+    verifyOtp({ otp, phoneNumber });
   };
 
   const handleSendRequestAgain = async () => {
     setRequestCount((prevCount) => prevCount + 1);
 
     // Increase waiting time if user sends requests frequently
-    await sendOtpAgain({ phoneNumber: validPhoneNumber }).catch(err=>handleTrpcErrors(err));
+    await sendOtpAgain({ phoneNumber }).catch(err=>handleTrpcErrors(err));
     if (requestCount >= 5 && waitingTime < 60) {
         // if access 5 time increase 150 seconds
       setWaitingTime((prevTime) => prevTime + 150);

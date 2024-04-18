@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import ButtonAdjust from "../atoms/button-adjust";
 import ButtonDelete from "../atoms/button-delete";
 import ButtonSetDefault from "../atoms/button-set-default";
-import { setValidPhoneNumber, transformPhoneNumberFrom84To0 } from "@/utils/util.utls";
 
 interface UserAddressDetailsProps extends IUser {
   id: string;
@@ -119,7 +118,7 @@ const UserAddressDetails = ({
     );
   };
   const handleAdjustAddress = handleSubmit(async (data) => {
-    const validPhoneNumber=setValidPhoneNumber(data.phoneNumber)
+    const validPhoneNumber=(data.phoneNumber)
     if (user && "email" in user) {
 
       await adjustUserAddress({ id, ...data ,phoneNumber:validPhoneNumber}).catch((err) =>
@@ -141,7 +140,7 @@ const UserAddressDetails = ({
             <p data-cy='user-address-detail-info' className='font-bold'>
               {name}
               <span> - </span>
-              {transformPhoneNumberFrom84To0(phoneNumber)}
+              {(phoneNumber)}
             </p>
             <p data-cy='user-address-detail-address'>
               {address}
@@ -162,10 +161,10 @@ const UserAddressDetails = ({
       ) : (
         <div>
           <div data-cy='user-address-detail' className='flex flex-col gap-1 mb-2'>
-            <p className='font-bold'>
+            <p data-cy='user-address-detail-info' className='font-bold'>
               {name}
               <span> - </span>
-              {transformPhoneNumberFrom84To0(phoneNumber)}
+              {(phoneNumber)}
             </p>
             <p data-cy='user-address-detail-address'>
               {address}
@@ -209,6 +208,7 @@ const UserAddressDetails = ({
             <DeliveryAddress
               errors={errors}
               defaultUserName={name}
+              phoneNumberList={('email' in user!)?user.phoneNumber:undefined}
               onSetName={setNameValue}
               onSetPhoneNumber={setPhoneNumberValue}
               defaultUserPhoneNumber={(phoneNumber)}

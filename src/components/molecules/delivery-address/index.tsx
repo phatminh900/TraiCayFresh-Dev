@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { SUPPORTED_PROVINCE } from "@/constants/configs.constant";
 import UserNameAddress from "./user-name-address";
 import UserPhoneNumberAddress from "./user-phone-number-address";
+import { Customer } from "@/payload/payload-types";
 
 type IErrorFieldType =
   | FieldError
@@ -34,7 +35,9 @@ export interface DeliveryAddressProps {
   defaultUserPhoneNumber?: string;
   register: UseFormRegister<IAddressValidation>;
   errors: FieldErrors<IAddressValidation>;
+  phoneNumberList?:Customer['phoneNumber'],
   onSetDistrict: (district: string) => void;
+
   onSetName: (userName: string) => void;
   onSetPhoneNumber: (phoneNumber: string) => void;
   onSetWard: (ward: string) => void;
@@ -48,6 +51,7 @@ const DeliveryAddress = ({
   defaultDistrictValue,
   defaultUserName,
   defaultUserPhoneNumber,
+  phoneNumberList,
   defaultWardValue,
   onSetDistrict,
   errors,
@@ -90,6 +94,7 @@ const DeliveryAddress = ({
         </div>
        <div className="flex-1">
        <UserPhoneNumberAddress
+       phoneNumberList={phoneNumberList}
           onSetPhoneNumber={onSetPhoneNumber}
           defaultValue={defaultUserPhoneNumber}
         />
@@ -129,6 +134,7 @@ const DeliveryAddress = ({
           })}
         >
           <DistrictAddress
+          
             defaultValue={defaultDistrictValue}
             currentSelectedDistrictId={districtId}
             onSetDistrict={onSetDistrict}

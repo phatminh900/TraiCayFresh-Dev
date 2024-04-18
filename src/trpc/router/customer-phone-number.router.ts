@@ -284,8 +284,9 @@ const CustomerPhoneNumberRouter = router({
         (ad) =>
           ad.district === district && ad.ward === ward && ad.street === street && ad.phoneNumber===phoneNumber && ad.name===name
       );
-    
-   
+      console.log(user.address)
+      console.log(district,ward,phoneNumber,name,street)
+      
       // TODO: THINK IF SHOULD NOTIFY USER OR NOT
       if (isTheSameAddress) return {success:true,message:ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY};
 
