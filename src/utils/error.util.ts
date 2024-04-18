@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { ZodError } from "zod";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import { GENERAL_ERROR_MESSAGE } from "@/constants/app-message.constant";
 import type { TRPCClientErrorLike } from "@trpc/client";
 import { AnyTRPCClientTypes, TRPCError } from "@trpc/server";
 export const handleTrpcErrors = (

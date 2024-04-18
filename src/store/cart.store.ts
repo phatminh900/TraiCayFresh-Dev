@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Product } from "@/payload/payload-types";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/constants.constant";
+import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/configs.constant";
 
 
 export type CartProductDetails={ quantity: number,shippingCost?:number|null,discountAmount?:number|null,isAppliedCoupon?:boolean|null,coupon?:string|null }

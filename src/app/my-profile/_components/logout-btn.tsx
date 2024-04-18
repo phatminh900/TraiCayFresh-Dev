@@ -5,7 +5,7 @@ import { logOutUser } from "@/services/auth.service";
 import { toast } from "sonner";
 import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import { GENERAL_ERROR_MESSAGE } from "@/constants/app-message.constant";
 
 interface LogoutProps extends IUser {}
 const Logout = ({ user }: LogoutProps) => {

@@ -1,20 +1,20 @@
-import { RateLimiterMemory } from "rate-limiter-flexible";
-import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import cookie from "cookie";
 import { PayloadRequest } from "payload/types";
+import { RateLimiterMemory } from "rate-limiter-flexible";
+import { z } from "zod";
 import {
   AUTH_MESSAGE,
   COUPON_MESSAGE,
   USER_MESSAGE,
 } from "../../constants/api-messages.constant";
-import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/constants.constant";
+import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
 import { CartItems, Customer, Product } from "../../payload/payload-types";
 import { verifyToken } from "../../utils/auth.util";
-import { TRPCError } from "@trpc/server";
 
 import { getPayloadClient } from "../../payload/get-client-payload";
-import { publicProcedure, router } from "../trpc";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
+import { publicProcedure, router } from "../trpc";
 
 enum USER_TYPE {
   email = "email",
@@ -104,17 +104,16 @@ const CouponRouter = router({
           code: "CONFLICT",
           message: COUPON_MESSAGE.ALREADY_APPLIED,
         });
-        console.log('-----------send ')
+      console.log("-----------send ");
       // apply coupon
       const updatedUserCart: CartItems = user.cart!.items!.map(
-        ({ product, quantity, isAppliedCoupon,...rest }) => {
+        ({ product, quantity, isAppliedCoupon, ...rest }) => {
           const cartProduct = product! as Product;
           if (!isAppliedCoupon) {
-            
             return {
               ...rest,
               product: cartProduct.id,
-              discountAmount:couponInDb.discount,
+              discountAmount: couponInDb.discount,
               coupon,
               quantity,
               isAppliedCoupon: true,
@@ -135,21 +134,27 @@ const CouponRouter = router({
             where: { id: { equals: user.id } },
             data: { cart: { items: updatedUserCart } },
           });
-          return { success: true, message: COUPON_MESSAGE.SUCCESS ,updatedUserCart};
+          return {
+            success: true,
+            message: COUPON_MESSAGE.SUCCESS,
+            updatedUserCart,
+          };
         }
-        console.log('--------------------------------')
-        console.log(type)
         if (type === USER_TYPE.phoneNumber) {
           await payload.update({
             collection: "customer-phone-number",
             where: { id: { equals: user.id } },
-            data: { cart: { items: updatedUserCart} },
+            data: { cart: { items: updatedUserCart } },
           });
-          return { success: true, message: COUPON_MESSAGE.SUCCESS ,updatedUserCart};
+          return {
+            success: true,
+            message: COUPON_MESSAGE.SUCCESS,
+            updatedUserCart,
+          };
         }
       } catch (error) {
-        console.log('---------------error')
-        console.log(error)
+        console.log("---------------error");
+        console.log(error);
         throwTrpcInternalServer(error);
       }
     }),

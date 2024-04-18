@@ -10,7 +10,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useState ,memo} from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
 import {
@@ -20,11 +20,11 @@ import {
 } from "@/components/ui/popover";
 import { getHcmDistricts } from "@/services/address.service";
 import { IDistrict } from "@/types/service.type";
+import { DeliveryAddressProps } from ".";
 
-interface DistrictAddressProps {
+interface DistrictAddressProps extends Pick<DeliveryAddressProps,'onSetDistrict'> {
   defaultValue?:string;
   currentSelectedDistrictId: number | null;
-  onSetDistrict: (district: string) => void;
   onSetDistrictId: (id: number) => void;
 }
 function DistrictAddress({
@@ -124,4 +124,4 @@ function DistrictAddress({
   );
 }
 
-export default DistrictAddress;
+export default memo(DistrictAddress);

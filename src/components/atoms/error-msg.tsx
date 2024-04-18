@@ -11,7 +11,7 @@ const ErrorMsg = ({className, msg, field }: ErrorMsgProps) => {
     <p
       data-cy='form-error-msg'
       className={cn(
-        "whitespace-nowrap text-sm font-semi-bold text-red-500 mt-2",
+        "text-sm font-semi-bold text-red-500 mt-2",
         className
       )}
     >

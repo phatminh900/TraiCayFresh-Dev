@@ -10,7 +10,7 @@ import { trpc } from "@/trpc/trpc-client";
 import ErrorMsg from "@/app/(auth)/_component/error-msg";
 import { cn } from "@/lib/utils";
 import { handleTrpcErrors } from "@/utils/error.util";
-import { validateNumericInput } from "@/utils/util.utls";
+import { setValidPhoneNumber, validateNumericInput } from "@/utils/util.utls";
 import {
   IPhoneNumberValidation,
   PhoneValidationSchema,
@@ -103,7 +103,7 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
       </>
     );
   const handleAddNewPhoneNumber = handleSubmit(({ phoneNumber }) => {
-    const rightFormatPhoneNumber = phoneNumber.replace("0", "84");
+    const rightFormatPhoneNumber =setValidPhoneNumber(phoneNumber)
     if (type === "add-new") {
       addNewPhoneNumber({ phoneNumber: rightFormatPhoneNumber });
       return;
@@ -130,10 +130,9 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
               validateIsNumberEntered(e);
             },
             validate: (val) => {
-              const replace0To84 = val.replace("0", "84");
 
               return (
-                PhoneValidationSchema.safeParse({ phoneNumber: replace0To84 })
+                PhoneValidationSchema.safeParse({ phoneNumber: setValidPhoneNumber(val) })
                   .success || "Vui lòng nhập đúng số điện thoại"
               );
             },

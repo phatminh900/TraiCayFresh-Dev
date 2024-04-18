@@ -3,6 +3,7 @@ import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
 import { useState } from "react";
 import AddAdjustPhoneNumber from "../add-adjust-phone-number";
 import UserPhoneNumberList from "./user-phone-number-list";
+import { transformPhoneNumberFrom84To0 } from "@/utils/util.utls";
 
 export interface UserPhoneNumberProps {
   phoneNumber: CustomerPhoneNumber["phoneNumber"] | Customer["phoneNumber"];
@@ -23,7 +24,7 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
           <div className='flex gap'>
             <p className='min-w-[50px]'>SĐT</p>
             {typeof phoneNumber === "string" && (
-              <p className='font-bold'>{phoneNumber.replace("84", "0")}</p>
+              <p className='font-bold'>{transformPhoneNumberFrom84To0(phoneNumber)}</p>
             )}
             {Array.isArray(phoneNumber) && (
               <UserPhoneNumberList expandedIndex={expandedIndex} onExpand={handleExpandIndex} phoneNumber={phoneNumber}/>

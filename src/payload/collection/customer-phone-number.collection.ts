@@ -34,10 +34,24 @@ export const CustomerPhoneNumber: CollectionConfig = {
           label: "Is Default Address",
           type: "checkbox",
         },
-        {name:"district",label:"District",type:'text',required:true},
-        {name:"ward",label:"Ward",type:'text',required:true},
+        { name: "district", label: "District", type: "text", required: true },
+        { name: "ward", label: "Ward", type: "text", required: true },
 
-        {name:"street",label:"Street",type:'text',required:true},
+        { name: "street", label: "Street", type: "text", required: true },
+        { name: "name", label: "Name", type: "text", required: true },
+        {
+          name: "phoneNumber",
+          label: "Phone Number",
+          type: "text",
+          required: true,
+        },
+
+        // {
+        //   name: "address",
+        //   label: "Address",
+        //   type: "text",
+        //   required: true,
+        // },
       ],
     },
     {

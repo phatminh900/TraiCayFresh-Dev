@@ -67,7 +67,6 @@ export interface Product {
   _inStock?: boolean | null;
   priority: boolean;
   originalPrice: number;
-  discount?: number | null;
   priceAfterDiscount?: number | null;
   quantityOptions?:
     | {
@@ -170,6 +169,8 @@ export interface Customer {
         district: string;
         ward: string;
         street: string;
+        name: string;
+        phoneNumber: string;
         id?: string | null;
       }[]
     | null;
@@ -231,6 +232,8 @@ export interface CustomerPhoneNumber {
         district: string;
         ward: string;
         street: string;
+        name: string;
+        phoneNumber: string;
         id?: string | null;
       }[]
     | null;

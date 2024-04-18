@@ -7,7 +7,7 @@ import { getUserServer } from "@/services/server/auth.service";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Logout from "./_components/logout-btn";
-import UserName from './_components/user-name'
+import UserName from "./_components/user-name";
 import UserPhoneNumber from "./_components/user-phone-number";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import UserAddress from "./_components/user-address";
@@ -28,17 +28,15 @@ const MyProfilePage = async () => {
       <PageTitle>Quản lý tài khoản</PageTitle>
       {/* General information */}
       <div className='space-y-2 mb-4'>
-        <PageSubTitle>
-        Thông tin cá nhân
-        </PageSubTitle>
-      <UserEmail user={user}/>
+        <PageSubTitle>Thông tin cá nhân</PageSubTitle>
+        <UserEmail user={user} />
         <UserName user={user} />
         <UserPhoneNumber phoneNumber={user.phoneNumber || []} />
       </div>
       {/* Address */}
       <div className='space-y-2'>
-       <PageSubTitle>Địa chỉ nhận hàng</PageSubTitle>
-       <UserAddress  user={user}/>
+        <PageSubTitle>Địa chỉ nhận hàng</PageSubTitle>
+        <UserAddress user={user} />
       </div>
       {/* actions */}
       <div className='space-y-8 mt-12 flex flex-col items-center'>

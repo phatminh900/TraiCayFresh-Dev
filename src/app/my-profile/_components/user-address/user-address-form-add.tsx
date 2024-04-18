@@ -1,26 +1,37 @@
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import DeliveryAddress from "@/components/molecules/delivery-address/delivery-address";
+import DeliveryAddress from "@/components/molecules/delivery-address";
 import { Button } from "@/components/ui/button";
 import useAddress from "@/hooks/use-address";
 import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
+import { setValidPhoneNumber } from "@/utils/util.utls";
+import { useRouter } from "next/navigation";
 
-
-interface UserAddressFormAddProps extends IUser{
-  isExpanded:boolean,
-  onExpand:(state:boolean)=>void
-
+interface UserAddressFormAddProps extends IUser {
+  isExpanded: boolean;
+  onExpand: (state: boolean) => void;
 }
 
-const UserAddressFormAdd = ({onExpand,user}:UserAddressFormAddProps) => {
-  const { errors, handleSubmit, register, setDistrictValue, setWardValue } =
-    useAddress();
+const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
+  const defaultPhoneNumber = !("email" in user!) ? user!.phoneNumber! : "";
+  const {
+    errors,
+    handleSubmit,
+    register,
+    setDistrictValue,
+    setNameValue,
+    setPhoneNumberValue,
+    setWardValue,
+  } = useAddress({
+    district: "",
+    name: "",
+    phoneNumber: defaultPhoneNumber,
+    street: "",
+    ward: "",
+  });
 
   const router = useRouter();
-
   // user
   const {
     mutateAsync: addNewAddressUserEmail,
@@ -29,10 +40,9 @@ const UserAddressFormAdd = ({onExpand,user}:UserAddressFormAddProps) => {
   } = trpc.user.addNewAddress.useMutation({
     onError: (err) => handleTrpcErrors(err),
     onSuccess: (data) => {
-     handleTrpcSuccess(router,data?.message)
+      handleTrpcSuccess(router, data?.message);
     },
   });
- 
 
   // end user -----
   // customer phonenumber
@@ -42,69 +52,71 @@ const UserAddressFormAdd = ({onExpand,user}:UserAddressFormAddProps) => {
     isSuccess: isSuccessUserPhoneNumber,
   } = trpc.customerPhoneNumber.addNewAddress.useMutation({
     onError: (err) => {
-      handleTrpcErrors(err)
-      return 
+      handleTrpcErrors(err);
+      return;
     },
     onSuccess: (data) => {
       handleTrpcSuccess(router, data?.message);
     },
   });
-
-
-
-
-  const handleAddNewAddress = handleSubmit(
-    async ({ district, street, ward }) => {
-      // if email in user ==> login by email
-      const address = { district, street, ward };
-
-      if (user && "email" in user) {
-        await addNewAddressUserEmail(address).catch(err=>handleTrpcErrors(err));
-        onExpand(false);
-        return;
-      }
-      await addNewAddressPhoneNumber(address).catch(err=>handleTrpcErrors(err));
-      onExpand(false);
-    }
-  );
+  console.log(errors)
+  const handleAddNewAddress = handleSubmit(async (data) => {
+    console.log(data)
+    console.log('--------')
+    // if email in user ==> login by email
+    // const validPhoneNumber=setValidPhoneNumber(data.phoneNumber)
+    // if (user && "email" in user) {
+    //   await addNewAddressUserEmail({...data,phoneNumber:validPhoneNumber}).catch((err) => handleTrpcErrors(err));
+    //   onExpand(false);
+    //   return;
+    // }
+    // await addNewAddressPhoneNumber({...data,phoneNumber:validPhoneNumber}).catch((err) => handleTrpcErrors(err));
+    // onExpand(false);
+  });
   return (
-    <form data-cy='user-address-form-my-profile' className='mt-2' onSubmit={handleAddNewAddress}>
-    <DeliveryAddress
-      errors={errors}
-      onSetDistrict={setDistrictValue}
-      onSetWard={setWardValue}
-      register={register}
-    />
-    <div className='mt-4 flex items-center w-full gap-4'>
-      <Button
-      data-cy='user-address-add-btn-my-profile'
-        disabled={
-          isAddingNewAddressUserEmail ||
-          isAddingNewAddressPhoneNumber ||
-          isSuccessUserEmail ||
-          isSuccessUserPhoneNumber
-        }
-        className='flex-1'
-      >
-        {isAddingNewAddressUserEmail || isAddingNewAddressPhoneNumber
-          ? "Đang cập nhật địa chỉ"
-          : "Xác nhận"}
-      </Button>
-      <Button
-      data-cy='user-address-cancel-btn-my-profile'
+    <form
+      data-cy='user-address-form-my-profile'
+      className='mt-2'
+      onSubmit={handleAddNewAddress}
+    >
+      <DeliveryAddress
+        errors={errors}
+        onSetName={setNameValue}
+        defaultUserPhoneNumber={defaultPhoneNumber}
+        onSetPhoneNumber={setPhoneNumberValue}
+        onSetDistrict={setDistrictValue}
+        onSetWard={setWardValue}
+        register={register}
+      />
+      <div className='mt-4 flex items-center w-full gap-4'>
+        <Button
+          data-cy='user-address-add-btn-my-profile'
+          disabled={
+            isAddingNewAddressUserEmail ||
+            isAddingNewAddressPhoneNumber ||
+            isSuccessUserEmail ||
+            isSuccessUserPhoneNumber
+          }
+          className='flex-1'
+        >
+          {isAddingNewAddressUserEmail || isAddingNewAddressPhoneNumber
+            ? "Đang cập nhật địa chỉ"
+            : "Xác nhận"}
+        </Button>
+        <Button
+          data-cy='user-address-cancel-btn-my-profile'
+          onClick={() => {
+            onExpand(false);
+          }}
+          type='button'
+          className='flex-1'
+          variant='destructive'
+        >
+          Hủy
+        </Button>
+      </div>
+    </form>
+  );
+};
 
-        onClick={() => {
-          onExpand(false);
-        }}
-        type='button'
-        className='flex-1'
-        variant='destructive'
-      >
-        Hủy
-      </Button>
-    </div>
-  </form>
-  )
-}
-
-export default UserAddressFormAdd
+export default UserAddressFormAdd;

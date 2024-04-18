@@ -1,18 +1,9 @@
-import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
-import type { NextRequest } from "next/server";
 import type { UserCart } from "@/app/cart/types/user-cart.type";
-import { getMeServer, getUserPhoneNumberProfile } from "./auth.service";
-import { getUserCartServer } from "../payload.service";
-import {
-  COOKIE_PAYLOAD_TOKEN,
-  COOKIE_USER_PHONE_NUMBER_TOKEN,
-} from "@/constants/constants.constant";
 import { getPayloadClient } from "@/payload/get-client-payload";
 import {
-  CartItems,
   Customer,
   CustomerPhoneNumber,
-  Product,
+  Product
 } from "@/payload/payload-types";
 
 export const getCartOfUser = async (

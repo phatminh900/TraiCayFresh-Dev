@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
-import { validateNumericInput } from "@/utils/util.utls";
+import { setValidPhoneNumber, validateNumericInput } from "@/utils/util.utls";
 import {
   IPhoneNumberValidation,
   PhoneValidationSchema,
@@ -48,8 +48,7 @@ const LoginByPhoneNumber = ({
     formState: { errors },
   } = useForm<IPhoneNumberValidation>({});
   const handleSendPhoneVerification = handleSubmit(({ phoneNumber }) => {
-    const validPhoneNumber = phoneNumber.replace("0", "84");
-    loginByPhoneNumber({ phoneNumber: validPhoneNumber });
+    loginByPhoneNumber({ phoneNumber: setValidPhoneNumber(phoneNumber) });
   });
   const validateIsNumberEntered = (e: ChangeEvent<HTMLInputElement>) => {
     if (validateNumericInput(e.target.value)) {

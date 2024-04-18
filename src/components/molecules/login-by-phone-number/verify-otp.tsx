@@ -3,17 +3,19 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import OTPInput from "react-otp-input";
 import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import PageSubTitle from "@/components/ui/page-subTitle";
+import { OTP_MESSAGE } from "@/constants/api-messages.constant";
+import { TIME_TO_SEND_OTP_AGAIN } from "@/constants/configs.constant";
 import { APP_URL } from "@/constants/navigation.constant";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/store/cart.store";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
-import { validateNumericInput } from "@/utils/util.utls";
-import { useCart } from "@/store/cart.store";
+import { handleTrpcSuccess } from "@/utils/success.util";
+import { setValidPhoneNumber, validateNumericInput } from "@/utils/util.utls";
 
-
-const TIME_TO_SEND_OTP_AGAIN = 90;
 
 interface VerifyOtpProps {
   phoneNumber: string;
@@ -26,7 +28,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const validPhoneNumber = phoneNumber.replace("0", "84");
+  const validPhoneNumber = setValidPhoneNumber(phoneNumber)
   const [isSendingOptSuccess,setIsSendingOptSuccess]=useState(false)
   const handleChangeOtpInput = (input: string) => {
     if (validateNumericInput(input)) setOtp(input);
@@ -42,10 +44,9 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
     onError: (err) => {
       handleTrpcErrors(err);
     },
-    onSuccess: () => {
-      
-      toast.success("Xác thực thành công");
-      router.refresh();
+    onSuccess: (data) => {
+        handleTrpcSuccess(router,data?.message)
+   
       if (cartItems.length) {
         const cartItemUser = cartItems.map((item) => ({
           product: item.id ,
@@ -63,7 +64,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
     trpc.customerPhoneNumber.requestOtp.useMutation({
       onError: (err) => handleTrpcErrors(err),
       onSuccess: () => {
-        toast.success("OTP đã được gửi lại vào số điện thoại của bạn");
+        toast.success(OTP_MESSAGE.SUCCESS_SENT_OTP_AGAIN);
         setDisabled(false);
       },
     });

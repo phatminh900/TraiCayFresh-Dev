@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
+import { GENERAL_ERROR_MESSAGE } from "@/constants/app-message.constant";
 import { cn } from "@/lib/utils";
 import { forgotPassword as forgotPasswordApi } from "@/services/auth.service";
 import { trpc } from "@/trpc/trpc-client";

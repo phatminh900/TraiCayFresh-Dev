@@ -7,12 +7,15 @@ import UserAddressFormAdd from "./user-address-form-add";
 
 interface UserAddressProps extends IUser {}
 const UserAddress = ({ user }: UserAddressProps) => {
-  
   const [isExpanded, setIsExpanded] = useState(false);
-  const handleExpand=(state:boolean)=>setIsExpanded(state)
+  const handleExpand = (state: boolean) => setIsExpanded(state);
   return (
     <div>
-      <UserAddressDetailList isExpanded={isExpanded} onExpand={handleExpand} user={user} />
+      <UserAddressDetailList
+        isExpanded={isExpanded}
+        onExpand={handleExpand}
+        user={user}
+      />
       <div className='flex flex-col gap-2'>
         {!isExpanded && (
           <button
@@ -28,10 +31,14 @@ const UserAddress = ({ user }: UserAddressProps) => {
             {Boolean(user?.address?.length) && (
               <PageSubTitle className='mt-6 mb-0'>
                 {" "}
-                Thêm địa chỉ mới
+                Thêm địa chỉ nhận hàng mới
               </PageSubTitle>
             )}
-         <UserAddressFormAdd isExpanded={isExpanded} user={user} onExpand={handleExpand}/>
+            <UserAddressFormAdd
+              isExpanded={isExpanded}
+              user={user}
+              onExpand={handleExpand}
+            />
           </>
         )}
       </div>

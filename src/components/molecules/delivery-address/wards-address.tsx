@@ -19,15 +19,19 @@ import {
 } from "@/components/ui/popover";
 import { getHcmWards } from "@/services/address.service";
 import { IWard } from "@/types/service.type";
+import  type{ DeliveryAddressProps } from ".";
 
-interface WardAddressProps {
-  defaultValue?:string
+interface WardAddressProps extends Pick<DeliveryAddressProps,'onSetWard'> {
+  defaultValue?: string;
   districtId: number | null;
-  onSetWard: (ward: string) => void;
 }
 
-const WardAddress = ({ onSetWard, districtId,defaultValue }: WardAddressProps) => {
-  const [value, setValue] = useState(defaultValue||'');
+const WardAddress = ({
+  onSetWard,
+  districtId,
+  defaultValue,
+}: WardAddressProps) => {
+  const [value, setValue] = useState(defaultValue || "");
   const [open, setOpen] = useState(false);
   const [wards, setWards] = useState<IWard[]>([]);
   // when change the district reset the value
@@ -41,25 +45,25 @@ const WardAddress = ({ onSetWard, districtId,defaultValue }: WardAddressProps) =
         Number.isNaN(Number(d.WardName))
       );
       setWards(validWards || []);
-      if(defaultValue){
-        setValue(defaultValue)
+      if (defaultValue) {
+        setValue(defaultValue);
       }
     };
     if (districtId) {
       getWards(districtId);
     }
-  }, [districtId,defaultValue]);
+  }, [districtId, defaultValue]);
   useEffect(() => {
     if (!isDistrictChange) {
       setValue("");
       onSetWard("");
     }
   }, [isDistrictChange, onSetWard]);
-  useEffect(()=>{
-    if(defaultValue){
-      onSetWard(defaultValue)
+  useEffect(() => {
+    if (defaultValue) {
+      onSetWard(defaultValue);
     }
-  },[defaultValue,onSetWard])
+  }, [defaultValue, onSetWard]);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

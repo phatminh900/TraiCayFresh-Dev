@@ -12,11 +12,12 @@ import {
 import { SignUpCredentialSchema } from "../../validations/auth.validation";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { signToken, verifyToken } from "../../utils/auth.util";
-import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/constants.constant";
+import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
 import {
   ADDRESS_MESSAGE,
   AUTH_MESSAGE,
   NAME_MESSAGE,
+  OTP_MESSAGE,
   USER_MESSAGE,
 } from "../../constants/api-messages.constant";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
@@ -132,7 +133,7 @@ const CustomerPhoneNumberRouter = router({
               httpOnly: true,
             })
           );
-          return { success: true };
+          return { success: true ,message:OTP_MESSAGE.VERIFY_SUCCESSFULLY};
         }
         // if user do not  exist ==> create a new one
         const newCustomer = await payload.create({
@@ -155,7 +156,7 @@ const CustomerPhoneNumberRouter = router({
             collection: "otp",
             where: { phoneNumber: { equals: lastOtp.phoneNumber } },
           });
-          return { success: true };
+          return { success: true ,message:OTP_MESSAGE.VERIFY_SUCCESSFULLY};
         }
       }
     }),
@@ -190,19 +191,19 @@ const CustomerPhoneNumberRouter = router({
         throwTrpcInternalServer(error);
       }
     }),
-  addNewAddress: getUserProcedure
+    addNewAddress: getUserProcedure
     .input(AddressValidationSchema)
     .mutation(async ({ ctx, input }) => {
       // TODO: add middleware for this
       const { user } = ctx;
-      const { district, street, ward } = input;
+      const { district, street, ward ,name,phoneNumber} = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
 
       // with the same address
       const isTheSameAddress = user.address?.find(
         (ad) =>
-          ad.district === district && ad.ward === ward && ad.street === street
+          ad.district === district && ad.ward === ward && ad.street === street && ad.phoneNumber===phoneNumber && ad.name===name
       );
       if (isTheSameAddress)
         throw new TRPCError({
@@ -218,13 +219,13 @@ const CustomerPhoneNumberRouter = router({
           },
           data: {
             address: user.address?.length
-              ? [...user.address, { isDefault: false, district, street, ward }]
-              : [{ isDefault: true, district, street, ward }],
+              ? [...user.address, { isDefault: false, district, street, ward,phoneNumber,name }]
+              : [{ isDefault: true, district, street, ward ,phoneNumber,name}],
           },
         });
         return { success: true, message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY };
       } catch (error) {
-        throwTrpcInternalServer(error);
+       throwTrpcInternalServer(error)
       }
     }),
   setDefaultAddress: getUserProcedure
@@ -259,17 +260,17 @@ const CustomerPhoneNumberRouter = router({
         });
         return {
           success: true,
-          message: ADDRESS_MESSAGE.SET_DEFAULT_SUCCESSFULLY,
+          message: ADDRESS_MESSAGE.SET_DEFAULT_SUCCESSFULLY
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throwTrpcInternalServer(error)
       }
     }),
-  adjustUserAddress: getUserProcedure
+    adjustUserAddress: getUserProcedure
     .input(AddressValidationSchema.extend({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const { id, ward, district, street } = input;
+      const { id, ward, district, street ,phoneNumber,name} = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
 
@@ -281,16 +282,15 @@ const CustomerPhoneNumberRouter = router({
         });
       const isTheSameAddress = user.address?.find(
         (ad) =>
-          ad.district === district && ad.ward === ward && ad.street === street
+          ad.district === district && ad.ward === ward && ad.street === street && ad.phoneNumber===phoneNumber && ad.name===name
       );
+    
+   
       // TODO: THINK IF SHOULD NOTIFY USER OR NOT
-      if (isTheSameAddress)
-        return {
-          success: true,
-          message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY,
-        };
+      if (isTheSameAddress) return {success:true,message:ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY};
+
       const updatedAddress = user.address?.map((ad) =>
-        ad.id === id ? { ...ad, ward, district, street } : { ...ad }
+        ad.id === id ? { ...ad, ward, district, street,name,phoneNumber } : { ...ad }
       );
       try {
         await payload.update({
@@ -309,7 +309,7 @@ const CustomerPhoneNumberRouter = router({
           message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+      throwTrpcInternalServer(error)
       }
     }),
   deleteAddress: getUserProcedure

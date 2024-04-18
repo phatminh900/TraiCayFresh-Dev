@@ -88,6 +88,13 @@ export const Customers: CollectionConfig = {
         { name: "ward", label: "Ward", type: "text", required: true },
 
         { name: "street", label: "Street", type: "text", required: true },
+        { name: "name", label: "Name", type: "text", required: true },
+        {
+          name: "phoneNumber",
+          label: "Phone Number",
+          type: "text",
+          required: true,
+        },
 
         // {
         //   name: "address",
@@ -127,8 +134,7 @@ export const Customers: CollectionConfig = {
               type: "checkbox",
               defaultValue: false,
             },
-          
-          
+
             { name: "coupon", type: "text" },
             {
               name: "discountAmount",

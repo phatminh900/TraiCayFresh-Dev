@@ -3,10 +3,8 @@ import 'server-only';
 import { NextRequest } from "next/server";
 
 import { API_ROUTES } from "@/constants/api-routes.constant";
-import {
-  COOKIE_PAYLOAD_TOKEN,
-  COOKIE_USER_PHONE_NUMBER_TOKEN,
-} from "@/constants/constants.constant";
+
+import { COOKIE_USER_PHONE_NUMBER_TOKEN,COOKIE_PAYLOAD_TOKEN } from '@/constants/configs.constant';
 import { getPayloadClient } from "@/payload/get-client-payload";
 import type { Customer } from "@/payload/payload-types";
 import { verifyToken } from "@/utils/auth.util";

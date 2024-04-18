@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { APP_URL } from "./constants/navigation.constant";
 import { verifyToken } from "./utils/auth.util";
-import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "./constants/constants.constant";
-import customerUserPhoneNumber from "./middleware/customer-user-phone-number.middleware";
-
+import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "./constants/configs.constant";
 export async function middleware(req: NextRequest) {
 
   // if (req.nextUrl.pathname.startsWith("/_next")) {

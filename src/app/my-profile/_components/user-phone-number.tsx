@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
-import { sortIsDefaultFirst } from "@/utils/util.utls";
+import { sortIsDefaultFirst, transformPhoneNumberFrom84To0 } from "@/utils/util.utls";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -54,7 +54,7 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
           <div className='flex gap'>
             <p className='min-w-[50px]'>SĐT</p>
             {typeof phoneNumber === "string" && (
-              <p className='font-bold'>{phoneNumber.replace("84", "0")}</p>
+              <p className='font-bold'>{transformPhoneNumberFrom84To0(phoneNumber)}</p>
             )}
             {Array.isArray(sortedPhoneNumber) && (
               <ul
@@ -62,7 +62,7 @@ const UserPhoneNumber = ({ phoneNumber }: UserPhoneNumberProps) => {
                 className='w-full space-y-2'
               >
                 {sortedPhoneNumber?.map((number, i) => {
-                  const phoneNumber = number.phoneNumber.replace("84", "0");
+                  const phoneNumber = transformPhoneNumberFrom84To0(number.phoneNumber)
                   return (
                     <li
                       key={number.phoneNumber}

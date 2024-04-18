@@ -27,7 +27,13 @@ export const AUTH_MESSAGE={
     INVALID_OTP:"Mã OTP không đúng"
 
 }
+export const OTP_MESSAGE={
+    SUCCESS: "Mã xác nhận đã được gửi đến số điện thoại của bạn và có hiệu lực trong 2 phút",
+    SUCCESS_SENT_OTP_AGAIN:"OTP đã được gửi lại vào số điện thoại của bạn",
+    VERIFY_SUCCESSFULLY:"Xác thực thành công"
+}
 export const ADDRESS_MESSAGE={
+    SUCCESS:"THÊM ĐỊA CHỈ THÀNH CÔNG",
     CONFLICT:"Bạn đã thêm  địa chỉ này trước rồi!",
     UPDATE_SUCCESSFULLY:"Cập nhật địa chỉ thành công",
     CANT_SET_DEFAULT:"Không thể đặt làm mặc định vui lòng thử lại sau.",

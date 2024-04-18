@@ -8,10 +8,23 @@ import {
 } from "../../validations/user-infor.valiator";
 import { SignUpCredentialSchema } from "../../validations/auth.validation";
 import { CartItems, Product } from "../../payload/payload-types";
-import {  ADDRESS_MESSAGE, NAME_MESSAGE, PHONE_NUMBER_MESSAGE, USER_MESSAGE } from "../../constants/api-messages.constant";
+import {
+  ADDRESS_MESSAGE,
+  NAME_MESSAGE,
+  PHONE_NUMBER_MESSAGE,
+  USER_MESSAGE,
+} from "../../constants/api-messages.constant";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
+import { transformPhoneNumberFrom84To0 } from "../../utils/util.utls";
 
-const CartItemSchema = z.object({ product: z.string(), quantity: z.number() ,coupon:z.string().nullable().optional(),discountAmount:z.number().nullable().optional(),isAppliedCoupon:z.boolean().nullable().optional(),shippingCost:z.number().nullable().optional()});
+const CartItemSchema = z.object({
+  product: z.string(),
+  quantity: z.number(),
+  coupon: z.string().nullable().optional(),
+  discountAmount: z.number().nullable().optional(),
+  isAppliedCoupon: z.boolean().nullable().optional(),
+  shippingCost: z.number().nullable().optional(),
+});
 
 const getUserProcedure = privateProcedure.use(async ({ ctx, next }) => {
   const { user } = ctx;
@@ -60,10 +73,12 @@ const UserRouter = router({
               : [{ isDefault: true, phoneNumber }],
           },
         });
-        return { success: true, message: PHONE_NUMBER_MESSAGE.UPDATE_SUCCESSFULLY};
+        return {
+          success: true,
+          message: PHONE_NUMBER_MESSAGE.UPDATE_SUCCESSFULLY,
+        };
       } catch (error) {
-        throwTrpcInternalServer(error)
-
+        throwTrpcInternalServer(error);
       }
     }),
   changeUserName: getUserProcedure
@@ -73,7 +88,8 @@ const UserRouter = router({
       const { name } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
-      if (name === user.name) return {success:true,message:NAME_MESSAGE.UPDATE_SUCCESSFULLY};
+      if (name === user.name)
+        return { success: true, message: NAME_MESSAGE.UPDATE_SUCCESSFULLY };
       try {
         await payload.update({
           collection: "customers",
@@ -88,14 +104,14 @@ const UserRouter = router({
         });
         return { success: true, message: NAME_MESSAGE.UPDATE_SUCCESSFULLY };
       } catch (error) {
-       throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
   setDefaultPhoneNumber: getUserProcedure
-    .input(PhoneValidationSchema.extend({id:z.string()}))
+    .input(PhoneValidationSchema.extend({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const { phoneNumber,id } = input;
+      const { phoneNumber, id } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
 
@@ -105,7 +121,7 @@ const UserRouter = router({
       if (!phoneNumberUpdatedToDefault || phoneNumberUpdatedToDefault.isDefault)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: PHONE_NUMBER_MESSAGE.CANT_SET_DEFAULT
+          message: PHONE_NUMBER_MESSAGE.CANT_SET_DEFAULT,
         });
       const updatedToDefault = user.phoneNumber?.map((number) =>
         number.id === id
@@ -129,19 +145,19 @@ const UserRouter = router({
           message: PHONE_NUMBER_MESSAGE.SET_DEFAULT_SUCCESSFULLY,
         };
       } catch (error) {
-       throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
   changeUserPhoneNumber: getUserProcedure
-    .input(PhoneValidationSchema.extend({id:z.string()}))
+    .input(PhoneValidationSchema.extend({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const { phoneNumber,id } = input;
+      const { phoneNumber, id } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
-      const isTryingModifySameNumber = user.phoneNumber?.find(
-        (phone) => phone.id === id
-      )?.phoneNumber===phoneNumber;
+      const isTryingModifySameNumber =
+        user.phoneNumber?.find((phone) => phone.id === id)?.phoneNumber ===
+        phoneNumber;
       if (isTryingModifySameNumber) return;
       try {
         const updatedPhoneNumbers = user.phoneNumber?.map((phone) =>
@@ -158,23 +174,26 @@ const UserRouter = router({
             phoneNumber: updatedPhoneNumbers,
           },
         });
-        return { success: true, message: PHONE_NUMBER_MESSAGE.UPDATE_SUCCESSFULLY };
+        return {
+          success: true,
+          message: PHONE_NUMBER_MESSAGE.UPDATE_SUCCESSFULLY,
+        };
       } catch (error) {
-        throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
   deletePhoneNumber: getUserProcedure
-    .input(PhoneValidationSchema.extend({id:z.string()}))
+    .input(PhoneValidationSchema.extend({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const { phoneNumber ,id} = input;
+      const { phoneNumber, id } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
 
       if (!user)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: USER_MESSAGE.NOT_FOUND
+          message: USER_MESSAGE.NOT_FOUND,
         });
 
       const doesPhoneNumberExist = user.phoneNumber?.find(
@@ -185,13 +204,13 @@ const UserRouter = router({
           code: "NOT_FOUND",
           message: PHONE_NUMBER_MESSAGE.CANT_DELETE,
         });
-        // if is the defaultNumber can't delete
-        if(doesPhoneNumberExist.isDefault){
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: PHONE_NUMBER_MESSAGE.CANT_DELETE,
-          });
-        }
+      // if is the defaultNumber can't delete
+      if (doesPhoneNumberExist.isDefault) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: PHONE_NUMBER_MESSAGE.CANT_DELETE,
+        });
+      }
       const updatedPhoneNumbers = user.phoneNumber?.filter(
         (number) => number.id !== id
       );
@@ -210,13 +229,12 @@ const UserRouter = router({
         return {
           deletedPhoneNumber: phoneNumber,
           success: true,
-          message: `Xóa số điện thoại ${phoneNumber.replace(
-            "84",
-            "0"
+          message: `Xóa số điện thoại ${transformPhoneNumberFrom84To0(
+            phoneNumber
           )} thành công`,
         };
       } catch (error) {
-       throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
   addNewAddress: getUserProcedure
@@ -224,14 +242,18 @@ const UserRouter = router({
     .mutation(async ({ ctx, input }) => {
       // TODO: add middleware for this
       const { user } = ctx;
-      const { district, street, ward } = input;
+      const { district, street, ward, name, phoneNumber } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
 
       // with the same address
       const isTheSameAddress = user.address?.find(
         (ad) =>
-          ad.district === district && ad.ward === ward && ad.street === street
+          ad.district === district &&
+          ad.ward === ward &&
+          ad.street === street &&
+          ad.phoneNumber === phoneNumber &&
+          ad.name === name
       );
       if (isTheSameAddress)
         throw new TRPCError({
@@ -247,13 +269,32 @@ const UserRouter = router({
           },
           data: {
             address: user.address?.length
-              ? [...user.address, { isDefault: false, district, street, ward }]
-              : [{ isDefault: true, district, street, ward }],
+              ? [
+                  ...user.address,
+                  {
+                    isDefault: false,
+                    district,
+                    street,
+                    ward,
+                    phoneNumber,
+                    name,
+                  },
+                ]
+              : [
+                  {
+                    isDefault: true,
+                    district,
+                    street,
+                    ward,
+                    phoneNumber,
+                    name,
+                  },
+                ],
           },
         });
-        return { success: true, message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY };
+        return { success: true, message: ADDRESS_MESSAGE.SUCCESS };
       } catch (error) {
-       throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
   setDefaultAddress: getUserProcedure
@@ -288,17 +329,17 @@ const UserRouter = router({
         });
         return {
           success: true,
-          message: ADDRESS_MESSAGE.SET_DEFAULT_SUCCESSFULLY
+          message: ADDRESS_MESSAGE.SET_DEFAULT_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
-    adjustUserAddress: getUserProcedure
+  adjustUserAddress: getUserProcedure
     .input(AddressValidationSchema.extend({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const { id, ward, district, street } = input;
+      const { id, ward, district, street, phoneNumber, name } = input;
       // to make sure have actual user
       const payload = await getPayloadClient();
 
@@ -310,12 +351,19 @@ const UserRouter = router({
         });
       const isTheSameAddress = user.address?.find(
         (ad) =>
-          ad.district === district && ad.ward === ward && ad.street === street
+          ad.district === district &&
+          ad.ward === ward &&
+          ad.street === street &&
+          ad.phoneNumber === phoneNumber &&
+          ad.name === name
       );
+   
       // TODO: THINK IF SHOULD NOTIFY USER OR NOT
-      if (isTheSameAddress) return;
+      if (isTheSameAddress) return {success:true,message:ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY};
       const updatedAddress = user.address?.map((ad) =>
-        ad.id === id ? { ...ad, ward, district, street } : { ...ad }
+        ad.id === id
+          ? { ...ad, ward, district, street, name, phoneNumber }
+          : { ...ad }
       );
       try {
         await payload.update({
@@ -334,11 +382,11 @@ const UserRouter = router({
           message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY,
         };
       } catch (error) {
-      throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
-    deleteAddress: getUserProcedure
-    .input(z.object({id:z.string()}))
+  deleteAddress: getUserProcedure
+    .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
       const { id } = input;
@@ -348,26 +396,22 @@ const UserRouter = router({
       if (!user)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: USER_MESSAGE.NOT_FOUND
+          message: USER_MESSAGE.NOT_FOUND,
         });
 
-      const doesAddressExist = user.address?.find(
-        (ad) => ad.id === id
-      );
+      const doesAddressExist = user.address?.find((ad) => ad.id === id);
       if (!doesAddressExist || doesAddressExist.isDefault)
         throw new TRPCError({
           code: "NOT_FOUND",
           message: ADDRESS_MESSAGE.CANT_DELETE,
         });
-        // do not allow to delete default Address
-        if (doesAddressExist.isDefault)
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: ADDRESS_MESSAGE.CANT_DELETE,
-          });
-      const updatedAddress = user.address?.filter(
-        (ad) => ad.id !== id
-      );
+      // do not allow to delete default Address
+      if (doesAddressExist.isDefault)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: ADDRESS_MESSAGE.CANT_DELETE,
+        });
+      const updatedAddress = user.address?.filter((ad) => ad.id !== id);
       try {
         await payload.update({
           collection: "customers",
@@ -382,10 +426,10 @@ const UserRouter = router({
         });
         return {
           success: true,
-          message: ADDRESS_MESSAGE.DELETE_SUCCESSFULLY
+          message: ADDRESS_MESSAGE.DELETE_SUCCESSFULLY,
         };
       } catch (error) {
-       throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
   setUserCart: getUserProcedure
@@ -410,7 +454,7 @@ const UserRouter = router({
           },
         });
       } catch (error) {
-       throwTrpcInternalServer(error)
+        throwTrpcInternalServer(error);
       }
     }),
 });

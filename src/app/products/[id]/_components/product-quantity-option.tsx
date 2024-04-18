@@ -1,7 +1,8 @@
 "use client";
 import { toast } from "sonner";
 import { IoAddOutline, IoRemoveOutline } from "react-icons/io5";
-import { EXCESS_QUANTITY_OPTION_MESSAGE,AMOUNT_PER_ADJUST_QUANTITY, MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/constants.constant";
+import { EXCESS_QUANTITY_OPTION_MESSAGE } from "@/constants/app-message.constant";
+import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB,AMOUNT_PER_ADJUST_QUANTITY } from "@/constants/configs.constant";
 import { APP_PARAMS } from "@/constants/navigation.constant";
 import { cn } from "@/lib/utils";
 import { Product } from "@/payload/payload-types";

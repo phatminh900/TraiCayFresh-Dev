@@ -1,28 +1,26 @@
 "use client";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { InputPassword } from "@/components/ui/input-password";
 import { Label } from "@/components/ui/label";
+import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
+import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/trpc-client";
-import { toast } from "sonner";
-import { ZodError } from "zod";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/constants.constant";
-import { useForm } from "react-hook-form";
+import { handleTrpcErrors } from "@/utils/error.util";
 import {
   ISignUpCredential,
   SignUpCredentialSchema,
 } from "@/validations/auth.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import ErrorMsg from "../_component/error-msg";
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
 import useCheckPasswordAndPasswordConfirm from "../hooks/useCheckPasswordAndPasswordConfirm";
-import { InputPassword } from "@/components/ui/input-password";
-import { handleTrpcErrors } from "@/utils/error.util";
-import Link from "next/link";
-import PageTitle from "@/components/ui/page-title";
 
 const ResetPassword = () => {
   const searchParams = useSearchParams();

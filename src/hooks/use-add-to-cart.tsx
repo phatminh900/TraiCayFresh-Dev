@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/constants.constant";
+import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB } from "@/constants/configs.constant";
 import { CartProductItem, useCart } from "@/store/cart.store";
 import { trpc } from "@/trpc/trpc-client";
 import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
