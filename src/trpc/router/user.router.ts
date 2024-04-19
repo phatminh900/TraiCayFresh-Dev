@@ -52,7 +52,7 @@ const UserRouter = router({
       const payload = await getPayloadClient();
 
       // with the same phoneNumber
-      const isTheSamePhoneNumber = user.phoneNumber?.find(
+      const isTheSamePhoneNumber = user.phoneNumbers?.find(
         (number) => number.phoneNumber === phoneNumber
       );
       if (isTheSamePhoneNumber)
@@ -68,14 +68,14 @@ const UserRouter = router({
             id: { equals: user.id },
           },
           data: {
-            phoneNumber: user.phoneNumber?.length
-              ? [...user.phoneNumber, { isDefault: false, phoneNumber }]
+            phoneNumbers: user.phoneNumbers?.length
+              ? [...user.phoneNumbers, { isDefault: false, phoneNumber }]
               : [{ isDefault: true, phoneNumber }],
           },
         });
         return {
           success: true,
-          message: PHONE_NUMBER_MESSAGE.UPDATE_SUCCESSFULLY,
+          message: PHONE_NUMBER_MESSAGE.SUCCESS,
         };
       } catch (error) {
         throwTrpcInternalServer(error);
@@ -115,7 +115,7 @@ const UserRouter = router({
       // to make sure have actual user
       const payload = await getPayloadClient();
 
-      const phoneNumberUpdatedToDefault = user.phoneNumber?.find(
+      const phoneNumberUpdatedToDefault = user.phoneNumbers?.find(
         (number) => number.id === id
       );
       if (!phoneNumberUpdatedToDefault || phoneNumberUpdatedToDefault.isDefault)
@@ -123,7 +123,7 @@ const UserRouter = router({
           code: "NOT_FOUND",
           message: PHONE_NUMBER_MESSAGE.CANT_SET_DEFAULT,
         });
-      const updatedToDefault = user.phoneNumber?.map((number) =>
+      const updatedToDefault = user.phoneNumbers?.map((number) =>
         number.id === id
           ? { ...number, isDefault: true }
           : { ...number, isDefault: false }
@@ -137,7 +137,7 @@ const UserRouter = router({
             },
           },
           data: {
-            phoneNumber: updatedToDefault,
+            phoneNumbers: updatedToDefault,
           },
         });
         return {
@@ -156,11 +156,11 @@ const UserRouter = router({
       // to make sure have actual user
       const payload = await getPayloadClient();
       const isTryingModifySameNumber =
-        user.phoneNumber?.find((phone) => phone.id === id)?.phoneNumber ===
+        user.phoneNumbers?.find((phone) => phone.id === id)?.phoneNumber ===
         phoneNumber;
       if (isTryingModifySameNumber) return;
       try {
-        const updatedPhoneNumbers = user.phoneNumber?.map((phone) =>
+        const updatedPhoneNumbers = user.phoneNumbers?.map((phone) =>
           phone.id === id ? { ...phone, phoneNumber } : phone
         );
         await payload.update({
@@ -171,7 +171,7 @@ const UserRouter = router({
             },
           },
           data: {
-            phoneNumber: updatedPhoneNumbers,
+            phoneNumbers: updatedPhoneNumbers,
           },
         });
         return {
@@ -196,7 +196,7 @@ const UserRouter = router({
           message: USER_MESSAGE.NOT_FOUND,
         });
 
-      const doesPhoneNumberExist = user.phoneNumber?.find(
+      const doesPhoneNumberExist = user.phoneNumbers?.find(
         (number) => number.id === id
       );
       if (!doesPhoneNumberExist)
@@ -211,7 +211,7 @@ const UserRouter = router({
           message: PHONE_NUMBER_MESSAGE.CANT_DELETE,
         });
       }
-      const updatedPhoneNumbers = user.phoneNumber?.filter(
+      const updatedPhoneNumbers = user.phoneNumbers?.filter(
         (number) => number.id !== id
       );
       try {
@@ -223,7 +223,7 @@ const UserRouter = router({
             },
           },
           data: {
-            phoneNumber: updatedPhoneNumbers,
+            phoneNumbers: updatedPhoneNumbers,
           },
         });
         return {

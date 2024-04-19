@@ -50,7 +50,17 @@ export function LoginByPhoneNumberAlternative({
                 (origin || APP_URL.home) as APP_URL_KEY
               }
             />
+               <DrawerClose
+              onClick={handleClose}
+              className='absolute top-[5%] right-[4%]'
+              asChild
+            >
+              <button>
+                <IoCloseOutline className='hover:text-destructive' size={30} />
+              </button>
+            </DrawerClose>
           </DialogContent>
+       
         </Dialog>
       </div>
     );

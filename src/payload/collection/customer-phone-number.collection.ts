@@ -1,21 +1,46 @@
 import { CollectionConfig } from "payload/types";
 import { isAdmins } from "../access/isAdmin";
-import { anyone } from "../access/anyone";
+
+import { CollectionAfterChangeHook } from "payload/types";
+
+
 
 export const CustomerPhoneNumber: CollectionConfig = {
   slug: "customer-phone-number",
   access: {
-    read: anyone,
+    read: isAdmins,
     update: isAdmins,
     delete: isAdmins,
     create: () => true,
   },
-  hooks: {},
+  hooks: {
+  },
 
   fields: [
     {
       name: "phoneNumber",
+      label: "Phone Number",
       type: "text",
+      required: true,
+    },
+    {
+      name: "phoneNumbers",
+      label: "Phone Numbers",
+      type: "array",
+      maxRows: 5,
+      fields: [
+        {
+          name: "isDefault",
+          label: "Is Default Phone Number",
+          type: "checkbox",
+        },
+        {
+          name: "phoneNumber",
+          label: "Phone Number",
+          type: "text",
+          required: true,
+        },
+      ],
     },
     {
       name: "name",
@@ -27,7 +52,7 @@ export const CustomerPhoneNumber: CollectionConfig = {
       name: "address",
       label: "Address",
       type: "array",
-      maxRows: 3,
+      maxRows: 5,
       fields: [
         {
           name: "isDefault",
@@ -84,8 +109,7 @@ export const CustomerPhoneNumber: CollectionConfig = {
               type: "checkbox",
               defaultValue: false,
             },
-          
-          
+
             { name: "coupon", type: "text" },
             {
               name: "discountAmount",

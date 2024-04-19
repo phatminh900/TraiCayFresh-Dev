@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import ButtonAdjust from "../atoms/button-adjust";
 import ButtonDelete from "../atoms/button-delete";
 import ButtonSetDefault from "../atoms/button-set-default";
+import { isEmailUser } from "@/utils/util.utls";
 
 interface UserAddressDetailsProps extends IUser {
   id: string;
@@ -99,7 +100,7 @@ const UserAddressDetails = ({
   });
 
   const handleSetDefaultAddress = async (id: string) => {
-    if (user && "email" in user) {
+    if (user && isEmailUser(user)) {
       await setDefaultAddress({ id }).catch((err) => handleTrpcErrors(err));
       return;
     }
@@ -109,7 +110,7 @@ const UserAddressDetails = ({
   };
 
   const handleDeleteUserAddress = async (id: string) => {
-    if (user && "email" in user) {
+    if (user && isEmailUser(user)) {
       await deleteUserAddress({ id }).catch((err) => handleTrpcErrors(err));
       return;
     }
@@ -119,7 +120,7 @@ const UserAddressDetails = ({
   };
   const handleAdjustAddress = handleSubmit(async (data) => {
     const validPhoneNumber=(data.phoneNumber)
-    if (user && "email" in user) {
+    if (user && isEmailUser(user)) {
 
       await adjustUserAddress({ id, ...data ,phoneNumber:validPhoneNumber}).catch((err) =>
         handleTrpcErrors(err)
@@ -208,7 +209,7 @@ const UserAddressDetails = ({
             <DeliveryAddress
               errors={errors}
               defaultUserName={name}
-              phoneNumberList={('email' in user!)?user.phoneNumber:undefined}
+              phoneNumberList={('email' in user!)?user.phoneNumbers:undefined}
               onSetName={setNameValue}
               onSetPhoneNumber={setPhoneNumberValue}
               defaultUserPhoneNumber={(phoneNumber)}

@@ -1,4 +1,8 @@
-import { Media } from "@/payload/payload-types";
+import type {
+  Customer,
+  CustomerPhoneNumber,
+  Media,
+} from "@/payload/payload-types";
 
 export function formatPriceToVND(price: number) {
   const formatter = new Intl.NumberFormat("vi-VN", {
@@ -16,6 +20,12 @@ export const validateNumericInput = (value: string) => {
   // Regular expression to match only numeric characters
   const numericRegex = /^[0-9]*$/;
   return numericRegex.test(value);
+};
+export const isEmailUser = (
+  user: Customer | CustomerPhoneNumber
+): user is Customer => {
+  if ("email" in user) return true;
+  return false;
 };
 export const sortIsDefaultFirst = <
   T extends { isDefault?: boolean | undefined | null }
@@ -35,6 +45,3 @@ export const sortIsDefaultFirst = <
       }
     }) as T[];
 };
-
-
-

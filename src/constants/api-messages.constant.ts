@@ -3,6 +3,7 @@ export const EXCESS_QUANTITY_OPTION_MESSAGE="Nếu bạn muốn mua > 15kg vui l
 
 // Phone number
 export const PHONE_NUMBER_MESSAGE={
+    SUCCESS:"Thêm số điện thoại thành công",
     CONFLICT:"Bạn đã thêm số điện thoại này trước rồi!",
     UPDATE_SUCCESSFULLY:"Cập nhật số điện thoại thành công",
     CANT_SET_DEFAULT:"Không thể đặt làm mặc định vui lòng thử lại sau.",
@@ -33,7 +34,7 @@ export const OTP_MESSAGE={
     VERIFY_SUCCESSFULLY:"Xác thực thành công"
 }
 export const ADDRESS_MESSAGE={
-    SUCCESS:"THÊM ĐỊA CHỈ THÀNH CÔNG",
+    SUCCESS:"Thêm địa chỉ thành công",
     CONFLICT:"Bạn đã thêm  địa chỉ này trước rồi!",
     UPDATE_SUCCESSFULLY:"Cập nhật địa chỉ thành công",
     CANT_SET_DEFAULT:"Không thể đặt làm mặc định vui lòng thử lại sau.",

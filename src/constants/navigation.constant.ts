@@ -15,6 +15,7 @@ export const APP_PARAMS = {
     // TODO: adjust consistency
   token: "token=",
   toEmail: "toEmail=",
+  origin:'origin',
   currentQuantityOption: "currentQuantityOption",
   isOpenOtp:'isOpenOtp',
 } as const;

@@ -26,6 +26,7 @@ export const seedDb = async () => {
       collection: "customer-phone-number",
       data: {
         phoneNumber: "0386325681",
+        phoneNumbers:[{phoneNumber:"0386325681",isDefault:true}]
       },
     });
 

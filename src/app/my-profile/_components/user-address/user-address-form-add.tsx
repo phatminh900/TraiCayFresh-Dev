@@ -5,6 +5,7 @@ import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
+import { isEmailUser } from "@/utils/util.utls";
 import { useRouter } from "next/navigation";
 
 interface UserAddressFormAddProps extends IUser {
@@ -14,9 +15,9 @@ interface UserAddressFormAddProps extends IUser {
 
 const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
   const defaultUserName = user?.name || "";
-  const defaultPhoneNumber = !("email" in user!)
+  const defaultPhoneNumber = !(isEmailUser(user!))
     ? user!.phoneNumber!
-    : user!.phoneNumber?.find((number) => number.isDefault)?.phoneNumber || "";
+    : user!.phoneNumbers?.find((number) => number.isDefault)?.phoneNumber || "";
   const {
     errors,
     handleSubmit,
@@ -62,8 +63,9 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
     },
   });
   const handleAddNewAddress = handleSubmit(async (data) => {
+    console.log(data)
     // if email in user ==> login by email
-    if (user && "email" in user) {
+    if (user && isEmailUser(user)) {
       await addNewAddressUserEmail({ ...data }).catch((err) =>
         handleTrpcErrors(err)
       );
@@ -82,7 +84,7 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
       onSubmit={handleAddNewAddress}
     >
       <DeliveryAddress
-        phoneNumberList={"email" in user! ? user.phoneNumber : undefined}
+        phoneNumberList={isEmailUser(user!)? user?.phoneNumbers : undefined}
         errors={errors}
         onSetName={setNameValue}
         defaultUserName={defaultUserName}

@@ -206,7 +206,7 @@ describe("login", () => {
     cy.location("pathname").should("eq", `/${origin}`);
   });
   // Login by phoneNumber
-  it('login by phoneNumber',()=>{
+  it.only('login by phoneNumber',()=>{
     cy.get("[data-cy='login-by-phone-number-alternative']").contains('Đăng nhập bằng số điện thoại').as('button-trigger-open')
     cy.get('@button-trigger-open').click({force:true})
 

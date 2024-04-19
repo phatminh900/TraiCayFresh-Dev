@@ -1,31 +1,37 @@
+import {
+  INVALID_EMAIL_TYPE,
+  INVALID_NAME,
+  INVALID_PASSWORD_CONFIRM_TYPE,
+  REQUIRED_EMAIL,
+  REQUIRED_NAME,
+  REQUIRED_PASSWORD,
+  REQUIRED_PASSWORD_CONFIRM,
+} from "../constants/validation-message.constant";
 import { z } from "zod";
 
 export const AuthCredentialSchema = z.object({
-  email: z
-    .string()
-    .email("Định dạng email không đúng")
-    .min(1, "Vui lòng nhập email")
-    .trim(),
+  email: z.string().email(INVALID_EMAIL_TYPE).min(1, REQUIRED_EMAIL).trim(),
   password: z
     .string()
-    .min(6, { message: "Mật khẩu phải có ít nhất 6 kí tự" })
+    .min(6, { message: REQUIRED_PASSWORD })
     .regex(
       new RegExp(/^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/),
-      "Mật khẩu phải có ít nhất 1 chữ cái và 1 số. Và có độ dài từ 6 kí tự trở lên"
+      INVALID_PASSWORD_CONFIRM_TYPE
     ),
 });
 
 export const SignUpCredentialSchema = AuthCredentialSchema.extend({
-  name: z.string().min(2, "Tên phải từ 2 chữ cái").trim() .regex(
-    new RegExp(/^[a-zA-ZÀ-ỹ]+(?:[\s-][a-zA-ZÀ-ỹ]+)*$/),
-    "Vui lòng nhập tên của bạn"
-  ),
+  name: z
+    .string()
+    .min(2, INVALID_NAME)
+    .trim()
+    .regex(new RegExp(/^[a-zA-ZÀ-ỹ]+(?:[\s-][a-zA-ZÀ-ỹ]+)*$/), REQUIRED_NAME),
   passwordConfirm: z
     .string()
-    .min(6, { message: "Nhập lại mật khẩu phải có ít nhất 6 kí tự" })
+    .min(6, { message: REQUIRED_PASSWORD_CONFIRM })
     .regex(
       new RegExp(/^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/),
-      "Mật khẩu phải có ít nhất 1 chữ cái và 1 số. Và có độ dài từ 6 kí tự trở lên"
+      INVALID_PASSWORD_CONFIRM_TYPE
     ),
 });
 export type IAuthCredential = z.infer<typeof AuthCredentialSchema>;

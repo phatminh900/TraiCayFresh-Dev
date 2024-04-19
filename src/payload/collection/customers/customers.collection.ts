@@ -55,7 +55,7 @@ export const Customers: CollectionConfig = {
       required: true,
     },
     {
-      name: "phoneNumber",
+      name: "phoneNumbers",
       label: "Phone Number",
       type: "array",
       maxRows: 5,

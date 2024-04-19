@@ -156,7 +156,7 @@ export interface Order {
 export interface Customer {
   id: string;
   name: string;
-  phoneNumber?:
+  phoneNumbers?:
     | {
         isDefault?: boolean | null;
         phoneNumber: string;
@@ -224,7 +224,14 @@ export interface Otp {
  */
 export interface CustomerPhoneNumber {
   id: string;
-  phoneNumber?: string | null;
+  phoneNumber: string;
+  phoneNumbers?:
+    | {
+        isDefault?: boolean | null;
+        phoneNumber: string;
+        id?: string | null;
+      }[]
+    | null;
   name?: string | null;
   address?:
     | {

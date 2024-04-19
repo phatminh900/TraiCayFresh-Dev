@@ -31,7 +31,7 @@ const MyProfilePage = async () => {
         <PageSubTitle>Thông tin cá nhân</PageSubTitle>
         <UserEmail user={user} />
         <UserName user={user} />
-        <UserPhoneNumbers phoneNumber={user.phoneNumber || []} />
+        <UserPhoneNumbers user={user} />
       </div>
       {/* Address */}
       <div className='space-y-2'>

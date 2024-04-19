@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { IUser } from "@/types/common-types";
 import { handleTrpcSuccess } from "@/utils/success.util";
+import { isEmailUser } from "@/utils/util.utls";
 interface UserNameFormProps extends IUser {
   onExpand: (state: boolean) => void;
 }
@@ -51,11 +52,11 @@ const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
     if (name === user?.name) return;
     if (!user) return;
     // normal login by email
-    if ("email" in user) {
+    if (isEmailUser(user)) {
       await changeUserName({ name }).catch(err=>handleTrpcErrors(err));
       onExpand(false);
     }
-    if (!("email" in user)) {
+    if (!(isEmailUser(user))) {
       await changeUserNamePhoneNumber({ name }).catch(err=>handleTrpcErrors(err));
       onExpand(false);
     }

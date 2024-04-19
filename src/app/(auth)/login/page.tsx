@@ -13,7 +13,7 @@ import LoginByEmail from "./_components/login-by-email";
 const LoginPage = () => {
   const router=useRouter()
   const searchParams = useSearchParams();
-  const origin = searchParams.get("origin") || "";
+  const origin = searchParams.get(APP_PARAMS.origin) || "";
   const [isOpenLoginByPhoneNumber,setIsOpenByPhoneNumber]=useState(false)
   const handleOpenLoginByPhoneNumber=()=>{
       setIsOpenByPhoneNumber(true)
@@ -21,7 +21,7 @@ const LoginPage = () => {
     }
   const handleCloseLoginByPhoneNumber=()=>{
     setIsOpenByPhoneNumber(false)
-    router.push(`?${APP_PARAMS.isOpenOtp}=false`)
+    router.push(!origin?`?${APP_PARAMS.isOpenOtp}=false`:`?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.isOpenOtp}=false`)
   }
 
 

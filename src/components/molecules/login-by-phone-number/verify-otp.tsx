@@ -54,7 +54,10 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
         })) 
         setUserCart(cartItemUser);
       }
-      router.push(routeToPushAfterVerifying)
+      setTimeout(()=>{
+      router.replace(routeToPushAfterVerifying)
+
+      },200)
       // set cart user after login 
 
     },

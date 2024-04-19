@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/app-message.constant";
+import { isEmailUser } from "@/utils/util.utls";
 
 interface LogoutProps extends IUser {}
 const Logout = ({ user }: LogoutProps) => {
@@ -21,11 +22,11 @@ const Logout = ({ user }: LogoutProps) => {
 
   const logout = async () => {
     // if user has email ==> payload user ==> signup by email
-    if (user && "email" in user) {
+    if (user && isEmailUser(user!)) {
       await logOutUser().catch((err) => toast.error(GENERAL_ERROR_MESSAGE));
       notifyUserLogoutSuccessfully();
     }
-    if (user && !("email" in user)) {
+    if (user && !(isEmailUser(user!))) {
       await logOutUserPhoneNumber().catch((err) =>
         toast.error(GENERAL_ERROR_MESSAGE)
       );

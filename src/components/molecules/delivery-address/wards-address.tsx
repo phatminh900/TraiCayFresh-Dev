@@ -9,7 +9,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useState,memo } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
 import {
@@ -121,4 +121,4 @@ const WardAddress = ({
   );
 };
 
-export default WardAddress;
+export default memo(WardAddress);

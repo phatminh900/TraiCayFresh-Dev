@@ -50,7 +50,7 @@ const useAddress = (defaultValue?: IAddressValidation) => {
       if (nameValue) {
         setError("name", { message: "" });
       }
-      if (PhoneValidationSchema.safeParse({phoneNumber:phoneNumberValue})) {
+      if (PhoneValidationSchema.safeParse({phoneNumber:phoneNumberValue}).success) {
         setError("phoneNumber", { message: "" });
       }
       if (districtValue) {
