@@ -9,13 +9,12 @@ import { isEmailUser } from "@/utils/util.utls";
 import { useRouter } from "next/navigation";
 
 interface UserAddressFormAddProps extends IUser {
-  isExpanded: boolean;
   onExpand: (state: boolean) => void;
 }
 
 const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
   const defaultUserName = user?.name || "";
-  const defaultPhoneNumber = !(isEmailUser(user!))
+  const defaultPhoneNumber = !isEmailUser(user!)
     ? user!.phoneNumber!
     : user!.phoneNumbers?.find((number) => number.isDefault)?.phoneNumber || "";
   const {
@@ -63,7 +62,6 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
     },
   });
   const handleAddNewAddress = handleSubmit(async (data) => {
-    console.log(data)
     // if email in user ==> login by email
     if (user && isEmailUser(user)) {
       await addNewAddressUserEmail({ ...data }).catch((err) =>
@@ -84,7 +82,7 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
       onSubmit={handleAddNewAddress}
     >
       <DeliveryAddress
-        phoneNumberList={isEmailUser(user!)? user?.phoneNumbers : undefined}
+        phoneNumberList={isEmailUser(user!) ? user?.phoneNumbers : undefined}
         errors={errors}
         onSetName={setNameValue}
         defaultUserName={defaultUserName}

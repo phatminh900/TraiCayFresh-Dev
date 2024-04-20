@@ -29,13 +29,13 @@ const CheckoutPage = async () => {
         <EmptyCart />
       ) : (
         <>
-          <CheckoutUserInfo />
-          <CheckoutAddress />
+          {/* <CheckoutUserInfo /> */}
+          <CheckoutAddress user={user} />
           <CheckoutListCart />
           <CheckoutNote />
-          <CheckoutDiscount user={user}/>
+          <CheckoutDiscount user={user} />
           <CheckoutPaymentMethods />
-          <CheckoutDetails  />
+          <CheckoutDetails />
           <Button className='mt-6 w-full' data-cy='submit-btn-checkout'>
             Thanh toan
           </Button>

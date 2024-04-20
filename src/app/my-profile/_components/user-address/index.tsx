@@ -2,9 +2,9 @@
 import PageSubTitle from "@/components/ui/page-subTitle";
 import { IUser } from "@/types/common-types";
 import { useState } from "react";
-import UserAddressDetailList from "./user-address-detail-list";
-import UserAddressFormAdd from "./user-address-form-add";
 import { MAX_ADDRESS_ALLOWED } from "@/constants/configs.constant";
+import UserAddressList from "./user-address-list";
+import UserAddressFormAdd from "@/components/molecules/user-address-form-add";
 
 interface UserAddressProps extends IUser {}
 const UserAddress = ({ user }: UserAddressProps) => {
@@ -13,7 +13,7 @@ const UserAddress = ({ user }: UserAddressProps) => {
   const userAddressCount = user!.address?.length || 0;
   return (
     <div>
-      <UserAddressDetailList
+      <UserAddressList
         isExpanded={isExpanded}
         onExpand={handleExpand}
         user={user}
@@ -45,7 +45,6 @@ const UserAddress = ({ user }: UserAddressProps) => {
               </PageSubTitle>
             )}
             <UserAddressFormAdd
-              isExpanded={isExpanded}
               user={user}
               onExpand={handleExpand}
             />

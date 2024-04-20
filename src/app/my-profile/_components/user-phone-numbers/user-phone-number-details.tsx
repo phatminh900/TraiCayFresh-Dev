@@ -81,7 +81,6 @@ const UserPhoneNumberDetails = ({
     >
       <div className='inline-block min-w-[150px] max-w-[250px]'>
         <div className='font-normal'>
-          {/* replace 84 to 0 */}
           <div
             data-cy='user-phone-number-detail'
             className='font-bold flex flex-col'
@@ -98,6 +97,7 @@ const UserPhoneNumberDetails = ({
                   id: id!,
                 })
               }
+              data-cy='set-default-phone-number-btn'
               disabled={isUpdatingDefaultPhoneNumber}
               className={cn("text-xs text-primary", {
                 "text-primary/80": isUpdatingDefaultPhoneNumber,

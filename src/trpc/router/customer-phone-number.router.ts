@@ -197,8 +197,6 @@ const CustomerPhoneNumberRouter = router({
         ...user.phoneNumbers!,
         { isDefault: false, phoneNumber },
       ];
-      console.log('--------------')
-      console.log(updatedPhoneNumbers)
       try {
         await payload.update({
           collection: "customer-phone-number",

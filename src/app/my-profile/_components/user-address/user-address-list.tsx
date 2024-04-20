@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { IUser } from "@/types/common-types";
 import { sortIsDefaultFirst } from "@/utils/util.utls";
-import UserAddressDetails from "./user-address-details";
+import UserAddressDetails from "@/components/molecules/user-address-details";
 
-interface UserAddressDetailListProps extends IUser {
+interface UserAddressListProps extends IUser {
   isExpanded: boolean;
   onExpand: (state: boolean) => void;
 }
-const UserAddressDetailList = ({
+const UserAddressList = ({
   user,
   isExpanded,
   onExpand,
-}: UserAddressDetailListProps) => {
+}: UserAddressListProps) => {
   const [expandedIndex, setExpandedIndex] = useState(-1);
   const handleOpenExpandedIndex = (index: number) => {
     // if open adjust form close the add new one
@@ -48,4 +48,4 @@ const UserAddressDetailList = ({
   );
 };
 
-export default UserAddressDetailList;
+export default UserAddressList;

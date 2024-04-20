@@ -14,7 +14,9 @@ interface CheckoutDiscountProps extends IUser {}
 const CheckoutDiscount = ({ user }: CheckoutDiscountProps) => {
   const setCart = useCart((store) => store.setItem);
   const cartItems = useCart((store) => store.items);
-  const couponCode = user!.cart!.items?.find((item) => item?.coupon)?.coupon;
+  const appliedCoupon = user!.cart!.items?.find((item) => item?.coupon);
+  const couponCode=appliedCoupon?.coupon
+  const discountAmount=appliedCoupon?.discountAmount
   const router = useRouter();
   const [coupon, setCoupon] = useState("");
   const { mutateAsync: applyCoupon, isPending } =
@@ -90,7 +92,7 @@ const CheckoutDiscount = ({ user }: CheckoutDiscountProps) => {
           data-cy='coupon-applied-notification'
           className='text-muted-foreground italic text-sm mb-2'
         >
-          Mã giảm giá <span className='font-semibold'>{couponCode}</span> đã
+          Mã giảm giá <span className='font-semibold'>{couponCode} (-{discountAmount}%)</span> đã
           được thêm vào các sản phẩm trong giỏ
         </p>
       )}

@@ -6,12 +6,12 @@ import { IUser } from "@/types/common-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { useRouter } from "next/navigation";
-import ButtonAdjust from "../atoms/button-adjust";
-import ButtonDelete from "../atoms/button-delete";
-import ButtonSetDefault from "../atoms/button-set-default";
+import ButtonDelete from "@/app/my-profile/_components/atoms/button-delete";
+import ButtonAdjust from "@/app/my-profile/_components/atoms/button-adjust";
+import ButtonSetDefault from "@/app/my-profile/_components/atoms/button-set-default";
 import { isEmailUser } from "@/utils/util.utls";
 
-interface UserAddressDetailsProps extends IUser {
+export interface UserAddressDetailsProps extends IUser {
   id: string;
   ward: string;
   street: string;
@@ -119,31 +119,37 @@ const UserAddressDetails = ({
     );
   };
   const handleAdjustAddress = handleSubmit(async (data) => {
-    const validPhoneNumber=(data.phoneNumber)
+    const validPhoneNumber = data.phoneNumber;
     if (user && isEmailUser(user)) {
-
-      await adjustUserAddress({ id, ...data ,phoneNumber:validPhoneNumber}).catch((err) =>
-        handleTrpcErrors(err)
-      );
+      await adjustUserAddress({
+        id,
+        ...data,
+        phoneNumber: validPhoneNumber,
+      }).catch((err) => handleTrpcErrors(err));
       onExpand(-1);
       return;
     }
-    await adjustUserPhoneNumberAddress({ id, ...data ,phoneNumber:validPhoneNumber}).catch((err) =>
-      handleTrpcErrors(err)
-    );
+    await adjustUserPhoneNumberAddress({
+      id,
+      ...data,
+      phoneNumber: validPhoneNumber,
+    }).catch((err) => handleTrpcErrors(err));
     onExpand(-1);
   });
   return (
-    <li key={id} data-cy='user-address-detail-my-profile'>
+    <li id={`address-item-${id}`} key={id} data-cy='user-address-detail-my-profile'>
       {isDefault ? (
         <div>
-          <div data-cy='user-address-detail' className='flex flex-col gap-1 mb-2'>
-            <p data-cy='user-address-detail-info' className='font-bold'>
+          <div
+            data-cy='user-address-detail'
+            className='flex flex-col gap-1 mb-2'
+          >
+            <p data-cy='user-address-detail-info' className='font-bold flex items-center line-clamp-2'>
               {name}
-              <span> - </span>
-              {(phoneNumber)}
+              <span className="line-clamp-2"> - </span>
+              {phoneNumber}
             </p>
-            <p data-cy='user-address-detail-address'>
+            <p data-cy='user-address-detail-address'  className="line-clamp-3" > 
               {address}
               <span className='text-sm ml-2 text-primary'>( Mặc định )</span>
             </p>
@@ -161,15 +167,16 @@ const UserAddressDetails = ({
         </div>
       ) : (
         <div>
-          <div data-cy='user-address-detail' className='flex flex-col gap-1 mb-2'>
+          <div
+            data-cy='user-address-detail'
+            className='flex flex-col gap-1 mb-2'
+          >
             <p data-cy='user-address-detail-info' className='font-bold'>
               {name}
               <span> - </span>
-              {(phoneNumber)}
+              {phoneNumber}
             </p>
-            <p data-cy='user-address-detail-address'>
-              {address}
-            </p>
+            <p data-cy='user-address-detail-address'   className="line-clamp-3" >{address}</p>
           </div>
           <div className='flex gap-3 items-center mt-1'>
             <ButtonAdjust
@@ -209,10 +216,10 @@ const UserAddressDetails = ({
             <DeliveryAddress
               errors={errors}
               defaultUserName={name}
-              phoneNumberList={('email' in user!)?user.phoneNumbers:undefined}
+              phoneNumberList={"email" in user! ? user.phoneNumbers : undefined}
               onSetName={setNameValue}
               onSetPhoneNumber={setPhoneNumberValue}
-              defaultUserPhoneNumber={(phoneNumber)}
+              defaultUserPhoneNumber={phoneNumber}
               defaultDistrictValue={district}
               defaultWardValue={ward}
               onSetDistrict={setDistrictValue}
