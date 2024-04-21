@@ -227,15 +227,7 @@ const UserAddressDetails = ({
               register={register}
             />
             <div className='mt-4 flex items-center w-full gap-4'>
-              <Button
-                data-cy='user-address-add-btn-my-profile'
-                disabled={isAdjustingUserAddress || isAdjustingUserAddress}
-                className='flex-1'
-              >
-                {isAdjustingUserAddress || isAdjustingUserAddress
-                  ? "Đang cập nhật địa chỉ"
-                  : "Xác nhận"}
-              </Button>
+            
               <Button
                 data-cy='user-address-cancel-btn-my-profile'
                 onClick={() => {
@@ -246,6 +238,15 @@ const UserAddressDetails = ({
                 variant='destructive'
               >
                 Hủy
+              </Button>
+              <Button
+                data-cy='user-address-add-btn-my-profile'
+                disabled={isAdjustingUserAddress || isAdjustingUserAddress}
+                className='flex-1'
+              >
+                {isAdjustingUserAddress || isAdjustingUserAddress
+                  ? "Đang cập nhật địa chỉ"
+                  : "Xác nhận"}
               </Button>
             </div>
           </form>

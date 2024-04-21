@@ -15,7 +15,7 @@ const CheckoutListCart = async () => {
     )) || [];
 
   return (
-    <div>
+    <div className="mt-8">
       <PageSubTitle>Sản phẩm</PageSubTitle>
       <CartList user={user || undefined} userCart={userCart} />
     </div>

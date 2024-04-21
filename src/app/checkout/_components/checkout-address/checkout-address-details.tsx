@@ -2,9 +2,11 @@ import UserAddressDetails, {
   UserAddressDetailsProps,
 } from "@/components/molecules/user-address-details";
 import { RadioGroupItem } from "@/components/ui/radio-group";
+import { cn } from "@/lib/utils";
 
 interface CheckoutAddressDetailsProps extends UserAddressDetailsProps {
   currentIndex: number;
+  isExpandedAddressList:boolean
   onExpand: (index: number) => void;
   name: string;
   phoneNumber: string;
@@ -12,7 +14,9 @@ interface CheckoutAddressDetailsProps extends UserAddressDetailsProps {
 }
 const CheckoutAddressDetails = (props: CheckoutAddressDetailsProps) => {
   return (
-    <div className='grid grid-cols-[20px_1fr] gap-3 items-start py-2'>
+    <div className={cn('grid grid-cols-[20px_1fr] gap-3 items-start py-2',{
+      'animate-in fade-in slide-in-from-top-2':props.isExpandedAddressList&&props.index>0
+    })}>
       <RadioGroupItem
         className='mt-8'
         value={props.id}

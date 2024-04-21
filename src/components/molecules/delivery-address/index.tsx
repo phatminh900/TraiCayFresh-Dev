@@ -35,7 +35,7 @@ export interface DeliveryAddressProps {
   defaultUserPhoneNumber?: string;
   register: UseFormRegister<IAddressValidation>;
   errors: FieldErrors<IAddressValidation>;
-  phoneNumberList?:Customer['phoneNumber'],
+  phoneNumberList?:Customer['phoneNumbers'],
   onSetDistrict: (district: string) => void;
 
   onSetName: (userName: string) => void;

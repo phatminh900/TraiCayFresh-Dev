@@ -93,6 +93,18 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
         register={register}
       />
       <div className='mt-4 flex items-center w-full gap-4'>
+       
+        <Button
+          data-cy='user-address-cancel-btn-my-profile'
+          onClick={() => {
+            onExpand(false);
+          }}
+          type='button'
+          className='flex-1'
+          variant='destructive'
+        >
+          Hủy
+        </Button>
         <Button
           data-cy='user-address-add-btn-my-profile'
           disabled={
@@ -106,17 +118,6 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
           {isAddingNewAddressUserEmail || isAddingNewAddressPhoneNumber
             ? "Đang cập nhật địa chỉ"
             : "Xác nhận"}
-        </Button>
-        <Button
-          data-cy='user-address-cancel-btn-my-profile'
-          onClick={() => {
-            onExpand(false);
-          }}
-          type='button'
-          className='flex-1'
-          variant='destructive'
-        >
-          Hủy
         </Button>
       </div>
     </form>

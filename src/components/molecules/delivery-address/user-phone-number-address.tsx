@@ -17,12 +17,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Customer } from "@/payload/payload-types";
 
 interface UserPhoneNumberAddressProps
-  extends Pick<DeliveryAddressProps, "onSetPhoneNumber"> {
+  extends Pick<DeliveryAddressProps, "onSetPhoneNumber"|"phoneNumberList"> {
   defaultValue?: string;
-  phoneNumberList?: Customer["phoneNumber"];
+  
 }
 const UserPhoneNumberAddress = ({
   defaultValue,
@@ -74,7 +73,7 @@ const UserPhoneNumberAddress = ({
                   const value = e.target.value;
                   setPhoneNumber(value);
                   onSetPhoneNumber(value);
-
+                  
                   if (
                     phoneNumberList.find(
                       (number) => number.phoneNumber === value
