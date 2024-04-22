@@ -4,6 +4,8 @@ import UserRouter from "./router/user.router";
 import  ProductRouter  from "./router/products.router";
 import CustomerPhoneNumberRouter from "./router/customer-phone-number.router";
 import CouponRouter from "./router/coupons.router";
+import PaymentRouter from "./router/payment.router";
+import AddressRouter from './router/address.router'
 // import { productRouter } from "./routes/product-router";
 // import { PaymentRouter } from "./routes/payment-router";
 
@@ -12,9 +14,10 @@ export const appRouter = router({
   user:UserRouter,
   products:ProductRouter,
   customerPhoneNumber:CustomerPhoneNumberRouter,
-  coupon:CouponRouter
+  coupon:CouponRouter,
+  address:AddressRouter,
 //   products: productRouter,
-//   payment:PaymentRouter
+  payment:PaymentRouter
 });
 
 // export type definition of API

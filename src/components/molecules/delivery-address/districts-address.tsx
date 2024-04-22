@@ -10,7 +10,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { useEffect, useState ,memo} from "react";
+import { memo, useEffect, useState } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
 import {
@@ -18,12 +18,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getHcmDistricts } from "@/services/address.service";
-import { IDistrict } from "@/types/service.type";
+import { trpc } from "@/trpc/trpc-client";
 import { DeliveryAddressProps } from ".";
 
-interface DistrictAddressProps extends Pick<DeliveryAddressProps,'onSetDistrict'> {
-  defaultValue?:string;
+interface DistrictAddressProps
+  extends Pick<DeliveryAddressProps, "onSetDistrict"> {
+  defaultValue?: string;
   currentSelectedDistrictId: number | null;
   onSetDistrictId: (id: number) => void;
 }
@@ -33,22 +33,15 @@ function DistrictAddress({
   defaultValue,
   onSetDistrictId,
 }: DistrictAddressProps) {
-  const [value, setValue] = useState(defaultValue||'');
-  const [districts, setDistricts] = useState<IDistrict[]>([]);
-  const isDistrictChanged = districts.find(
+  const [value, setValue] = useState(defaultValue || "");
+  const { data: districtResultResponse } = trpc.address.getHcmDistricts.useQuery();
+  const districts = (districtResultResponse ? districtResultResponse?.districts! : []).filter(
+    // filter some weird value
+    (d) => d.DistrictName !== "33" && d.DistrictName !== "Quận mới"
+  )!;
+  const isDistrictChanged = districts!?.find(
     (district) => district.DistrictID === currentSelectedDistrictId
   );
-  useEffect(() => {
-    async function getDistricts() {
-      const result = await getHcmDistricts();
-      const districts = result?.data.filter(
-        // filter some weird value
-        (d) => d.DistrictName !== "33" && d.DistrictName !== "Quận mới"
-      );
-      setDistricts(districts || []);
-    }
-    getDistricts();
-  }, []);
 
   useEffect(() => {
     if (!isDistrictChanged) {
@@ -56,15 +49,17 @@ function DistrictAddress({
       onSetDistrict("");
     }
   }, [isDistrictChanged, onSetDistrict]);
-  useEffect(()=>{
+  useEffect(() => {
     // if have default value set DistrictId
-    if(defaultValue){
-      // 
-      onSetDistrict(defaultValue)
-      const districtId=districts.find(district=>district.DistrictName===defaultValue)
-      districtId && onSetDistrictId(districtId.DistrictID)
+    if (defaultValue) {
+      //
+      onSetDistrict(defaultValue);
+      const districtId = districts.find(
+        (district) => district.DistrictName === defaultValue
+      );
+      districtId && onSetDistrictId(districtId.DistrictID);
     }
-  },[defaultValue,onSetDistrictId,districts,onSetDistrict])
+  }, [defaultValue, onSetDistrictId, districts, onSetDistrict]);
   const [open, setOpen] = useState(false);
 
   return (

@@ -14,10 +14,11 @@ interface CheckoutAddressDetailsProps extends UserAddressDetailsProps {
 }
 const CheckoutAddressDetails = (props: CheckoutAddressDetailsProps) => {
   return (
-    <div className={cn('grid grid-cols-[20px_1fr] gap-3 items-start py-2',{
+    <div data-cy='user-address-details-checkout' className={cn('grid grid-cols-[20px_1fr] gap-3 items-start py-2',{
       'animate-in fade-in slide-in-from-top-2':props.isExpandedAddressList&&props.index>0
     })}>
       <RadioGroupItem
+        data-cy='user-address-radio-checkout'
         className='mt-8'
         value={props.id}
         id={`address-item-${props.id}`}

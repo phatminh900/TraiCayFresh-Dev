@@ -9,7 +9,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { useEffect, useState,memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
 import {
@@ -17,9 +17,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getHcmWards } from "@/services/address.service";
-import { IWard } from "@/types/service.type";
-import  type{ DeliveryAddressProps } from ".";
+import { trpc } from "@/trpc/trpc-client";
+import type { DeliveryAddressProps } from ".";
 
 interface WardAddressProps extends Pick<DeliveryAddressProps,'onSetWard'> {
   defaultValue?: string;
@@ -33,26 +32,23 @@ const WardAddress = ({
 }: WardAddressProps) => {
   const [value, setValue] = useState(defaultValue || "");
   const [open, setOpen] = useState(false);
-  const [wards, setWards] = useState<IWard[]>([]);
+  const {data:wardsResult,refetch:getWards}=trpc.address.getHcmWards.useQuery({districtId:districtId||1},{enabled:false})
+  const wardsData=wardsResult?.wards||[]
+  const wards = wardsData.filter((w) =>
+    Number.isNaN(Number(w.WardName))
+  );
   // when change the district reset the value
   const isDistrictChange = wards.find((ward) => ward.WardName === value);
 
   useEffect(() => {
-    const getWards = async (districtId: number) => {
-      const result = await getHcmWards(districtId);
-      // in api has some unUnderstandable value starts with number (if IsNaN valid )
-      const validWards = result?.data.filter((d) =>
-        Number.isNaN(Number(d.WardName))
-      );
-      setWards(validWards || []);
-      if (defaultValue) {
-        setValue(defaultValue);
-      }
-    };
-    if (districtId) {
-      getWards(districtId);
+    
+    if (defaultValue) {
+      setValue(defaultValue);
     }
-  }, [districtId, defaultValue]);
+    if (districtId) {
+      getWards();
+    }
+  }, [districtId, defaultValue,getWards]);
   useEffect(() => {
     if (!isDistrictChange) {
       setValue("");

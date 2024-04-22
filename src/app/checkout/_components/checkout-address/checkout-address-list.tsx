@@ -1,12 +1,10 @@
-import type { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
-import { IoCaretDownOutline } from "react-icons/io5";
-import CheckoutAddressDetails from "./checkout-address-details";
-import UserAddressDetails from "@/components/molecules/user-address-details";
-import { IUser } from "@/types/common-types";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { sortIsDefaultFirst } from "@/utils/util.utls";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { IUser } from "@/types/common-types";
+import { sortIsDefaultFirst } from "@/utils/util.utls";
+import { useEffect, useMemo, useState } from "react";
+import { IoCaretDownOutline } from "react-icons/io5";
+import CheckoutAddressDetails from "./checkout-address-details";
 
 export interface CheckoutAddressListProps extends IUser {
   onExpand: (state: boolean) => void;
@@ -39,7 +37,7 @@ const CheckoutAddressList = ({
     }
   }, [isFormAddExpanded]);
   return (
-    <ul className='bg-gray-200 rounded-md py-3 px-4 space-y-2'>
+    <ul data-cy='user-address-list-checkout' className='bg-gray-200 rounded-md py-3 px-4 space-y-2'>
       <RadioGroup defaultValue={sortedAddress![0].id!}>
         {sortedAddress
           ?.slice(0, !isExpandList ? 1 : sortedAddress.length)!
@@ -64,6 +62,7 @@ const CheckoutAddressList = ({
           {sortedAddress!.length > 1 && (
             <>
               <button
+              data-cy='expand-collapse-address-btn-checkout'
                 onClick={toggleExpandList}
                 className='flex items-center gap'
               >
@@ -81,7 +80,7 @@ const CheckoutAddressList = ({
             </>
           )}
           {!isFormAddExpanded && (
-            <button onClick={() => onExpand(true)}>Thêm địa chỉ mới</button>
+            <button data-cy='add-new-address-btn-checkout'  onClick={() => onExpand(true)}>Thêm địa chỉ mới</button>
           )}
         </div>
       </div>
