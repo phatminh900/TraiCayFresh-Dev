@@ -12,7 +12,6 @@ export type CartProductItem = CartProductDetails & Pick<
   | "thumbnailImg"
   | "originalPrice"
   | "priceAfterDiscount"
-  | "discount"
 >;
 export type CartItem = {
   product: CartProductItem;
@@ -47,7 +46,6 @@ export const useCart = create<CartState>()(
               thumbnailImg,
               coupon,
               title,
-              discount,
               priceAfterDiscount,
               discountAmount,isAppliedCoupon,shippingCost,
             } = product;
@@ -59,7 +57,6 @@ export const useCart = create<CartState>()(
               quantity,
               thumbnailImg,
               title,
-              discount,
 
               priceAfterDiscount,
             };

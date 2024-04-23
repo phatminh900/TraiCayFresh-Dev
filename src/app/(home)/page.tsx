@@ -1,9 +1,7 @@
-import ProductItem from "@/components/molecules/product-item";
 import { Button, buttonVariants } from "@/components/ui/button";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getProducts } from "@/services/payload.service";
-import { getImgUrlMedia } from "@/utils/util.utls";
+import { getProducts } from "@/services/server/payload.service";
 import Link from "next/link";
 import ProductList from "./_components/product-list";
 

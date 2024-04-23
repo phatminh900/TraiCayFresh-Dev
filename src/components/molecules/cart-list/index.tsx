@@ -65,7 +65,6 @@ const CartList = ({ user, userCart }: CartListProps) => {
             originalPrice,
             thumbnailImg,
             title,
-            discount,
             priceAfterDiscount,
           },
           quantity,
@@ -83,7 +82,6 @@ const CartList = ({ user, userCart }: CartListProps) => {
           quantity,
           title,
           thumbnailImg,
-          discount,
           priceAfterDiscount,
         })
       );

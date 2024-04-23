@@ -13,3 +13,4 @@ export const SUPPORTED_PROVINCE = "Hồ Chí Minh";
 
 export const MAX_PHONE_NUMBER_ALLOWED=5
 export const MAX_ADDRESS_ALLOWED=5
+export const HOST_PHONE_NUMBER='0386325681'

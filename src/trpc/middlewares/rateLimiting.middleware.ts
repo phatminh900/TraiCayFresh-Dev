@@ -2,12 +2,12 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 
 import { TRPCError } from "@trpc/server";
 import { PayloadRequest } from "payload/types";
-import { middleware } from "../trpc";
+import { publicProcedure } from "../trpc";
 const rateLimiter = new RateLimiterMemory({
   points: 100, // max number of points
   duration: 60 * 60, // per 1 hour
 });
-const rateLimitMiddleware = middleware(async ({ ctx, next }) => {
+const rateLimitMiddleware = publicProcedure.use(async ({ ctx, next }) => {
   try {
     const req = ctx.req as PayloadRequest;
     await rateLimiter.consume(ctx.req.ip || req.user); // assuming ctx.ip is the user's IP

@@ -1,37 +1,16 @@
 "use client";
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import PageSubTitle from "@/components/ui/page-subTitle";
-import { trpc } from "@/trpc/trpc-client";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useState } from "react";
+import { PAYMENT_METHOD } from "../checkout-client";
 
-enum PAYMENT_METHOD {
-  "BY_CASH" = "BY_CASH",
-  "MOMO" = "MOMO",
-  "CREDIT_TRANSFER" = "CREDIT_TRANSFER",
+interface CheckoutPaymentMethodsProps {
+  onSetPaymentMethod:(type:PAYMENT_METHOD)=>void
+  method:PAYMENT_METHOD
 }
+const CheckoutPaymentMethods = ({method,onSetPaymentMethod}:CheckoutPaymentMethodsProps) => {
 
-const CheckoutPaymentMethods = () => {
-
-  const { mutate: checkoutWithMomo, isPending: isCheckingOutMomo } =
-    trpc.payment.payWithMomo.useMutation({
-      onError: (err) => {
-        console.log(err);
-      },
-      onSuccess: (data) => {
-        console.log('-----')
-        // @ts-ignore
-        if(data?.payUrl){
-        // @ts-ignore
-          window.open(data.payUrl,'_black')
-          console.log('----')
-          console.log(data)
-          console.log('not go in here???')
-        }
-        console.log(data);
-      },
-    });
-  const [method, setMethod] = useState<PAYMENT_METHOD>(PAYMENT_METHOD.BY_CASH);
   return (
     <div>
       <PageSubTitle>Phương thức thanh toán</PageSubTitle>
@@ -39,7 +18,7 @@ const CheckoutPaymentMethods = () => {
         data-cy='payment-method-box'
         className='mt-8'
         onValueChange={(value) => {
-          setMethod(value as PAYMENT_METHOD);
+          onSetPaymentMethod(value as PAYMENT_METHOD)
         }}
         defaultValue={method}
       >
@@ -75,18 +54,7 @@ const CheckoutPaymentMethods = () => {
         </div>
       </RadioGroup>
       <button
-        onClick={() => {
-          checkoutWithMomo({
-            orderId: "6621f409dd4200686c411db0",
-            amount: "10000",
-            items:[{currency:'VND',id:"d83jiji232",name:'Mangosteen',price:40000,quantity:1,imageUrl:"https://images.pexels.com/photos/2132031/pexels-photo-2132031.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}],
-            deliveryInfo: {
-              deliveryAddress: "42 Duong So 8",
-              deliveryFee: "0",
-              quantity: "1",
-            },
-          });
-        }}
+       
       >
         Checkout
       </button>

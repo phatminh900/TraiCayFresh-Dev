@@ -82,7 +82,7 @@ export const seedDb = async () => {
             isDefault: true,
             district: "Thành Phố Thủ Đức 1",
             ward: "Phường Linh Tây",
-            name: "Phat Tran",
+            name: "Phat",
             phoneNumber: "0352769981",
             street: "42 duong so 8",
           },

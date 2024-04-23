@@ -16,7 +16,6 @@ interface ProductItemProps extends IUser {
   id: string;
   href: string;
   originalPrice: number;
-  discount?: number;
 
   reviewQuantity?: number;
   priceAfterDiscount?: number | null;
@@ -32,7 +31,6 @@ const ProductItem = ({
   href,
   priceAfterDiscount,
   type = "horizontal",
-  discount,
   reviewQuantity = 1,
   reviewRating = 5,
 }: ProductItemProps) => {
@@ -49,7 +47,6 @@ const ProductItem = ({
       quantity: 1,
       thumbnailImg: src,
       title,
-      discount,
       priceAfterDiscount,
     },
     user,

@@ -9,6 +9,7 @@ export const APP_URL = {
   checkout:'/checkout',
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
+  orderStatus:'/order-status'
 } as const;
 
 export const APP_PARAMS = {
@@ -18,4 +19,5 @@ export const APP_PARAMS = {
   origin:'origin',
   currentQuantityOption: "currentQuantityOption",
   isOpenOtp:'isOpenOtp',
+  cartOrderId:'cartOrderId'
 } as const;

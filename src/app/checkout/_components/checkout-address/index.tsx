@@ -1,4 +1,3 @@
-"use client";
 import DeliveryAddress from "@/components/molecules/delivery-address";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import useAddress from "@/hooks/use-address";
@@ -8,10 +7,13 @@ import CheckoutAddressList from "./checkout-address-list";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import UserAddressFormAdd from "@/components/molecules/user-address-form-add";
+import { IShippingAddress } from "../checkout-client";
 
-interface CheckoutAddressProps extends IUser {}
+export interface CheckoutAddressProps extends IUser {
+  onSetShippingAddress:(shippingAddress:IShippingAddress)=>void
+}
 
-const CheckoutAddress = ({ user }: CheckoutAddressProps) => {
+const CheckoutAddress = ({ onSetShippingAddress,user }: CheckoutAddressProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleExpand = (state: boolean) => setIsExpanded(state);
   const {
@@ -24,6 +26,8 @@ const CheckoutAddress = ({ user }: CheckoutAddressProps) => {
     setPhoneNumberValue,
   } = useAddress();
   const isHasAddresses = user!.address!.length > 0;
+
+
   const addNewAddressTitle = (
     <PageSubTitle className='flex items-center gap-2'>
       Thêm địa chỉ nhận hàng mới
@@ -36,6 +40,7 @@ const CheckoutAddress = ({ user }: CheckoutAddressProps) => {
       </PageSubTitle>
       {isHasAddresses && (
         <CheckoutAddressList
+        onSetShippingAddress={onSetShippingAddress}
           isFormAddExpanded={isExpanded}
           onExpand={handleExpand}
           user={user}
@@ -44,6 +49,7 @@ const CheckoutAddress = ({ user }: CheckoutAddressProps) => {
       {!isHasAddresses && (
         <form>
           {addNewAddressTitle}
+          {/* TODO: */}
           <DeliveryAddress
             onSetName={setNameValue}
             onSetPhoneNumber={setPhoneNumberValue}

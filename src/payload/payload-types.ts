@@ -133,11 +133,26 @@ export interface Media {
  */
 export interface Order {
   id: string;
-  orderBy: string | Customer;
+  orderBy:
+    | {
+        relationTo: 'customers';
+        value: string | Customer;
+      }
+    | {
+        relationTo: 'customer-phone-number';
+        value: string | CustomerPhoneNumber;
+      };
   orderNotes?: string | null;
   total: number;
+  totalAfterCoupon?: number | null;
   _isPaid?: boolean | null;
-  status?: ('pending' | 'delivering' | 'canceled' | 'confirmed') | null;
+  shippingAddress: {
+    userName: string;
+    userPhoneNumber: string;
+    address: string;
+  };
+  status?: ('pending' | 'failed' | 'canceled' | 'confirmed') | null;
+  deliveryStatus?: ('pending' | 'delivering' | 'delivered' | 'canceled') | null;
   items?:
     | {
         product: string | Product;
@@ -195,31 +210,6 @@ export interface Customer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reviews".
- */
-export interface Review {
-  id: string;
-  text: string;
-  rating: number;
-  reviewImgs?: (string | Media)[] | null;
-  product: string | Product;
-  user: string | Customer;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "otp".
- */
-export interface Otp {
-  id: string;
-  otp?: string | null;
-  phoneNumber?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "customer-phone-number".
  */
 export interface CustomerPhoneNumber {
@@ -250,6 +240,31 @@ export interface CustomerPhoneNumber {
   purchases?: (string | Product)[] | null;
   cancelOrders?: number | null;
   isTrusted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: string;
+  text: string;
+  rating: number;
+  reviewImgs?: (string | Media)[] | null;
+  product: string | Product;
+  user: string | Customer;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "otp".
+ */
+export interface Otp {
+  id: string;
+  otp?: string | null;
+  phoneNumber?: string | null;
   updatedAt: string;
   createdAt: string;
 }

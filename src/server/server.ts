@@ -17,7 +17,7 @@ import { createContext } from '../trpc/context'
 
 const app = express()
 const PORT = process.env.PORT || 3000
-
+app.use(express.json())
 const start = async (): Promise<void> => {
   await payload.init({
     secret: process.env.PAYLOAD_SECRET || '',
@@ -54,6 +54,16 @@ const start = async (): Promise<void> => {
   //   }
   // });
   // limit the rate limit for applying coupon
+  app.use('/verify-momo-payment-success',(req,res)=>{
+    const transactionInfo = req.body;
+    console.log('--------')
+    console.log(transactionInfo);
+
+    // TODO: Xác minh thông tin giao dịch tại đây
+
+    // Phản hồi Momo với status code 200
+    res.sendStatus(200);
+  })
   app.use(
     '/api/trpc',
     trpcExpress.createExpressMiddleware({

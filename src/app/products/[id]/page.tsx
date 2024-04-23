@@ -7,7 +7,7 @@ import PageSubTitle from "@/components/ui/page-subTitle";
 import PageTitle from "@/components/ui/page-title";
 import ReviewRating from "@/components/ui/review-rating/review-rating";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getProduct } from "@/services/payload.service";
+import { getProduct } from "@/services/server/payload.service";
 import { formatPriceToVND } from "@/utils/util.utls";
 import ProductAddToCart from "./_components/product-add-to-cart";
 import ProductBuyNow from "./_components/product-buy-now";
@@ -65,7 +65,7 @@ const ProductPage = async ({
         <ProductBuyNow product={product} />
         <ProductAddToCart
           user={user}
-          product={{ ...product, quantity: currentQuantityOption }}
+          product={{ ...product, quantity: currentQuantityOption ,}}
         />
         <h4 className='text-lg font-bold mt-6 mb-2'>Mô tả sản phẩm</h4>
         <p className='mb-3'>

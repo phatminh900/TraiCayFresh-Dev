@@ -5,14 +5,18 @@ import { sortIsDefaultFirst } from "@/utils/util.utls";
 import { useEffect, useMemo, useState } from "react";
 import { IoCaretDownOutline } from "react-icons/io5";
 import CheckoutAddressDetails from "./checkout-address-details";
+import { CheckoutAddressProps } from ".";
 
-export interface CheckoutAddressListProps extends IUser {
+export interface CheckoutAddressListProps
+  extends IUser,
+    Pick<CheckoutAddressProps, "onSetShippingAddress"> {
   onExpand: (state: boolean) => void;
   isFormAddExpanded: boolean;
 }
 const CheckoutAddressList = ({
   isFormAddExpanded,
   onExpand,
+  onSetShippingAddress,
   user,
 }: CheckoutAddressListProps) => {
   const [expandedIndex, setExpandedIndex] = useState(-1);
@@ -23,7 +27,7 @@ const CheckoutAddressList = ({
     // close the form add if we open the adjust address form
     onExpand(false);
   };
-  const toggleExpandList = () => setIsExpandList((prev) => !prev);
+  const openAddressList = () => setIsExpandList(true);
   const sortedAddress = useMemo(() => {
     if (user?.address) {
       return sortIsDefaultFirst(user?.address);
@@ -36,14 +40,20 @@ const CheckoutAddressList = ({
       setExpandedIndex(-1);
     }
   }, [isFormAddExpanded]);
+  // default set the default one
+
   return (
-    <ul data-cy='user-address-list-checkout' className='bg-gray-200 rounded-md py-3 px-4 space-y-2'>
+    <ul
+      data-cy='user-address-list-checkout'
+      className='bg-gray-200 rounded-md py-3 px-4 space-y-2'
+    >
       <RadioGroup defaultValue={sortedAddress![0].id!}>
         {sortedAddress
           ?.slice(0, !isExpandList ? 1 : sortedAddress.length)!
           .map((ad, i) => (
             // <Fragment key={ad.id} sty >
             <CheckoutAddressDetails
+              onSetShippingAddress={onSetShippingAddress}
               key={ad.id}
               currentIndex={expandedIndex}
               isExpandedAddressList={isExpandList}
@@ -59,19 +69,15 @@ const CheckoutAddressList = ({
       <div className='grid grid-cols-[20px_1fr] mt-4 gap-3'>
         <div className='col-start-2 text-primary text-sm flex gap-2 items-center'>
           {/* more than 1 addresses */}
-          {sortedAddress!.length > 1 && (
+          {sortedAddress!.length > 1 && !isExpandList && (
             <>
               <button
-              data-cy='expand-collapse-address-btn-checkout'
-                onClick={toggleExpandList}
+                data-cy='expand-address-btn-checkout'
+                onClick={openAddressList}
                 className='flex items-center gap'
               >
-                {!isExpandList ? "Xem thêm 1 địa chỉ " : "Thu gọn"}{" "}
-                <IoCaretDownOutline
-                  className={cn(" duration-300 transition-all", {
-                    "-rotate-180": isExpandList,
-                  })}
-                />{" "}
+                Xem thêm {sortedAddress!.length - 1} địa chỉ
+                <IoCaretDownOutline />{" "}
               </button>
 
               {!isFormAddExpanded && (
@@ -80,7 +86,12 @@ const CheckoutAddressList = ({
             </>
           )}
           {!isFormAddExpanded && (
-            <button data-cy='add-new-address-btn-checkout'  onClick={() => onExpand(true)}>Thêm địa chỉ mới</button>
+            <button
+              data-cy='add-new-address-btn-checkout'
+              onClick={() => onExpand(true)}
+            >
+              Thêm địa chỉ mới
+            </button>
           )}
         </div>
       </div>

@@ -27,7 +27,6 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
     quantity,
     thumbnailImg,
     title,
-    discount,
     priceAfterDiscount,
   } = product ?? {};
 
@@ -39,7 +38,6 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
       quantity,
       thumbnailImg,
       title,
-      discount,
       priceAfterDiscount,
     });
   
@@ -93,7 +91,6 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
       quantity,
       thumbnailImg,
       title,
-      discount,
       priceAfterDiscount,
     });
   

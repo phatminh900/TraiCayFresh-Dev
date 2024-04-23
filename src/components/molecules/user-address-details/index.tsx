@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import ButtonDelete from "@/app/my-profile/_components/atoms/button-delete";
 import ButtonAdjust from "@/app/my-profile/_components/atoms/button-adjust";
 import ButtonSetDefault from "@/app/my-profile/_components/atoms/button-set-default";
-import { isEmailUser } from "@/utils/util.utls";
+import { formUserAddress, isEmailUser } from "@/utils/util.utls";
 
 export interface UserAddressDetailsProps extends IUser {
   id: string;
@@ -47,7 +47,7 @@ const UserAddressDetails = ({
     setPhoneNumberValue,
   } = useAddress({ ward, district, street, phoneNumber, name });
   // find districtId for auto completion delivering address
-  const address = `${street} , ${ward} , ${district}`;
+  const address =formUserAddress({street,ward,district})
 
   // user
 

@@ -3,28 +3,44 @@ import UserAddressDetails, {
 } from "@/components/molecules/user-address-details";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { CheckoutAddressProps } from ".";
+import { formUserAddress } from "@/utils/util.utls";
 
-interface CheckoutAddressDetailsProps extends UserAddressDetailsProps {
+interface CheckoutAddressDetailsProps
+  extends UserAddressDetailsProps,
+    Pick<CheckoutAddressProps, "onSetShippingAddress"> {
   currentIndex: number;
-  isExpandedAddressList:boolean
+  isExpandedAddressList: boolean;
   onExpand: (index: number) => void;
   name: string;
   phoneNumber: string;
   isDefault: boolean;
 }
 const CheckoutAddressDetails = (props: CheckoutAddressDetailsProps) => {
+  const { district, ward, street, name, phoneNumber, onSetShippingAddress } =
+    props;
   return (
-    <div data-cy='user-address-details-checkout' className={cn('grid grid-cols-[20px_1fr] gap-3 items-start py-2',{
-      'animate-in fade-in slide-in-from-top-2':props.isExpandedAddressList&&props.index>0
-    })}>
+    <div
+      data-cy='user-address-details-checkout'
+      className={cn("grid grid-cols-[20px_1fr] gap-3 items-start py-2", {
+        "animate-in fade-in slide-in-from-top-2":
+          props.isExpandedAddressList && props.index > 0,
+      })}
+    >
       <RadioGroupItem
+        onClick={() => {
+          onSetShippingAddress({
+            address: formUserAddress({ street, ward, district }),
+            userName: name,
+            userPhoneNumber: phoneNumber,
+          });
+        }}
         data-cy='user-address-radio-checkout'
         className='mt-8'
         value={props.id}
         id={`address-item-${props.id}`}
       />
       <UserAddressDetails {...props} />
-      
     </div>
   );
 };

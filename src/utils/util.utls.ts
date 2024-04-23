@@ -45,3 +45,7 @@ export const sortIsDefaultFirst = <
       }
     }) as T[];
 };
+
+export const formUserAddress=(address:{street:string,ward:string,district:string})=>{
+  return `${address.street} , ${address.ward} , ${address.district}`
+}
