@@ -53,3 +53,14 @@ export const COUPON_MESSAGE={
     EXPIRED:'Mã giảm giá đã hết hạn',
     ALREADY_APPLIED:"Mã giảm giá đã được áp dụng cho tất cả sản phẩm trong giỏ hàng của bạn"
 }
+
+export const CHECKOUT_MESSAGE={
+
+   ERROR:"Không thể đặt hàng ngay bây giờ vui lòng thử lại sau."
+}
+export const ORDER_MESSAGE={
+    NOT_FOUND:"Đơn hàng không được tìm thấy vui lòng thử lại",
+    SUCCESS_CANCEL_ORDER:"Đã hủy đơn hàng thành công",
+    BAD_REQUEST:"Không thể hủy đơn hàng"
+
+}

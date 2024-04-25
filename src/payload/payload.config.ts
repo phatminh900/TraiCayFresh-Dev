@@ -18,6 +18,7 @@ import { Orders } from "./collection/orders.collection";
 import { Otp } from "./collection/otp.collection";
 import { CustomerPhoneNumber } from "./collection/customer-phone-number.collection";
 import { Coupons } from "./collection/coupon.collection";
+import { Feedback } from "./collection/feedback.collection";
 
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
@@ -63,6 +64,7 @@ export default buildConfig({
     Otp,
     CustomerPhoneNumber,
     Coupons,
+    Feedback,
   ],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),

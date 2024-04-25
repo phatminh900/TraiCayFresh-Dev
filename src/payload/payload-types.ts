@@ -33,6 +33,7 @@ export interface Config {
     otp: Otp;
     'customer-phone-number': CustomerPhoneNumber;
     coupons: Coupon;
+    feedback: Feedback;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -151,6 +152,7 @@ export interface Order {
     userPhoneNumber: string;
     address: string;
   };
+  paymentMethod?: ('momo' | 'cash' | 'vnpay' | 'onepay') | null;
   status?: ('pending' | 'failed' | 'canceled' | 'confirmed') | null;
   deliveryStatus?: ('pending' | 'delivering' | 'delivered' | 'canceled') | null;
   items?:
@@ -160,6 +162,15 @@ export interface Order {
         quantity?: number | null;
         id?: string | null;
       }[]
+    | null;
+  cancelReason?:
+    | (
+        | 'update-address-phone-number'
+        | 'add-change-coupon-code'
+        | 'dont-want-to-buy'
+        | 'bad-service-quality'
+        | 'another-reason'
+      )
     | null;
   updatedAt: string;
   createdAt: string;
@@ -279,6 +290,26 @@ export interface Coupon {
   expiryDate: string;
   usageCount?: number | null;
   usageLimit?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback".
+ */
+export interface Feedback {
+  id: string;
+  feedback: string;
+  feedbackOption?: ('delivery-faster' | 'better-serve-attitude') | null;
+  user:
+    | {
+        relationTo: 'customers';
+        value: string | Customer;
+      }
+    | {
+        relationTo: 'customer-phone-number';
+        value: string | CustomerPhoneNumber;
+      };
   updatedAt: string;
   createdAt: string;
 }

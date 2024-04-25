@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { IoCartOutline, IoPersonOutline } from "react-icons/io5";
+import { cookies } from "next/headers";
 import { APP_URL } from "@/constants/navigation.constant";
-import HeaderNavMobile from "./header-nav-mobile";
+import { getUserServer } from "@/services/server/auth.service";
+import { IoPersonOutline } from "react-icons/io5";
 import HeaderCart from "./header-cart/header-cart";
+import HeaderNavMobile from "./header-nav-mobile";
 
-const Header = () => {
+const Header = async () => {
+  const nextCookie = cookies();
+  const user = await getUserServer(nextCookie);
   return (
     <header className='h-20 px-6 flex justify-between items-center shadow border-b border-b-zinc-100'>
       {/* Logo */}
@@ -16,7 +20,7 @@ const Header = () => {
         <Link href={APP_URL.myProfile}>
           <IoPersonOutline className='w-7 h-7 text-gray-800 hover:text-gray-800' />
         </Link>
-        <HeaderNavMobile />
+        <HeaderNavMobile user={user} />
       </div>
     </header>
   );

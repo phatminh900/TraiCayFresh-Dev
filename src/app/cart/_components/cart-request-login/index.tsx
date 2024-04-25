@@ -104,7 +104,8 @@ export function CartRequestLogin({
             <DrawerDescription className='text-sm text-center sm:text-base'>
               Vui lòng đăng nhập tại đây
             </DrawerDescription>
-            {LinkLogin}
+            <div className='flex justify-center my-2'>{LinkLogin}</div>
+
           </DrawerHeader>
           <SeparatorOption />
           <LoginByPhoneNumber

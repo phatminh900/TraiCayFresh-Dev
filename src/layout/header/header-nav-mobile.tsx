@@ -5,6 +5,7 @@ import { APP_URL } from "@/constants/navigation.constant";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { IUser } from "@/types/common-types";
 
 export interface ILink {
   label: string;
@@ -29,8 +30,9 @@ const LINKS: ILink[] = [
     href: APP_URL.home + "#about-us",
   },
 ];
+interface HeaderNavMobileProps extends IUser {}
 
-const HeaderNavMobile = () => {
+const HeaderNavMobile = ({ user }: HeaderNavMobileProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen((prev) => !prev);
   return (
@@ -65,16 +67,26 @@ const HeaderNavMobile = () => {
           {LINKS.map((link) => (
             <NavItem onClose={toggleOpenState} key={link.label} {...link} />
           ))}
-          <NavItem
-            onClose={toggleOpenState}
-            label='Login'
-            href={APP_URL.login}
-          />
-          <NavItem
-            onClose={toggleOpenState}
-            label='Sign up'
-            href={APP_URL.signUp}
-          />
+          {!user ? (
+            <>
+              <NavItem
+                onClose={toggleOpenState}
+                label='Đăng nhập'
+                href={APP_URL.login}
+              />
+              <NavItem
+                onClose={toggleOpenState}
+                label='Đăng kí'
+                href={APP_URL.signUp}
+              />
+            </>
+          ) : (
+            <NavItem
+              onClose={toggleOpenState}
+              label='Quản lý tài khoản'
+              href={APP_URL.myProfile}
+            />
+          )}
         </ul>
       </nav>
     </div>

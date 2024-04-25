@@ -16,3 +16,6 @@ export const REQUIRED_DISTRICT = "Vui lòng chọn Quận / Huyện";
 export const REQUIRED_WARD = "Vui lòng chọn Phường / Xã";
 
 export const INVALID_STREET_TYPE = "Vui lòng nhập đúng địa chỉ";
+
+
+export const INVALID_FEEDBACK='Góp ý phải dài hơn 10 từ'

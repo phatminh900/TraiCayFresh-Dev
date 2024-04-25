@@ -1,39 +1,148 @@
+import path from "path";
 import dotenv from "dotenv";
 import { z } from "zod";
+import moment from "moment";
+import querystring from "qs";
 import { getUserProcedure, router, USER_TYPE } from "../trpc";
-import path from "path";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { isEmailUser } from "../../utils/util.utls";
-import { Product } from "@/payload/payload-types";
+import { Customer, CustomerPhoneNumber, Product } from "../../payload/payload-types";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { APP_PARAMS, APP_URL } from "../../constants/navigation.constant";
+import { CHECKOUT_MESSAGE } from "../../constants/api-messages.constant";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+
+
+
+
+
+const calculateUserAmountAndCreateOrderItems=async(user:Customer|CustomerPhoneNumber)=>{
+  const payload=await getPayloadClient()
+  const userCart = (
+    await payload.findByID({
+      collection: isEmailUser(user)
+        ? "customers"
+        : "customer-phone-number",
+      id: user.id,
+      depth: 2,
+    })!
+  ).cart?.items;
+
+  // return total + item.quantity! * (item.priceAfterDiscount! || item.originalPrice!),
+
+  if (!userCart) return ;
+  const cartTotalPrice = userCart.reduce((total, item) => {
+    const product = item.product as Product;
+    return (
+      total +
+      item.quantity! *
+        (product.priceAfterDiscount! || product.originalPrice!)
+    );
+  }, 0);
+  // let price
+  let totalAfterCoupon = 0;
+  let amount = cartTotalPrice;
+  // check if having coupon and still valid
+  const coupon = userCart.find((item) => item.coupon)?.coupon;
+  if (coupon) {
+    // check if the coupon still valid
+    const couponInDb = await payload.find({
+      collection: "coupons",
+      where: { coupon: { equals: coupon } },
+    });
+    if (!couponInDb) {
+      amount = cartTotalPrice;
+      return;
+    }
+    const salePrice = userCart.reduce((total, item) => {
+      const product = item.product as Product;
+      if (item.discountAmount) {
+        return (
+          total +
+          (item.discountAmount *
+            item.quantity! *
+            (product.priceAfterDiscount || product.originalPrice)) /
+            100
+        );
+      }
+      return total;
+    }, 0);
+    const priceAfterDiscount = cartTotalPrice - salePrice;
+    amount = priceAfterDiscount;
+    totalAfterCoupon = priceAfterDiscount;
+  }
+  // create order
+  const orderItems = userCart.map((item) => {
+    const product = item.product as Product;
+    return {
+      product: product.id,
+      price: product.priceAfterDiscount || product.originalPrice,
+      quantity: item.quantity,
+    };
+  });
+  return {amount,totalAfterCoupon,orderItems,userCart}
+}
+
+const CheckoutInfoSchema = z.object({
+  orderNotes: z.string().optional(),
+  shippingAddress: z.object({
+    address: z.string(),
+    userName: z.string(),
+    userPhoneNumber: z.string(),
+  }),
+  // deliveryInfo: z.object({
+  //   deliveryAddress: z.string(),
+  //   deliveryFee: z.string(),
+  //   quantity: z.string(),
+  // }),
+  // items: z.array(
+  //   z.object({
+  //     id: z.string(),
+  //     imageUrl: z.string(),
+  //     currency: z.literal("VND"),
+  //     quantity: z.number(),
+  //     // totalAmount: z.number(),
+  //   })
+  // ),
+});
+
 const PaymentRouter = router({
+  payWithCash:getUserProcedure.input(CheckoutInfoSchema).mutation(async({ctx,input})=>{
+    const { orderNotes, shippingAddress } = input;
+    const { user, type: userType } = ctx;
+    try {
+      const payload=await getPayloadClient()
+      // new order
+      const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
+      if(!resultCalculateAndOrderItems) return
+      const {amount,orderItems,totalAfterCoupon,userCart}=resultCalculateAndOrderItems
+      const newOrder = await payload.create({
+        collection: "orders",
+        data: {
+          orderBy: {
+            value: user.id,
+            relationTo:
+              userType === USER_TYPE.email
+                ? "customers"
+                : "customer-phone-number",
+          },
+          total: amount,
+          items: orderItems,
+          orderNotes,
+          _isPaid: false,
+          totalAfterCoupon,
+          shippingAddress: shippingAddress,
+          status: "pending",
+        },
+      });
+      return {success:true,url:`${process.env.NEXT_PUBLIC_SERVER_URL}${APP_URL.orderStatus}?${APP_PARAMS.cartOrderId}=${newOrder.id}`}
+
+    } catch (error) {
+      throwTrpcInternalServer(error)
+    }
+  }),
   payWithMomo: getUserProcedure
-    .input(
-      z.object({
-        orderNotes: z.string().optional(),
-        shippingAddress: z.object({
-          address: z.string(),
-          userName: z.string(),
-          userPhoneNumber: z.string(),
-        }),
-        // deliveryInfo: z.object({
-        //   deliveryAddress: z.string(),
-        //   deliveryFee: z.string(),
-        //   quantity: z.string(),
-        // }),
-        // items: z.array(
-        //   z.object({
-        //     id: z.string(),
-        //     imageUrl: z.string(),
-        //     currency: z.literal("VND"),
-        //     quantity: z.number(),
-        //     // totalAmount: z.number(),
-        //   })
-        // ),
-      })
-    )
+    .input(CheckoutInfoSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         const payload = await getPayloadClient();
@@ -41,68 +150,12 @@ const PaymentRouter = router({
         const { orderNotes, shippingAddress } = input;
         const { user, type: userType } = ctx;
         // if no user already handle in the previous middleware
-        const userCart = (
-          await payload.findByID({
-            collection: isEmailUser(user)
-              ? "customers"
-              : "customer-phone-number",
-            id: user.id,
-            depth: 2,
-          })!
-        ).cart?.items;
-
-        // return total + item.quantity! * (item.priceAfterDiscount! || item.originalPrice!),
-
-        if (!userCart) return;
-        const cartTotalPrice = userCart.reduce((total, item) => {
-          const product = item.product as Product;
-          return (
-            total +
-            item.quantity! *
-              (product.priceAfterDiscount! || product.originalPrice!)
-          );
-        }, 0);
-        // let price
-        let totalAfterCoupon = 0;
-        let amount = cartTotalPrice;
-        // check if having coupon and still valid
-        const coupon = userCart.find((item) => item.coupon)?.coupon;
-        if (coupon) {
-          // check if the coupon still valid
-          const couponInDb = await payload.find({
-            collection: "coupons",
-            where: { coupon: { equals: coupon } },
-          });
-          if (!couponInDb) {
-            amount = cartTotalPrice;
-            return;
-          }
-          const salePrice = userCart.reduce((total, item) => {
-            const product = item.product as Product;
-            if (item.discountAmount) {
-              return (
-                total +
-                (item.discountAmount *
-                  item.quantity! *
-                  (product.priceAfterDiscount || product.originalPrice)) /
-                  100
-              );
-            }
-            return total;
-          }, 0);
-          const priceAfterDiscount = cartTotalPrice - salePrice;
-          amount = priceAfterDiscount;
-          totalAfterCoupon = priceAfterDiscount;
-        }
+        const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
+        if(!resultCalculateAndOrderItems) return
+        const {amount,orderItems,totalAfterCoupon,userCart}=resultCalculateAndOrderItems
+       
+       
         // create order
-        const orderItems = userCart.map((item) => {
-          const product = item.product as Product;
-          return {
-            product: product.id,
-            price: product.priceAfterDiscount || product.originalPrice,
-            quantity: item.quantity,
-          };
-        });
 
         //parameters
         const partnerCode = process.env.MOMO_PARTNER_CODE!;
@@ -228,7 +281,7 @@ const PaymentRouter = router({
               if (payUrl) {
                 // create order
 
-                resolve({ success: true, payUrl });
+                resolve({ success: true, url: payUrl });
               }
             });
             res.on("end", () => {
@@ -249,7 +302,7 @@ const PaymentRouter = router({
           req.end();
         });
       } catch (error) {
-        throwTrpcInternalServer(error);
+      throw new Error(CHECKOUT_MESSAGE.ERROR)
       }
     }),
 
@@ -263,6 +316,124 @@ const PaymentRouter = router({
     // Phản hồi Momo với status code 200
     res.sendStatus(200);
   }),
+  payWithVnPay: getUserProcedure
+    .input(CheckoutInfoSchema)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const payload = await getPayloadClient();
+        //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
+        const { orderNotes, shippingAddress } = input;
+        const { user, type: userType, req } = ctx;
+        const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
+        if(!resultCalculateAndOrderItems) return
+        const {amount,orderItems,totalAfterCoupon,userCart}=resultCalculateAndOrderItems
+        // if no user already handle in the previous middleware
+       
+
+        //parameters
+        console.log("----amount");
+        console.log(amount);
+
+        // create new order in db
+        const newOrder = await payload.create({
+          collection: "orders",
+          data: {
+            orderBy: {
+              value: user.id,
+              relationTo:
+                userType === USER_TYPE.email
+                  ? "customers"
+                  : "customer-phone-number",
+            },
+            total: amount,
+            items: orderItems,
+            orderNotes,
+
+            _isPaid: false,
+            totalAfterCoupon,
+            shippingAddress: shippingAddress,
+            status: "pending",
+          },
+        });
+
+        let date = new Date();
+        let createDate = moment(date).format("YYYYMMDDHHmmss");
+
+        let ipAddr =
+          req.headers["x-forwarded-for"] ||
+          req.connection.remoteAddress ||
+          req.socket.remoteAddress ||
+          // @ts-ignore
+          req.connection.socket.remoteAddress;
+
+        let tmnCode = process.env.VN_PAY_TMN_CODE;
+        let secretKey = process.env.VN_PAY_SECRET_KEY;
+        let vnpUrl = process.env.VN_PAY_URL;
+        let returnUrl =`${process.env.NEXT_PUBLIC_SERVER_URL}${APP_URL.orderStatus}?${APP_PARAMS.cartOrderId}=${newOrder.id}`;
+        let orderId = newOrder.id;
+        const orderDetails = userCart.reduce((acc, item) => {
+          const product = item.product as Product;
+          return `${acc}${acc ? "," : ""} ${item.quantity}KG ${product.title}`;
+        }, "");
+        // normalize vietnamese
+        const orderInfo = `Thanh toán ${orderDetails}`
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+        let bankCode;
+
+        let locale = "vn";
+        if (locale === null || locale === "") {
+          locale = "vn";
+        }
+        let currCode = "VND";
+        let vnp_Params:any = {};
+        vnp_Params["vnp_Version"] = "2.1.0";
+        vnp_Params["vnp_Command"] = "pay";
+        vnp_Params["vnp_TmnCode"] = tmnCode;
+        vnp_Params["vnp_Locale"] = locale;
+        vnp_Params["vnp_CurrCode"] = currCode;
+        vnp_Params["vnp_TxnRef"] = orderId;
+        vnp_Params["vnp_OrderInfo"] = orderInfo;
+        vnp_Params["vnp_OrderType"] = "other";
+        vnp_Params["vnp_Amount"] = amount * 100;
+        vnp_Params["vnp_ReturnUrl"] = returnUrl;
+        vnp_Params["vnp_IpAddr"] = ipAddr;
+        vnp_Params["vnp_CreateDate"] = createDate;
+        // if (bankCode !== null && bankCode !== "") {
+        //   vnp_Params["vnp_BankCode"] = bankCode;
+        // }
+
+        vnp_Params = sortObject(vnp_Params);
+
+        let signData = querystring.stringify(vnp_Params, { encode: false });
+        let crypto = require("crypto");
+        let hmac = crypto.createHmac("sha512", secretKey);
+        let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+        vnp_Params["vnp_SecureHash"] = signed;
+        vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
+        return { success: true, url: vnpUrl };
+        // res.redirect(vnpUrl);
+      } catch (error) {
+      throw new Error(CHECKOUT_MESSAGE.ERROR)
+      }
+    }),
 });
 
 export default PaymentRouter;
+
+function sortObject(obj:any) {
+  let sorted:any = {};
+  let str = [];
+  let key;
+  for (key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      str.push(encodeURIComponent(key));
+    }
+  }
+  str.sort();
+  for (key = 0; key < str.length; key++) {
+    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+  }
+  return sorted;
+}

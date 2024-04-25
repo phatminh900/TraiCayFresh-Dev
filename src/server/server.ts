@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import next from 'next'
 import * as trpcExpress from '@trpc/server/adapters/express'
-
+import VnpayRouter from './routers/vn-pay.router'
 import nextBuild from 'next/dist/build'
 import path from 'path'
 
@@ -64,6 +64,7 @@ const start = async (): Promise<void> => {
     // Phản hồi Momo với status code 200
     res.sendStatus(200);
   })
+  app.use(VnpayRouter)
   app.use(
     '/api/trpc',
     trpcExpress.createExpressMiddleware({
@@ -72,6 +73,10 @@ const start = async (): Promise<void> => {
     })
   )
  
+
+
+
+
   app.use((req, res) => nextHandler(req, res))
 
   nextApp.prepare().then(() => {
@@ -84,3 +89,5 @@ const start = async (): Promise<void> => {
 }
 
 start()
+
+
