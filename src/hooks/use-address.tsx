@@ -13,14 +13,14 @@ const useAddress = (defaultValue?: IAddressValidation) => {
     register,
     handleSubmit,
     setValue,
+    clearErrors,
     watch,
-    setError,
+    trigger,
     formState: { errors },
   } = useForm<IAddressValidation>({
     resolver: zodResolver(AddressValidationSchema),
     defaultValues: defaultValue,
   });
-
   const setDistrictValue = useCallback(
     (district: string) => {
       setValue("district", district);
@@ -48,26 +48,32 @@ const useAddress = (defaultValue?: IAddressValidation) => {
     // reset if the value is set
     if (Object.keys(errors).length) {
       if (nameValue) {
-        setError("name", { message: "" });
+        clearErrors('name')
+        // setError("name", { message: "" });
       }
       if (PhoneValidationSchema.safeParse({phoneNumber:phoneNumberValue}).success) {
-        setError("phoneNumber", { message: "" });
+        clearErrors('phoneNumber')
+
+        // setError("phoneNumber", { message: "" });
       }
       if (districtValue) {
-        setError("district", { message: "" });
+        clearErrors('district')
+        // setError("district", { message: "" });
       }
       if (wardValue) {
-        setError("ward", { message: "" });
+        clearErrors('ward')
+        // setError("ward", { message: "" });
       }
       if (
         AddressValidationSchema.pick({ street: true }).safeParse(streetValue)
           .success
       ) {
-        setError("street", { message: "" });
+        clearErrors('street')
+        // setError("street", { message: "" });
       }
     }
-  }, [districtValue, streetValue, wardValue, setError, errors,nameValue,phoneNumberValue]);
-  return { setWardValue, setDistrictValue, register, handleSubmit, errors ,setNameValue,setPhoneNumberValue};
+  }, [districtValue, streetValue, wardValue, clearErrors, errors,nameValue,phoneNumberValue]);
+  return { setWardValue, setDistrictValue, register, handleSubmit, errors ,setNameValue,setPhoneNumberValue,trigger,watch};
 };
 
 export default useAddress;

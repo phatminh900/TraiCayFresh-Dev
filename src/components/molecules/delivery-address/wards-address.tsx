@@ -19,18 +19,22 @@ import {
 } from "@/components/ui/popover";
 import { trpc } from "@/trpc/trpc-client";
 import type { DeliveryAddressProps } from ".";
+import { FieldError } from "react-hook-form";
 
 interface WardAddressProps extends Pick<DeliveryAddressProps,'onSetWard'> {
   defaultValue?: string;
   districtId: number | null;
+  error?:FieldError
 }
 
 const WardAddress = ({
   onSetWard,
+  error,
   districtId,
   defaultValue,
 }: WardAddressProps) => {
   const [value, setValue] = useState(defaultValue || "");
+  console.log(districtId)
   const [open, setOpen] = useState(false);
   const {data:wardsResult,refetch:getWards}=trpc.address.getHcmWards.useQuery({districtId:districtId||1},{enabled:false})
   const wardsData=wardsResult?.wards||[]
@@ -70,6 +74,8 @@ const WardAddress = ({
             "w-full text-start flex justify-start border-gray-200 text-muted-foreground hover:bg-background focus-visible:border-primary",
             {
               "text-gray-800 border-gray-500": value,
+              "invalid-input":error
+
             }
           )}
         >

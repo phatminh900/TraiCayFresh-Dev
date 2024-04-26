@@ -167,11 +167,7 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
         <Input
           type='tel'
           value={phoneNumber}
-          className={cn({
-            "bg-slate-200": type === "adjust",
-            "focus-visible:ring-red-500 ring-1 ring-red-400 w-full":
-              errors.phoneNumber,
-          })}
+         error={errors.phoneNumber}
           pattern='^[0-9]*$'
           {...register("phoneNumber", {
             required: "Vui lòng nhập số điện thoại",

@@ -21,7 +21,7 @@ const ProductReviews = () => {
       <ul className='flex flex-wrap gap-2'>
         {reviewFilter.map((filter, i) => (
           <li className="flex-1" key={filter.label}>
-            <button className='whitespace-nowrap w-full text-sm px-2 py-1.5 flex justify-center items-center gap-1.5 border rounded-sm hover:border-primary'>
+            <button className='whitespace-nowrap w-full text-sm px-2 py-1.5 flex-center gap-1.5 border rounded-sm hover:border-primary'>
               {i !== 0 ? (
                 <>
                   {filter.label} <IoStar className='w-4 h-4 text-secondary' />{" "}

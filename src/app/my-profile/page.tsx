@@ -16,7 +16,6 @@ import UserEmail from "./_components/user-email";
 const MyProfilePage = async () => {
   const nextCookies = cookies();
   const user = await getUserServer(nextCookies);
- 
   return (
     <>
       <BreadCrumbLinks

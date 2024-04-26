@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
 import { Label } from "@/components/ui/label";
 import { APP_URL } from "@/constants/navigation.constant";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Auth from "../_component/auth";
 import ErrorMsg from "../_component/error-msg";
@@ -36,9 +35,7 @@ const SignUpPage = () => {
           <Input
             data-cy='input-name-sign-up'
             {...register("name")}
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.name,
-            })}
+            error={errors.name}
             placeholder='Tên của bạn'
             id='name'
           />
@@ -52,9 +49,7 @@ const SignUpPage = () => {
             {...register("email")}
             data-cy='input-email-sign-up'
             type='email'
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.email,
-            })}
+            error={errors.email}
             placeholder='email@gmail.com'
             id='email'
           />
@@ -76,9 +71,7 @@ const SignUpPage = () => {
               },
             })}
             data-cy='input-password-sign-up'
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.password,
-            })}
+            error={errors.password}
             placeholder='Mật khẩu'
             id='password'
           />
@@ -100,10 +93,7 @@ const SignUpPage = () => {
               },
             })}
             data-cy='input-password-confirm-sign-up'
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400":
-                errors.passwordConfirm,
-            })}
+            error={errors.passwordConfirm}
             placeholder='Nhập lại mật khẩu'
             id='password-confirm'
           />
@@ -120,7 +110,7 @@ const SignUpPage = () => {
         </Button>
 
         <Link
-        data-cy='link-to-login-instead'
+          data-cy='link-to-login-instead'
           href={APP_URL.login}
           className={buttonVariants({ variant: "link" })}
         >

@@ -29,7 +29,7 @@ export const AUTH_MESSAGE={
 
 }
 export const OTP_MESSAGE={
-    SUCCESS: "Mã xác nhận đã được gửi đến số điện thoại của bạn và có hiệu lực trong 2 phút",
+    SUCCESS: "Mã xác nhận đã được gửi đến số điện thoại của bạn và có hiệu lực trong 3 phút",
     SUCCESS_SENT_OTP_AGAIN:"OTP đã được gửi lại vào số điện thoại của bạn",
     VERIFY_SUCCESSFULLY:"Xác thực thành công"
 }

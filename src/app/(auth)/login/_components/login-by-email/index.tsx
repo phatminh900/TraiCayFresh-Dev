@@ -77,9 +77,7 @@ const LoginByEmail = () => {
           <Input
             data-cy='input-email-login'
             {...register("email")}
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.email,
-            })}
+           error={errors.email}
             placeholder='email@gmail.com'
             id='email'
           />
@@ -94,9 +92,7 @@ const LoginByEmail = () => {
           <InputPassword
             data-cy='input-password-login'
             {...register("password")}
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.password,
-            })}
+           error={errors.password}
             placeholder='Nhập mật khẩu'
             id='password'
           />

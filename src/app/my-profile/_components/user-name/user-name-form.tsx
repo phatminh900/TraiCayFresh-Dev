@@ -76,9 +76,7 @@ const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
       className='my-4 w-full fade-in-15'
     >
       <Input
-        className={cn("bg-slate-200 w-full", {
-          "focus-visible:ring-red-500 ring-1 ring-red-400 w-full": errors.name,
-        })}
+       error={errors.name}
         {...register("name")}
       />
       {errors.name && <ErrorMsg msg={errors.name.message} />}

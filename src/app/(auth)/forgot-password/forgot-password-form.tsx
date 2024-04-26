@@ -103,9 +103,7 @@ const ForgotPasswordForm = () => {
           </Label>
           <Input
             data-cy='input-email-forgot-password'
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.email,
-            })}
+    error={errors.email}
             {...register("email")}
             placeholder='email@gmail.com'
             id='email'

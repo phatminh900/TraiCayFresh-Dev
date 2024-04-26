@@ -99,9 +99,7 @@ const ResetPassword = () => {
                 }
               },
             })}
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.password,
-            })}
+          error={errors.password}
             placeholder='Mật khẩu mới'
             id='password'
           />
@@ -122,9 +120,7 @@ const ResetPassword = () => {
                 }
               },
             })}
-            className={cn({
-              "focus-visible:ring-red-500 ring-1 ring-red-400": errors.password,
-            })}
+           error={errors.password}
             placeholder='Nhập lại mật khẩu mới'
             id='password-confirm'
           />

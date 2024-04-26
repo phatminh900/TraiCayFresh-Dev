@@ -3,11 +3,11 @@ import {
   Command,
   CommandGroup,
   CommandItem,
-  CommandList
+  CommandList,
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
 import type { DeliveryAddressProps } from ".";
@@ -17,26 +17,37 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { FieldError } from "react-hook-form";
 
 interface UserPhoneNumberAddressProps
-  extends Pick<DeliveryAddressProps, "onSetPhoneNumber"|"phoneNumberList"> {
+  extends Pick<DeliveryAddressProps, "onSetPhoneNumber" | "phoneNumberList"> {
   defaultValue?: string;
-  
+  error?: FieldError;
 }
+let init = true;
 const UserPhoneNumberAddress = ({
   defaultValue,
+  error,
   onSetPhoneNumber,
   phoneNumberList,
 }: UserPhoneNumberAddressProps) => {
   const [isOpenPhoneNumberList, setIsOpenPhoneNumberList] = useState(false);
   const [isShowListOfNumber, setIsShowListOfNumber] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState(defaultValue || "");
+
+  useEffect(() => {
+    if (defaultValue && init) {
+      init = false;
+      onSetPhoneNumber(defaultValue);
+    }
+  }, [defaultValue, onSetPhoneNumber]);
   if (
     phoneNumberList &&
     Array.isArray(phoneNumberList) &&
     phoneNumberList.length > 1
   ) {
     const handleToggleOpenList = () => setIsOpenPhoneNumberList((prev) => prev);
+
     return (
       <Popover
         open={isOpenPhoneNumberList}
@@ -68,12 +79,13 @@ const UserPhoneNumberAddress = ({
               }}
             >
               <Input
+                error={error}
                 value={phoneNumber}
                 onChange={(e) => {
                   const value = e.target.value;
                   setPhoneNumber(value);
                   onSetPhoneNumber(value);
-                  
+
                   if (
                     phoneNumberList.find(
                       (number) => number.phoneNumber === value
@@ -132,6 +144,7 @@ const UserPhoneNumberAddress = ({
     <div data-cy='user-phone-number-address' className='flex-1'>
       <Input
         value={phoneNumber}
+        error={error}
         onChange={(e) => {
           const value = e.target.value;
           setPhoneNumber(value);

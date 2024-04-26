@@ -13,6 +13,13 @@ import { SUPPORTED_PROVINCE } from "@/constants/configs.constant";
 import UserNameAddress from "./user-name-address";
 import UserPhoneNumberAddress from "./user-phone-number-address";
 import { Customer } from "@/payload/payload-types";
+import {
+  REQUIRED_DISTRICT,
+  REQUIRED_NAME,
+  REQUIRED_PHONE_NUMBER,
+  REQUIRED_STREET,
+  REQUIRED_WARD,
+} from "@/constants/validation-message.constant";
 
 type IErrorFieldType =
   | FieldError
@@ -35,7 +42,7 @@ export interface DeliveryAddressProps {
   defaultUserPhoneNumber?: string;
   register: UseFormRegister<IAddressValidation>;
   errors: FieldErrors<IAddressValidation>;
-  phoneNumberList?:Customer['phoneNumbers'],
+  phoneNumberList?: Customer["phoneNumbers"];
   onSetDistrict: (district: string) => void;
 
   onSetName: (userName: string) => void;
@@ -77,38 +84,43 @@ const DeliveryAddress = ({
     }
   }, [errorEntries]);
   return (
-    <div className='flex flex-col gap-4'>
-      <div className="flex gap-4" >
-        <div className="flex-1">
-        <UserNameAddress onSetName={onSetName} defaultValue={defaultUserName} />
-        {errors.name?.message && (
-          <ErrorMsg
-            className='text-xs md:text-base'
-            msg={
-              errors.name.message === "Required"
-                ? "Vui lòng chọn Phường / Xã"
-                : errors.name.message
-            }
+    <div id='delivery-address-box' className='flex flex-col gap-4'>
+      <div className='flex gap-4'>
+        <div className='flex-1'>
+          <UserNameAddress
+          error={errors.name}
+            onSetName={onSetName}
+            defaultValue={defaultUserName}
           />
-        )}
+          {errors.name?.message && (
+            <ErrorMsg
+              className='text-xs md:text-base'
+              msg={
+                errors.name.message === "Required"
+                  ? REQUIRED_NAME
+                  : errors.name.message
+              }
+            />
+          )}
         </div>
-       <div className="flex-1">
-       <UserPhoneNumberAddress
-       phoneNumberList={phoneNumberList}
-          onSetPhoneNumber={onSetPhoneNumber}
-          defaultValue={defaultUserPhoneNumber}
-        />
-         {errors.phoneNumber && (
-          <ErrorMsg
-            className='text-xs md:text-base'
-            msg={
-              errors.phoneNumber.message === "Required"
-                ? "Vui lòng chọn Phường / Xã"
-                : errors.phoneNumber.message
-            }
+        <div className='flex-1'>
+          <UserPhoneNumberAddress
+          error={errors.phoneNumber}
+            phoneNumberList={phoneNumberList}
+            onSetPhoneNumber={onSetPhoneNumber}
+            defaultValue={defaultUserPhoneNumber}
           />
-        )}
-       </div>
+          {errors.phoneNumber && (
+            <ErrorMsg
+              className='text-xs md:text-base'
+              msg={
+                errors.phoneNumber.message === "Required"
+                  ? REQUIRED_PHONE_NUMBER
+                  : errors.phoneNumber.message
+              }
+            />
+          )}
+        </div>
       </div>
       <div className='flex items-center gap-4'>
         <div
@@ -134,7 +146,7 @@ const DeliveryAddress = ({
           })}
         >
           <DistrictAddress
-          
+          error={errors.district}
             defaultValue={defaultDistrictValue}
             currentSelectedDistrictId={districtId}
             onSetDistrict={onSetDistrict}
@@ -145,7 +157,7 @@ const DeliveryAddress = ({
               className='text-xs md:text-base'
               msg={
                 errors.district.message === "Required"
-                  ? "Vui lòng chọn Quận / Huyện"
+                  ? REQUIRED_DISTRICT
                   : errors.district.message
               }
             />
@@ -158,6 +170,7 @@ const DeliveryAddress = ({
         })}
       >
         <WardsAddress
+        error={errors.ward}
           defaultValue={defaultWardValue}
           onSetWard={onSetWard}
           districtId={districtId}
@@ -167,7 +180,7 @@ const DeliveryAddress = ({
             className='text-xs md:text-base'
             msg={
               errors.ward.message === "Required"
-                ? "Vui lòng chọn Phường / Xã"
+                ? REQUIRED_WARD
                 : errors.ward.message
             }
           />
@@ -180,6 +193,7 @@ const DeliveryAddress = ({
       >
         <Input
           {...register("street")}
+          error={errors.street}
           data-cy='street-address-item'
           defaultValue=''
           placeholder='Số nhà tên đường'
@@ -190,7 +204,7 @@ const DeliveryAddress = ({
             className='text-xs md:text-base'
             msg={
               errors.street.message === "required"
-                ? "Vui lòng nhập số nhà và tên đường"
+                ? REQUIRED_STREET
                 : errors.street.message
             }
           />
@@ -200,4 +214,4 @@ const DeliveryAddress = ({
   );
 };
 
-export default (DeliveryAddress);
+export default DeliveryAddress;

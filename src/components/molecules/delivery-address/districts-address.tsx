@@ -20,16 +20,19 @@ import {
 } from "@/components/ui/popover";
 import { trpc } from "@/trpc/trpc-client";
 import { DeliveryAddressProps } from ".";
+import { FieldError } from "react-hook-form";
 
 interface DistrictAddressProps
   extends Pick<DeliveryAddressProps, "onSetDistrict"> {
   defaultValue?: string;
+  error?:FieldError,
   currentSelectedDistrictId: number | null;
   onSetDistrictId: (id: number) => void;
 }
 function DistrictAddress({
   currentSelectedDistrictId,
   onSetDistrict,
+  error,
   defaultValue,
   onSetDistrictId,
 }: DistrictAddressProps) {
@@ -72,6 +75,7 @@ function DistrictAddress({
             "w-full text-start flex justify-start border-gray-200 text-muted-foreground hover:bg-background focus-visible:border-primary",
             {
               "text-gray-800 border-gray-500": value,
+              "invalid-input":error
             }
           )}
         >

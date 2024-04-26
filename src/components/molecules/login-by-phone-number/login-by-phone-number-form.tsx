@@ -9,11 +9,12 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
-import {  validateNumericInput } from "@/utils/util.utls";
+import { validateNumericInput } from "@/utils/util.utls";
 import {
   IPhoneNumberValidation,
   PhoneValidationSchema,
 } from "@/validations/user-infor.valiator";
+import { handleTrpcSuccess } from "@/utils/success.util";
 
 interface LoginByPhoneNumberProps {
   onSetIsShowOtp: (state: boolean) => void;
@@ -33,11 +34,8 @@ const LoginByPhoneNumber = ({
       onError: (err) => {
         handleTrpcErrors(err);
       },
-      onSuccess: () => {
-        router.refresh();
-        toast.success(
-          "Mã xác nhận đã được gửi đến số điện thoại của bạn và có hiệu lực trong 1 phút"
-        );
+      onSuccess: (data) => {
+        handleTrpcSuccess(router, data?.message);
         onSetIsShowOtp(true);
       },
     });
@@ -48,7 +46,7 @@ const LoginByPhoneNumber = ({
     formState: { errors },
   } = useForm<IPhoneNumberValidation>({});
   const handleSendPhoneVerification = handleSubmit(({ phoneNumber }) => {
-    loginByPhoneNumber({ phoneNumber: (phoneNumber) });
+    loginByPhoneNumber({ phoneNumber: phoneNumber });
   });
   const validateIsNumberEntered = (e: ChangeEvent<HTMLInputElement>) => {
     if (validateNumericInput(e.target.value)) {
@@ -58,9 +56,9 @@ const LoginByPhoneNumber = ({
     }
     return;
   };
-  useEffect(()=>{
-    setFocus('phoneNumber')
-  },[setFocus])
+  useEffect(() => {
+    setFocus("phoneNumber");
+  }, [setFocus]);
   return (
     <form
       data-cy='login-by-phone-number-form'
@@ -71,10 +69,7 @@ const LoginByPhoneNumber = ({
       <Input
         type='tel'
         value={phoneNumber}
-        className={cn({
-          "focus-visible:ring-red-500 ring-1 ring-red-400 w-full":
-            errors.phoneNumber,
-        })}
+        error={errors.phoneNumber}
         pattern='^[0-9]*$'
         {...register("phoneNumber", {
           required: "Vui lòng nhập số điện thoại",

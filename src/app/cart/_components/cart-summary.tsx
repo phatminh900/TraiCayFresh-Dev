@@ -29,6 +29,7 @@ const CartSummary = ({ user }: CartSummaryProps) => {
           {formatPriceToVND(totalPrice)}
         </p>
       </div>
+      <div className="mt-2">
       {user ? (
         <Link href={APP_URL.checkout} className={buttonVariants({variant:'default',className:'mt-4'})}>Thanh toán ngay</Link>
       ) : (
@@ -38,6 +39,7 @@ const CartSummary = ({ user }: CartSummaryProps) => {
           handleOpen={() => setIsOpenLoginRequest(true)}
         />
       )}
+      </div>
     </div>
   );
 };

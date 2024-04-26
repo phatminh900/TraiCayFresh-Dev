@@ -40,7 +40,7 @@ const QuantityOptions = ({
             <button
               onClick={() => setQuantity(option.kg)}
               className={cn(
-                "border border-gray-700 py-1.5 px-4 rounded-lg flex items-center justify-center w-full font-bold hover:border-primary",
+                "border border-gray-700 py-1.5 px-4 rounded-lg flex-center w-full font-bold hover:border-primary",
                 {
                   "border-primary text-primary": currentOption === option.kg,
                 }
@@ -61,7 +61,7 @@ const QuantityOptions = ({
           >
             <IoRemoveOutline className='w-7 h-7' />
           </button>
-          <p  data-cy='current-quantity-option' className='flex-1 flex justify-center items-center text-2xl'>
+          <p  data-cy='current-quantity-option' className='flex-1 flex-center text-2xl'>
             {currentOption} KG
           </p>
           <button

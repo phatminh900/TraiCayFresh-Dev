@@ -2,8 +2,8 @@
 import PageSubTitle from "@/components/ui/page-subTitle";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart.store";
-import { IUser } from "@/types/common-types";
 import { formatPriceToVND } from "@/utils/util.utls";
+import { memo } from 'react';
 
 const CheckoutDetails = () => {
   const cartItems = useCart((store) => store.items);
@@ -75,4 +75,4 @@ const CheckoutDetails = () => {
   );
 };
 
-export default CheckoutDetails;
+export default memo(CheckoutDetails);

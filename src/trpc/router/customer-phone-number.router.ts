@@ -84,7 +84,7 @@ const CustomerPhoneNumberRouter = router({
           },
         });
 
-        return { success: true };
+        return { success: true ,message:OTP_MESSAGE.SUCCESS};
       } catch (error) {
         throwTrpcInternalServer(error);
       }

@@ -1,4 +1,4 @@
-import DeliveryAddress from "@/components/molecules/delivery-address";
+import DeliveryAddress, { DeliveryAddressProps } from "@/components/molecules/delivery-address";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import useAddress from "@/hooks/use-address";
 import { IUser } from "@/types/common-types";
@@ -9,24 +9,15 @@ import { Button } from "@/components/ui/button";
 import UserAddressFormAdd from "@/components/molecules/user-address-form-add";
 import { IShippingAddress } from "../checkout-client";
 
-export interface CheckoutAddressProps extends IUser {
+export interface CheckoutAddressProps extends IUser,DeliveryAddressProps {
   onSetShippingAddress:(shippingAddress:IShippingAddress)=>void
 }
 
-const CheckoutAddress = ({ onSetShippingAddress,user }: CheckoutAddressProps) => {
+const CheckoutAddress = ({ onSetShippingAddress,user,...deliveryAddressProps }: CheckoutAddressProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleExpand = (state: boolean) => setIsExpanded(state);
-  const {
-    errors,
-    handleSubmit,
-    register,
-    setDistrictValue,
-    setWardValue,
-    setNameValue,
-    setPhoneNumberValue,
-  } = useAddress();
+ 
   const isHasAddresses = user!.address!.length > 0;
-
 
   const addNewAddressTitle = (
     <PageSubTitle className='flex items-center gap-2'>
@@ -34,10 +25,11 @@ const CheckoutAddress = ({ onSetShippingAddress,user }: CheckoutAddressProps) =>
     </PageSubTitle>
   );
   return (
-    <div>
-      <PageSubTitle className='flex items-center gap-2'>
+    <div id='delivery-address-checkout-box'>
+      <PageSubTitle  className='flex items-center gap-2'>
         <IoLocationOutline /> Địa chỉ nhận hàng
       </PageSubTitle>
+     
       {isHasAddresses && (
         <CheckoutAddressList
         onSetShippingAddress={onSetShippingAddress}
@@ -51,16 +43,11 @@ const CheckoutAddress = ({ onSetShippingAddress,user }: CheckoutAddressProps) =>
           {addNewAddressTitle}
           {/* TODO: */}
           <DeliveryAddress
-            onSetName={setNameValue}
-            onSetPhoneNumber={setPhoneNumberValue}
-            onSetDistrict={setDistrictValue}
-            onSetWard={setWardValue}
-            register={register}
-            errors={errors}
+           {...deliveryAddressProps}
           />
         </form>
       )}
-
+ 
       {isExpanded && (
         <div>
           {addNewAddressTitle}

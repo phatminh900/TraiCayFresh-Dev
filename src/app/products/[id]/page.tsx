@@ -82,7 +82,7 @@ const ProductPage = async ({
       <div>
         <div className='space-y-4 w-full'>
           <div className='flex gap-2 items-center'>
-            <div className='flex items-center justify-center h-10 w-10 rounded-full bg-slate-200'>
+            <div className='flex-center h-10 w-10 rounded-full bg-slate-200'>
               <IoSync className='w-6 h-6 text-primary' />
             </div>
             <p className='text-xs'>
@@ -90,7 +90,7 @@ const ProductPage = async ({
             </p>
           </div>
           <div className='flex gap-2 items-center'>
-            <div className='flex items-center justify-center h-10 w-10 rounded-full bg-slate-200'>
+            <div className='flex-center h-10 w-10 rounded-full bg-slate-200'>
               <IoPricetagOutline className='w-6 h-6 text-primary' />
             </div>
             <p className='text-xs'>
@@ -98,7 +98,7 @@ const ProductPage = async ({
             </p>
           </div>
           <div className='flex gap-2 items-center'>
-            <div className='flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-slate-200'>
+            <div className='flex-shrink-0 flex-center h-10 w-10 rounded-full bg-slate-200'>
               <IoCardOutline className='w-6 h-6 text-primary' />
             </div>
             <p className='text-xs'>
