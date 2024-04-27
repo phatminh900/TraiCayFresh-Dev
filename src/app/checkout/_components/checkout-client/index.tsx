@@ -205,22 +205,26 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
     if (isCheckingOut) {
       document.body.style.pointerEvents = "none";
       document
-        .querySelectorAll("button")
-        .forEach((button) => (button.disabled = true));
+        .querySelectorAll(".checkout-page button")
+        .forEach((button) => ((button as HTMLButtonElement).disabled = true));
     }
     return () => {
       document.body.style.pointerEvents = "auto";
+      document
+      .querySelectorAll(".checkout-page button")
+      .forEach((button) => ((button as HTMLButtonElement).disabled = false))
     };
   }, [isCheckingOut]);
 
   // if the valid enter is valid set address
   useEffect(() => {}, []);
   return (
-    <>
+    <section className="checkout-page">
       <CheckoutAddress
         onSetName={setNameValue}
         onSetPhoneNumber={setPhoneNumberValue}
         onSetDistrict={setDistrictValue}
+        defaultUserName={isEmailUser(user!)?user.name:''}
         defaultUserPhoneNumber={!isEmailUser(user!) ? user?.phoneNumber : ""}
         onSetWard={setWardValue}
         register={register}
@@ -248,7 +252,7 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
       >
         {isCheckingOut ? "Thanh toán..." : "Thanh toán"}
       </Button>
-    </>
+    </section>
   );
 };
 

@@ -45,18 +45,26 @@ export const Orders: CollectionConfig = {
         { name: "address", label: "address", type: "text", required: true },
       ],
     },
-    {name:'paymentMethod',label:"Pay With",type:'select',options:[{
-      label:'MOMO',value:'momo',
+    {
+      name: "paymentMethod",
+      label: "Pay With",
+      type: "select",
+      options: [
+        {
+          label: "MOMO",
+          value: "momo",
+        },
+        { label: "CASH", value: "cash" },
+        { label: "VNPAY", value: "vnpay" },
+        { label: "ONEPAY", value: "onepay" },
+      ],
+      required:true
     },
-  {label:"CASH",value:'cash'},
-  {label:"VNPAY",value:'vnpay'},
-  {label:"ONEPAY",value:'onepay'},
-
-]},
     {
       name: "status",
       label: "Order's status",
       type: "select",
+      defaultValue:'pending',
       options: [
         { label: "Pending", value: "pending" },
         { label: "Pending", value: "failed" },
@@ -65,23 +73,26 @@ export const Orders: CollectionConfig = {
         { label: "Canceled", value: "canceled" },
         { label: "Confirmed", value: "confirmed" },
       ],
+      required:true
     },
     {
       name: "deliveryStatus",
       label: "Delivering's status",
       type: "select",
-      defaultValue:'pending',
+      defaultValue: "pending",
       options: [
         { label: "Pending", value: "pending" },
         { label: "Delivering", value: "delivering" },
         { label: "Confirmed", value: "delivered" },
         { label: "Canceled", value: "canceled" },
       ],
+      required:true
     },
 
     {
       name: "items",
       type: "array",
+      required:true,
       fields: [
         {
           name: "product",
@@ -102,16 +113,19 @@ export const Orders: CollectionConfig = {
       ],
     },
     {
-      name:'cancelReason',
-      label:"Cancellation Reason",
-      type:'select',
+      name: "cancelReason",
+      label: "Cancellation Reason",
+      type: "select",
       options: [
-        { label: "Update Address Phone Number", value: "update-address-phone-number" },
+        {
+          label: "Update Address Phone Number",
+          value: "update-address-phone-number",
+        },
         { label: "Add / Change Coupon Code ", value: "add-change-coupon-code" },
         { label: "Dont want to buy ", value: "dont-want-to-buy" },
         { label: "Service Quality is not good", value: "bad-service-quality" },
         { label: "Another Reason", value: "another-reason" },
       ],
-    }
+    },
   ],
 };

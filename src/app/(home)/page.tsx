@@ -4,9 +4,11 @@ import { APP_URL } from "@/constants/navigation.constant";
 import { getProducts } from "@/services/server/payload.service";
 import Link from "next/link";
 import ProductList from "./_components/product-list";
+import { notFound } from "next/navigation";
 
 export default async function Home() {
   const { products } = await getProducts();
+  if(!products) notFound()
   return (
     <section>
       {/* hero */}

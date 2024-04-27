@@ -152,17 +152,15 @@ export interface Order {
     userPhoneNumber: string;
     address: string;
   };
-  paymentMethod?: ('momo' | 'cash' | 'vnpay' | 'onepay') | null;
-  status?: ('pending' | 'failed' | 'canceled' | 'confirmed') | null;
-  deliveryStatus?: ('pending' | 'delivering' | 'delivered' | 'canceled') | null;
-  items?:
-    | {
-        product: string | Product;
-        price?: number | null;
-        quantity?: number | null;
-        id?: string | null;
-      }[]
-    | null;
+  paymentMethod: 'momo' | 'cash' | 'vnpay' | 'onepay';
+  status: 'pending' | 'failed' | 'canceled' | 'confirmed';
+  deliveryStatus: 'pending' | 'delivering' | 'delivered' | 'canceled';
+  items: {
+    product: string | Product;
+    price?: number | null;
+    quantity?: number | null;
+    id?: string | null;
+  }[];
   cancelReason?:
     | (
         | 'update-address-phone-number'

@@ -1,7 +1,10 @@
-import { GENERAL_ERROR_MESSAGE } from "@/constants/app-message.constant";
+import type { UserCart } from "@/app/cart/types/user-cart.type";
 import { getPayloadClient } from "@/payload/get-client-payload";
-import { CartItems } from "@/payload/payload-types";
-
+import {
+  CartItems, Customer,
+  CustomerPhoneNumber,
+  Product
+} from "@/payload/payload-types";
 export const getProducts = async () => {
   try {
     const payload = await getPayloadClient();
@@ -15,9 +18,10 @@ export const getProducts = async () => {
         },
       },
     });
-    return { products };
+    return { products,ok:true };
   } catch (error) {
-    throw new Error(GENERAL_ERROR_MESSAGE);
+    return {ok:false}
+
   }
 };
 
@@ -28,9 +32,10 @@ export const getProduct = async ({ id }: { id: string }) => {
       collection: "products",
       id,
     });
-    return { product };
+    return {ok:true ,product };
   } catch (error) {
-    throw new Error(GENERAL_ERROR_MESSAGE);
+    return {ok:false}
+    // throw new Error(GENERAL_ERROR_MESSAGE);
   }
 };
 export const getUserCartServer = async ({
@@ -59,10 +64,10 @@ export const getUserCartServer = async ({
       const productInCartQuantity = cartItemsMap.get(doc.id);
       return { ...doc, quantity: productInCartQuantity || 1 };
     });
-    return { cart: cartItems };
+    return { ok:true,cart: cartItems };
   } catch (error) {
-    console.log(error)
-    throw new Error(GENERAL_ERROR_MESSAGE);
+    return {ok:false}
+
   }
 };
 
@@ -72,8 +77,55 @@ export const getOrderStatus=async({orderId}:{orderId:string})=>{
     const order=await payload.findByID({collection:'orders',id:orderId})
     return {success:true,order}
   } catch (error) {
-    console.log(error)
-    throw new Error(GENERAL_ERROR_MESSAGE);
+      return {ok:false}
     
   }
 }
+
+export const getCartOfUser = async (
+  type: "phoneNumber" | "email",
+  userId?: string
+) => {
+  try {
+    let userCart: UserCart = [];
+    if (!userId) return {ok:false};
+    const payload = await getPayloadClient();
+    let user: Customer | CustomerPhoneNumber;
+    if (type === "email") {
+      user = await payload.findByID({
+        collection: "customers",
+        id: userId,
+        depth: 2,
+      });
+      if (user.cart?.items) {
+        const cartItems = user.cart.items as unknown as {
+          product: Product;
+          quantity: number;
+          id: string;
+        }[];
+        userCart = cartItems;
+      }
+    }
+    if (type === "phoneNumber") {
+      user = await payload.findByID({
+        collection: "customer-phone-number",
+        id: userId,
+        depth: 2,
+      });
+      if (user.cart?.items) {
+        const cartItems = user.cart.items as unknown as {
+          product: Product;
+          quantity: number;
+          id: string;
+        }[];
+        userCart = cartItems;
+      }
+    }
+
+    return { ok: true, userCart };
+  } catch (error) {
+    return {
+      ok: false
+    }
+  }
+};

@@ -119,6 +119,8 @@ const PaymentRouter = router({
       const newOrder = await payload.create({
         collection: "orders",
         data: {
+          deliveryStatus:'pending',
+          paymentMethod:'cash',
           orderBy: {
             value: user.id,
             relationTo:
@@ -173,6 +175,8 @@ const PaymentRouter = router({
         const newOrder = await payload.create({
           collection: "orders",
           data: {
+            deliveryStatus:'pending',
+            paymentMethod:'momo',
             orderBy: {
               value: user.id,
               relationTo:
@@ -338,6 +342,8 @@ const PaymentRouter = router({
         const newOrder = await payload.create({
           collection: "orders",
           data: {
+            deliveryStatus:'pending',
+            paymentMethod:'vnpay',
             orderBy: {
               value: user.id,
               relationTo:

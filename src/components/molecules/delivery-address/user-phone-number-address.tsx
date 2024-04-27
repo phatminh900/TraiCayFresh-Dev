@@ -56,7 +56,7 @@ const UserPhoneNumberAddress = ({
         <PopoverTrigger asChild>
           {!isOpenPhoneNumberList ? (
             <Button
-              data-cy='district-address-btn'
+              data-cy='open-phone-number-address-btn'
               variant='outline'
               className={cn(
                 "w-full text-start flex justify-start border-gray-200 text-muted-foreground hover:bg-background focus-visible:border-primary",
@@ -79,6 +79,7 @@ const UserPhoneNumberAddress = ({
               }}
             >
               <Input
+              data-cy='user-phone-number-input'
                 error={error}
                 value={phoneNumber}
                 onChange={(e) => {
@@ -143,6 +144,7 @@ const UserPhoneNumberAddress = ({
   return (
     <div data-cy='user-phone-number-address' className='flex-1'>
       <Input
+        data-cy='user-phone-number-input'
         value={phoneNumber}
         error={error}
         onChange={(e) => {

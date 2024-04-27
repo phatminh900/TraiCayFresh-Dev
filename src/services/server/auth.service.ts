@@ -12,45 +12,57 @@ import { callApi } from "@/utils/service.util";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 export const getUserPhoneNumberProfile = async (token: string) => {
-    const payload = await getPayloadClient();
-    const tokenResult = await verifyToken(token);
-    const userId = tokenResult?.userId;
-    const user = await payload.findByID({
-      collection: "customer-phone-number",
-      id: userId as string,
-    });
-    return user;
+    try {
+      const payload = await getPayloadClient();
+      const tokenResult = await verifyToken(token);
+      const userId = tokenResult?.userId;
+      const user = await payload.findByID({
+        collection: "customer-phone-number",
+        id: userId as string,
+      });
+      return user
+    } catch (error) {
+        return {ok:false}
+    }
   };
 
 
 export const getMeServer = async (token?: string) => {
-    if (!token) return { ok: false };
-    const data = await callApi<{ user: Customer }>({
-      url: `${API_ROUTES.me}`,
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return data;
+    try {
+      if (!token) return { ok: false };
+      const data = await callApi<{ user: Customer }>({
+        url: `${API_ROUTES.me}`,
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return data;
+    } catch (error) {
+      return {ok:false}
+    }
   };
   
 
 export const getUserServer = async (
     cookies: NextRequest["cookies"] | ReadonlyRequestCookies
   ) => {
-    const payloadToken = cookies.get(COOKIE_PAYLOAD_TOKEN)?.value;
-    if (payloadToken) {
-      const userData = await getMeServer(payloadToken);
-      const user = userData.result?.user;
-      return user;
+    try {
+      const payloadToken = cookies.get(COOKIE_PAYLOAD_TOKEN)?.value;
+      if (payloadToken) {
+        const userData = await getMeServer(payloadToken);
+        const user = userData.result?.user;
+        return user
+      }
+    
+      const userToken = cookies.get(COOKIE_USER_PHONE_NUMBER_TOKEN)?.value;
+      if (userToken) {
+        const user = await getUserPhoneNumberProfile(userToken);
+        return user
+      }
+      return {ok:false}
+    } catch (error) {
+      return {ok:false}
     }
-  
-    const userToken = cookies.get(COOKIE_USER_PHONE_NUMBER_TOKEN)?.value;
-    if (userToken) {
-      const user = await getUserPhoneNumberProfile(userToken);
-      return user;
-    }
-    return 
   };
   

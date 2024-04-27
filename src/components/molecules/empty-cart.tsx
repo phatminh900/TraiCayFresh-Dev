@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const EmptyCart = () => {
   return (
-    <div className='flex items-center flex-col mt-10 gap-6'>
+    <div data-cy='empty-cart-checkout' className='flex items-center flex-col mt-10 gap-6'>
       <BsCartXFill size={150} className='text-primary' />
       <div className='text-center space-y-2'>
         <p className='text-2xl font-bold'>Giỏ hàng hiện đang trống</p>

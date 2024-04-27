@@ -1,5 +1,8 @@
 "use client";
-import { HOST_PHONE_NUMBER } from "@/constants/configs.constant";
+import {
+  HOST_PHONE_NUMBER,
+  ORDER_ID_LENGTH,
+} from "@/constants/configs.constant";
 import { cn } from "@/lib/utils";
 import { Order } from "@/payload/payload-types";
 import { formatPriceToVND } from "@/utils/util.utls";
@@ -7,18 +10,22 @@ import { BsFillBagXFill } from "react-icons/bs";
 import { IoBagCheck } from "react-icons/io5";
 import CancelOrderRequest from "./cancel-order-request";
 import { useState, FormEvent } from "react";
+import FeedbackBox from "./feedback-box";
+import OrderStatusTitleInfo from "./order-status-title-info";
+
 interface OrderStatusInfoProps {
   orderId: string;
   shippingAddress: Order["shippingAddress"];
   totalPrice: number;
   orderStatus: Order["status"];
   deliveryStatus: Order["deliveryStatus"];
-  
+  orderNotes?: Order["orderNotes"];
 }
 const OrderStatusInfo = ({
   orderId,
   shippingAddress,
   totalPrice,
+  orderNotes,
   deliveryStatus,
   orderStatus,
 }: OrderStatusInfoProps) => {
@@ -26,38 +33,11 @@ const OrderStatusInfo = ({
   const toggleOpenCancelRequest = () => setIsOpenCancelRequest((prev) => !prev);
   // TODO: IPNURL
   // TODO: pullIsPaid useQuery (enable:isPaid===false,refetchInterval)
-  const orderSuccessEl = (
-    <>
-      <IoBagCheck size={35} className='text-primary' />
-      <p>Đặt hàng thành công</p>
-      <p className='text-base font-bold text-gray-800'>
-        Cảm ơn bạn đã tin tưởng và đặt hàng. Chúng tôi sẽ sớm gửi ngay đơn hàng
-        đến bạn.
-      </p>
-    </>
-  );
-  const orderFailedEl = (
-    <>
-      <BsFillBagXFill size={35} className='text-destructive' />
-      <p>Đặt hàng thất bại</p>
-      {orderStatus === "failed" && (
-        <p className='text-base font-bold text-gray-800'>
-          Cảm ơn bạn đã tin tưởng và đặt hàng. Nhưng vì lý do nào đó đơn hàng đã
-          đặt không thành công. Xin lỗi về sự bất tiện này , mong bạn đặt lại
-          đơn hàng sau ít phút.{" "}
-        </p>
-      )}
-      {orderStatus === "canceled" && (
-        <p className='text-base font-bold text-gray-800'>
-          Cảm ơn bạn đã ghé thăm{" "}
-          <span className='font-bold'>Trái Cây Fresh</span>.
-        </p>
-      )}
-    </>
-  );
+
   return (
     <div className='mt-8'>
       <div
+        data-cy='title-box-order-status'
         className={cn("font-bold text-2xl", {
           "text-primary":
             orderStatus === "confirmed" || orderStatus === "pending",
@@ -66,15 +46,16 @@ const OrderStatusInfo = ({
         })}
       >
         <div className='flex items-center flex-col justify-center gap-3 text-center mb-4'>
-          {orderStatus === "confirmed" || orderStatus === "pending"
-            ? orderSuccessEl
-            : orderFailedEl}
+          <OrderStatusTitleInfo orderStatus={orderStatus} />
         </div>
       </div>
-      <div className='py-2 px-3 space-y-2 mt-4 bg-gray-200 rounded-md border border-gray-800'>
+      <div className='py-2 px-3 space-y-2 mt-6 bg-gray-200 rounded-md border border-gray-800'>
         <div className='flex justify-between'>
-          <p>Đơn hàng: #{orderId}</p>
-          {orderStatus === "pending" && (
+          {/* get only the last ten characters of the id */}
+          <p data-cy='order-status-id'>
+            Đơn hàng: <span>#{orderId.slice(-ORDER_ID_LENGTH)}</span>
+          </p>
+          {orderStatus === "pending" && deliveryStatus === "pending" && (
             <CancelOrderRequest
               orderId={orderId}
               isOpen={isOpenCancelRequest}
@@ -83,7 +64,7 @@ const OrderStatusInfo = ({
           )}
         </div>
         <div>
-          <p>
+          <p data-cy='user-info-order-status'>
             Người nhận:{" "}
             <span className='font-bold'>
               {shippingAddress.userName} - {shippingAddress.userPhoneNumber}
@@ -91,10 +72,12 @@ const OrderStatusInfo = ({
           </p>
         </div>
         <div>
-          <p>Địa chỉ nhận hàng: {shippingAddress.address}</p>
+          <p data-cy='shipping-address-order-status'>
+            Địa chỉ nhận hàng: <span>{shippingAddress.address}</span>
+          </p>
         </div>
         <div>
-          <p>
+          <p data-cy='total-cost-order-status'>
             Tổng tiền:{" "}
             <span className='text-destructive font-semibold'>
               {formatPriceToVND(totalPrice)}
@@ -102,7 +85,7 @@ const OrderStatusInfo = ({
           </p>
         </div>
         <div>
-          <p>
+          <p data-cy='order-confirmation-status'>
             Trạng thái:{" "}
             <span
               className={cn({
@@ -114,33 +97,46 @@ const OrderStatusInfo = ({
             >
               {orderStatus === "pending" && "Đợi xác nhận"}
               {orderStatus === "confirmed" && "Thành công"}
-              {orderStatus === "canceled" && "Thất bại"}
+              {orderStatus === "failed" && "Thất bại"}
+              {orderStatus === "canceled" && "Đã hủy"}
+
             </span>
           </p>
         </div>
-        <div>
-          <p>
-            Tình trạng đơn hàng:{" "}
-            <span
-              className={cn({
-                "text-primary":
-                  deliveryStatus === "delivered" ||
-                  deliveryStatus === "delivering",
-                "text-destructive": deliveryStatus === "canceled",
-                "text-accent": deliveryStatus === "pending",
-              })}
-            >
-              {deliveryStatus === "pending" && "Đang chuẩn bị hàng"}
-              {deliveryStatus === "canceled" && "Giao hàng thất bai"}
-              {deliveryStatus === "delivering" && "Đang giao hàng"}
-              {deliveryStatus === "delivered" && "Đã giao hàng"}
-            </span>
-          </p>
-        </div>
+        {orderStatus === "confirmed" ||
+          (orderStatus === "pending" && (
+            <div>
+              <p data-cy='delivery-status-order'>
+                Tình trạng đơn hàng:{" "}
+                <span
+                  className={cn({
+                    "text-primary":
+                      deliveryStatus === "delivered" ||
+                      deliveryStatus === "delivering",
+                    "text-destructive": deliveryStatus === "canceled",
+                    "text-accent": deliveryStatus === "pending",
+                  })}
+                >
+                  {deliveryStatus === "pending" && "Đang chuẩn bị hàng"}
+                  {deliveryStatus === "canceled" && "Giao hàng thất bai"}
+                  {deliveryStatus === "delivering" && "Đang giao hàng"}
+                  {deliveryStatus === "delivered" && "Đã giao hàng"}
+                </span>
+              </p>
+            </div>
+          ))}
+        {orderNotes && (
+          <div>
+            <p data-cy='notes-order'>
+              Ghi chú: <span>{orderNotes}</span>
+            </p>
+          </div>
+        )}
         <div>
           <p>
             Moị thắc mắc vui lòng liên hệ{" "}
             <a
+              data-cy='zalo-order-status'
               className='font-bold'
               href='https://zalo.me/0985215845'
               target='_blank'
@@ -148,12 +144,17 @@ const OrderStatusInfo = ({
               Zalo
             </a>{" "}
             hoặc gọi đến số{" "}
-            <a className='font-bold' href={`tel:${HOST_PHONE_NUMBER}`}>
+            <a
+              data-cy='tel-order-status'
+              className='font-bold'
+              href={`tel:${HOST_PHONE_NUMBER}`}
+            >
               {HOST_PHONE_NUMBER}
             </a>
           </p>
         </div>
       </div>
+      <FeedbackBox />
     </div>
   );
 };
