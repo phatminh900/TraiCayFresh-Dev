@@ -1,5 +1,7 @@
 import dotenv from 'dotenv'
 import next from 'next'
+import cookie from "cookie";
+
 import * as trpcExpress from '@trpc/server/adapters/express'
 import VnpayRouter from './routers/vn-pay.router'
 import nextBuild from 'next/dist/build'
@@ -13,6 +15,7 @@ import express from 'express'
 import payload from 'payload'
 import { appRouter } from '../trpc'
 import { createContext } from '../trpc/context'
+import CustomerPhoneNumberRouter from './routers/customer-phone-number.router'
 
 
 const app = express()
@@ -65,6 +68,8 @@ const start = async (): Promise<void> => {
     res.sendStatus(200);
   })
   app.use(VnpayRouter)
+
+  app.use(CustomerPhoneNumberRouter)
   app.use(
     '/api/trpc',
     trpcExpress.createExpressMiddleware({

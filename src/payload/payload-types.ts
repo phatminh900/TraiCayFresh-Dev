@@ -223,6 +223,7 @@ export interface Customer {
  */
 export interface CustomerPhoneNumber {
   id: string;
+  refreshToken?: string | null;
   phoneNumber: string;
   phoneNumbers?:
     | {

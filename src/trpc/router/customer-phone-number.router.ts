@@ -15,7 +15,7 @@ import {
 import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { CartItems } from "../../payload/payload-types";
-import { signToken } from "../../utils/server/auth.util";
+import { signRefreshToken, signToken } from "../../utils/server/auth.util";
 import { ERROR_JWT_CODE, verifyToken } from "../../utils/auth.util";
 
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
@@ -144,7 +144,11 @@ const CustomerPhoneNumberRouter = router({
             collection: "otp",
             where: { phoneNumber: { equals: lastOtp.phoneNumber } },
           });
-          const token = await signToken(docs[0].id);
+          const userId=docs[0].id
+          const token = await signToken(userId);
+          const refreshToken=await signRefreshToken(userId)
+          await payload.update({collection:'customer-phone-number',data:{refreshToken},id:userId})
+          // TODO: extract to utility function
           res.setHeader(
             "Set-Cookie",
             cookie.serialize(COOKIE_USER_PHONE_NUMBER_TOKEN, token, {
@@ -164,7 +168,11 @@ const CustomerPhoneNumberRouter = router({
           },
         });
         if (newCustomer) {
-          const token = await signToken(newCustomer.id);
+          const userId=newCustomer.id
+          const token = await signToken(userId);
+          // can consider using the hook
+          const refreshToken=await signRefreshToken(userId)
+          await payload.update({collection:'customer-phone-number',data:{refreshToken},id:userId})
           res.setHeader(
             "Set-Cookie",
             cookie.serialize(COOKIE_USER_PHONE_NUMBER_TOKEN, token, {

@@ -18,6 +18,11 @@ export const CustomerPhoneNumber: CollectionConfig = {
 
   fields: [
     {
+      name:"refreshToken",
+      label:"Refresh Token",
+      type:'text',
+    },
+    {
       name: "phoneNumber",
       label: "Phone Number",
       type: "text",

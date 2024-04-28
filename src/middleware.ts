@@ -1,8 +1,9 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "./constants/configs.constant";
 import { APP_URL } from "./constants/navigation.constant";
-import { verifyToken } from "./utils/auth.util";
-export async function middleware(req: NextRequest) {
+import { ERROR_JWT_CODE, verifyToken } from "./utils/auth.util";
+export async function middleware(req: NextRequest,res:NextResponse) {
   if (req.nextUrl.pathname.startsWith("/_next") || req.nextUrl.pathname.startsWith("/favicon.ico") ) {
     return NextResponse.next();
   }
@@ -11,8 +12,42 @@ export async function middleware(req: NextRequest) {
   const payloadToken = req.cookies.get("payload-token");
 
   const userToken = req.cookies.get(COOKIE_USER_PHONE_NUMBER_TOKEN)?.value;
-
   const isVerifiedToken = userToken && (await verifyToken(userToken));
+  // if have code ==> error type
+
+  if(isVerifiedToken && 'code' in isVerifiedToken && isVerifiedToken.code===ERROR_JWT_CODE.ERR_JWT_EXPIRED){
+    console.log('sent')
+ try {
+ const response= await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL!}/refresh-token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    // const requestHeaders=new 
+    body: JSON.stringify({token:userToken})
+    
+  })
+  const result=await response.json()
+  // try to set in the express but it din't work
+  const nextResponse=NextResponse.next()
+  if(result?.newToken){
+    console.log('set')
+    console.log('why not delete')
+    req.cookies.delete(COOKIE_USER_PHONE_NUMBER_TOKEN)
+  // nextResponse.cookies.set(COOKIE_USER_PHONE_NUMBER_TOKEN,result.newToken)
+
+  }
+ } catch (error) {
+  req.cookies.delete(COOKIE_USER_PHONE_NUMBER_TOKEN);
+
+    return NextResponse.redirect(new URL(APP_URL.login, req.url));
+ }
+    // Extract the user ID from the decoded payload
+    // const userId = decoded.id;
+    // refresh token for the phone number user ==> the email using https only doesn't need to refresh
+    // const user=await payload.findByID({collection:'customer-phone-number',id})
+
+  }
   // if have token on the server but expire generate a new token based on the refresh token
   const isValidToken= isVerifiedToken && !('code' in isVerifiedToken)
   console.log('--------------')
