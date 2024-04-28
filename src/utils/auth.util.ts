@@ -1,23 +1,28 @@
-import { JWTPayload, jwtVerify, SignJWT } from "jose";
-import { v4 as uuidv4 } from "uuid";
-
-export const verifyToken = async (token: string) => {
+import { JWTPayload, jwtVerify } from "jose";
+export enum ERROR_JWT_CODE {
+  "ERR_JWS_INVALID" = "ERR_JWS_INVALID",
+  "ERR_JWT_EXPIRED" = "ERR_JWT_EXPIRED",
+}
+interface JWTPayloadVerified extends Omit<JWTPayload, "code"> {
+  // Other relevant properties...
+}
+export const verifyToken = async (
+  token: string
+): Promise<
+  (JWTPayloadVerified & { userId: string }) | { code: ERROR_JWT_CODE }
+> => {
   try {
     const verified = await jwtVerify(
       token,
       new TextEncoder().encode(process.env.JWT_SECRET)
     );
-    return verified.payload as JWTPayload & {userId:string};
+    const payload = verified.payload as unknown as JWTPayloadVerified & {
+      userId: string;
+    };
+    return payload;
   } catch (error) {
-    throw new Error("Mã đăng nhập hết hạn");
+    const { code } = error as { code: ERROR_JWT_CODE };
+    console.log(code);
+    return { code }; // Return error code
   }
-};
-export const signToken = async (userId: string) => {
-  const token = await new SignJWT({ userId })
-    .setProtectedHeader({ alg: "HS256" })
-    .setJti(uuidv4())
-    .setIssuedAt()
-    .setExpirationTime(process.env.JWT_EXPIRATION_TIME!)
-    .sign(new TextEncoder().encode(process.env.JWT_SECRET));
-  return token;
 };

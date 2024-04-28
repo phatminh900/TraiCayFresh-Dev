@@ -16,10 +16,9 @@ const OrderStatus = async ({
   
   const orderId = searchParams[APP_PARAMS.cartOrderId];
   if (!orderId) notFound();
-  const orderData = await getOrderStatus({ orderId });
-  if(!orderData) notFound()
+  const {data:order} = await getOrderStatus({ orderId });
+  if(!order) notFound()
 
-  const order = orderData?.order;
   let content = (
     <div className='text-center mt-8'>
       <p className='font-bold mb-2 text-lg'>

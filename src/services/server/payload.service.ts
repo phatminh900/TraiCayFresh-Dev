@@ -1,3 +1,5 @@
+import 'server-only'
+
 import type { UserCart } from "@/app/cart/types/user-cart.type";
 import { getPayloadClient } from "@/payload/get-client-payload";
 import {
@@ -5,6 +7,7 @@ import {
   CustomerPhoneNumber,
   Product
 } from "@/payload/payload-types";
+
 export const getProducts = async () => {
   try {
     const payload = await getPayloadClient();
@@ -18,23 +21,29 @@ export const getProducts = async () => {
         },
       },
     });
-    return { products,ok:true };
+    return { data:products,ok:true };
   } catch (error) {
-    return {ok:false}
+    console.error(error)
+    return {ok:false,data:null}
 
   }
 };
 
-export const getProduct = async ({ id }: { id: string }) => {
+export const getProduct = async ({ id }: { id: string}) => {
+  
   try {
     const payload = await getPayloadClient();
+    // await payload[config['authenticate']]
+    // payload['']
     const product = await payload.findByID({
       collection: "products",
       id,
     });
-    return {ok:true ,product };
+    
+    return {ok:true ,data:product };
   } catch (error) {
-    return {ok:false}
+    console.error(error)
+    return {ok:false,data:null}
     // throw new Error(GENERAL_ERROR_MESSAGE);
   }
 };
@@ -43,7 +52,7 @@ export const getUserCartServer = async ({
 }: {
   items?: CartItems | undefined;
 }) => {
-  if (!items) return;
+  if (!items) return {ok:false,data:null};
   const productIds = items?.map((item) => item.product);
   const cartItemsMap = new Map<string, number>();
   items.forEach((item) => {
@@ -64,8 +73,9 @@ export const getUserCartServer = async ({
       const productInCartQuantity = cartItemsMap.get(doc.id);
       return { ...doc, quantity: productInCartQuantity || 1 };
     });
-    return { ok:true,cart: cartItems };
+    return { ok:true,data:{cart: cartItems }};
   } catch (error) {
+    console.error(error)
     return {ok:false}
 
   }
@@ -75,9 +85,10 @@ export const getOrderStatus=async({orderId}:{orderId:string})=>{
   try {
     const payload=await getPayloadClient()
     const order=await payload.findByID({collection:'orders',id:orderId})
-    return {success:true,order}
+    return {success:true,data:order}
   } catch (error) {
-      return {ok:false}
+    console.error(error)
+      return {ok:false,data:null}
     
   }
 }
@@ -88,7 +99,7 @@ export const getCartOfUser = async (
 ) => {
   try {
     let userCart: UserCart = [];
-    if (!userId) return {ok:false};
+    if (!userId) return {ok:false,data:userCart};
     const payload = await getPayloadClient();
     let user: Customer | CustomerPhoneNumber;
     if (type === "email") {
@@ -122,10 +133,12 @@ export const getCartOfUser = async (
       }
     }
 
-    return { ok: true, userCart };
+    return { ok: true,data: userCart };
   } catch (error) {
+    console.error(error)
     return {
-      ok: false
+      ok: false,
+      data:null
     }
   }
 };

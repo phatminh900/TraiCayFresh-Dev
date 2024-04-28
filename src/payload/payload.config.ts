@@ -69,6 +69,10 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
+  csrf: [
+    // whitelist of domains to allow cookie auth from
+    process.env.NEXT_PUBLIC_SERVER_URL!
+  ],
 
   plugins: [],
 });

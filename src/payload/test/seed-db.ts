@@ -7,9 +7,9 @@ export const seedDb = async () => {
     console.log("DELETING...");
     const CustomerPhoneNumberModel =
       payload.db.collections["customer-phone-number"];
-    await CustomerPhoneNumberModel.deleteMany();
     const CustomerModel = payload.db.collections["customers"];
     const OrderModal = payload.db.collections["orders"];
+    await CustomerPhoneNumberModel.deleteMany();
     await CustomerModel.deleteMany();
     await OrderModal.deleteMany();
 
@@ -67,7 +67,7 @@ export const seedDb = async () => {
 
     // user with cart items and address
     // email
-    const userCartAndAddressEmail = await payload.create({
+    await payload.create({
       collection: "customers",
       data: {
         email: "testUsercheckout@gmail.com",
@@ -93,8 +93,9 @@ export const seedDb = async () => {
         // cart for later
       },
     });
+
     // phone number
-    const userCartAndAddressPhoneNumber = await payload.create({
+    await payload.create({
       collection: "customer-phone-number",
       data: {
         phoneNumber: "0352769981",
@@ -118,11 +119,36 @@ export const seedDb = async () => {
         // cart for later
       },
     });
-    console.log(userCartAndAddressPhoneNumber)
-    //create SUCCESS ORDERS
-    // email
-    // order by cash
-    // use userCartAndAddressToBuy
+
+    // ORDERS
+    //  can't use above document because i set the clearUserCartHook
+    //create SUCCESS ORDERS (ORDER BY CASH) EMAIL
+
+    const orderUserEmail = await payload.create({
+      collection: "customers",
+      data: {
+        email: "testUserOrder@gmail.com",
+        password: "test12345",
+        name: "Phat",
+        _verified: true,
+        cart: {
+          items: [
+            { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          ],
+        },
+        address: [
+          {
+            isDefault: true,
+            district: "Thành Phố Thủ Đức 1",
+            ward: "Phường Linh Tây",
+            name: "Phat",
+            phoneNumber: "0352769981",
+            street: "42 duong so 8",
+          },
+        ],
+      },
+    });
 
     await payload.create({
       collection: "orders",
@@ -131,12 +157,12 @@ export const seedDb = async () => {
         _id: "662bb02771b2f125b0b807a3",
         shippingAddress: {
           address: formUserAddress({
-            street: userCartAndAddressEmail!.address![0]!.street,
-            ward: userCartAndAddressEmail!.address![0]!.ward,
-            district: userCartAndAddressEmail!.address![0]!.district,
+            street: orderUserEmail!.address![0]!.street,
+            ward: orderUserEmail!.address![0]!.ward,
+            district: orderUserEmail!.address![0]!.district,
           }),
-          userName: userCartAndAddressEmail!.address![0]!.name,
-          userPhoneNumber: userCartAndAddressEmail!.address![0]!.phoneNumber,
+          userName: orderUserEmail!.address![0]!.name,
+          userPhoneNumber: orderUserEmail!.address![0]!.phoneNumber,
         },
 
         total: 468000,
@@ -150,25 +176,46 @@ export const seedDb = async () => {
           { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
           { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
         ],
-        orderBy: { relationTo: "customers", value: userCartAndAddressEmail.id },
+        orderBy: { relationTo: "customers", value: orderUserEmail.id },
       },
     });
 
-    // phoneNumber
-    // order by cash
-    // use userCartAndAddressToBuy
+    //create SUCCESS ORDERS (ORDER BY CASH) PHONE NUMBER
+    const orderUserPhoneNumber = await payload.create({
+      collection: "customer-phone-number",
+      data: {
+        phoneNumber: "0988139978",
+
+        address: [
+          {
+            isDefault: true,
+            district: "Thành Phố Thủ Đức 1",
+            ward: "Phường Linh Tây",
+            name: "Phat Tran",
+            phoneNumber: "0352769981",
+            street: "42 duong so 8",
+          },
+        ],
+        cart: {
+          items: [
+            { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          ],
+        },
+      },
+    });
+
     await payload.create({
       collection: "orders",
       data: {
         shippingAddress: {
           address: formUserAddress({
-            street: userCartAndAddressPhoneNumber!.address![0]!.street,
-            ward: userCartAndAddressPhoneNumber!.address![0]!.ward,
-            district: userCartAndAddressPhoneNumber!.address![0]!.district,
+            street: orderUserPhoneNumber!.address![0]!.street,
+            ward: orderUserPhoneNumber!.address![0]!.ward,
+            district: orderUserPhoneNumber!.address![0]!.district,
           }),
-          userName: userCartAndAddressPhoneNumber!.address![0]!.name,
-          userPhoneNumber:
-            userCartAndAddressPhoneNumber!.address![0]!.phoneNumber,
+          userName: orderUserPhoneNumber!.address![0]!.name,
+          userPhoneNumber: orderUserPhoneNumber!.address![0]!.phoneNumber,
         },
 
         total: 468000,
@@ -184,11 +231,11 @@ export const seedDb = async () => {
         ],
         orderBy: {
           relationTo: "customer-phone-number",
-          value: userCartAndAddressPhoneNumber.id,
+          value: orderUserPhoneNumber.id,
         },
       },
     });
-    // 662d058a75cd684035a9e0d0
+    // // 662d058a75cd684035a9e0d0
 
     // create CANCELED ORDERS
     await payload.create({
@@ -198,12 +245,12 @@ export const seedDb = async () => {
         _id: "662d058a75cd684035a9e0d0",
         shippingAddress: {
           address: formUserAddress({
-            street: userCartAndAddressEmail!.address![0]!.street,
-            ward: userCartAndAddressEmail!.address![0]!.ward,
-            district: userCartAndAddressEmail!.address![0]!.district,
+            street: orderUserEmail!.address![0]!.street,
+            ward: orderUserEmail!.address![0]!.ward,
+            district: orderUserEmail!.address![0]!.district,
           }),
-          userName: userCartAndAddressEmail!.address![0]!.name,
-          userPhoneNumber: userCartAndAddressEmail!.address![0]!.phoneNumber,
+          userName: orderUserEmail!.address![0]!.name,
+          userPhoneNumber: orderUserEmail!.address![0]!.phoneNumber,
         },
 
         total: 468000,
@@ -217,25 +264,23 @@ export const seedDb = async () => {
           { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
           { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
         ],
-        orderBy: { relationTo: "customers", value: userCartAndAddressEmail.id },
+        orderBy: { relationTo: "customers", value: orderUserEmail.id },
       },
     });
 
-    // phoneNumber
-    // order by cash
-    // use userCartAndAddressToBuy
+    // // phoneNumber
+
     await payload.create({
       collection: "orders",
       data: {
         shippingAddress: {
           address: formUserAddress({
-            street: userCartAndAddressPhoneNumber!.address![0]!.street,
-            ward: userCartAndAddressPhoneNumber!.address![0]!.ward,
-            district: userCartAndAddressPhoneNumber!.address![0]!.district,
+            street: orderUserPhoneNumber!.address![0]!.street,
+            ward: orderUserPhoneNumber!.address![0]!.ward,
+            district: orderUserPhoneNumber!.address![0]!.district,
           }),
-          userName: userCartAndAddressPhoneNumber!.address![0]!.name,
-          userPhoneNumber:
-            userCartAndAddressPhoneNumber!.address![0]!.phoneNumber,
+          userName: orderUserPhoneNumber!.address![0]!.name,
+          userPhoneNumber: orderUserPhoneNumber!.address![0]!.phoneNumber,
         },
 
         total: 468000,
@@ -251,13 +296,13 @@ export const seedDb = async () => {
         ],
         orderBy: {
           relationTo: "customer-phone-number",
-          value: userCartAndAddressPhoneNumber.id,
+          value: orderUserPhoneNumber.id,
         },
       },
     });
-    // 662d0b7a97b7d0c8cfd50e1e
+    // // 662d0b7a97b7d0c8cfd50e1e
 
-    // CREATE FAILED ORDER
+    // // CREATE FAILED ORDER
     await payload.create({
       collection: "orders",
       data: {
@@ -265,12 +310,12 @@ export const seedDb = async () => {
         _id: "662d0b7a97b7d0c8cfd50e1e",
         shippingAddress: {
           address: formUserAddress({
-            street: userCartAndAddressEmail!.address![0]!.street,
-            ward: userCartAndAddressEmail!.address![0]!.ward,
-            district: userCartAndAddressEmail!.address![0]!.district,
+            street: orderUserEmail!.address![0]!.street,
+            ward: orderUserEmail!.address![0]!.ward,
+            district: orderUserEmail!.address![0]!.district,
           }),
-          userName: userCartAndAddressEmail!.address![0]!.name,
-          userPhoneNumber: userCartAndAddressEmail!.address![0]!.phoneNumber,
+          userName: orderUserEmail!.address![0]!.name,
+          userPhoneNumber: orderUserEmail!.address![0]!.phoneNumber,
         },
 
         total: 468000,
@@ -284,25 +329,21 @@ export const seedDb = async () => {
           { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
           { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
         ],
-        orderBy: { relationTo: "customers", value: userCartAndAddressEmail.id },
+        orderBy: { relationTo: "customers", value: orderUserEmail.id },
       },
     });
 
-    // phoneNumber
-    // order by cash
-    // use userCartAndAddressToBuy
     await payload.create({
       collection: "orders",
       data: {
         shippingAddress: {
           address: formUserAddress({
-            street: userCartAndAddressPhoneNumber!.address![0]!.street,
-            ward: userCartAndAddressPhoneNumber!.address![0]!.ward,
-            district: userCartAndAddressPhoneNumber!.address![0]!.district,
+            street: orderUserPhoneNumber!.address![0]!.street,
+            ward: orderUserPhoneNumber!.address![0]!.ward,
+            district: orderUserPhoneNumber!.address![0]!.district,
           }),
-          userName: userCartAndAddressPhoneNumber!.address![0]!.name,
-          userPhoneNumber:
-            userCartAndAddressPhoneNumber!.address![0]!.phoneNumber,
+          userName: orderUserPhoneNumber!.address![0]!.name,
+          userPhoneNumber: orderUserPhoneNumber!.address![0]!.phoneNumber,
         },
 
         total: 468000,
@@ -318,7 +359,7 @@ export const seedDb = async () => {
         ],
         orderBy: {
           relationTo: "customer-phone-number",
-          value: userCartAndAddressPhoneNumber.id,
+          value: orderUserPhoneNumber.id,
         },
       },
     });

@@ -4,6 +4,7 @@ import { Product } from "@/payload/payload-types";
 import { getUserServer } from "@/services/server/auth.service";
 import { getImgUrlMedia } from "@/utils/util.utls";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface ProductListProps {
   products: Product[];

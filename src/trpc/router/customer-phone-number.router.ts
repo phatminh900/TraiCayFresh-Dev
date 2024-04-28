@@ -4,25 +4,27 @@ import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
 import cookie from "cookie";
 import otpGenerator from "otp-generator";
-import { publicProcedure, router } from "../trpc";
-import {
-  AddressValidationSchema,
-  PhoneValidationSchema,
-} from "../../validations/user-infor.valiator";
-import { SignUpCredentialSchema } from "../../validations/auth.validation";
-import { getPayloadClient } from "../../payload/get-client-payload";
-import { signToken, verifyToken } from "../../utils/auth.util";
-import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
 import {
   ADDRESS_MESSAGE,
   AUTH_MESSAGE,
   NAME_MESSAGE,
-  PHONE_NUMBER_MESSAGE,
   OTP_MESSAGE,
+  PHONE_NUMBER_MESSAGE,
   USER_MESSAGE,
 } from "../../constants/api-messages.constant";
-import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
+import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
+import { getPayloadClient } from "../../payload/get-client-payload";
 import { CartItems } from "../../payload/payload-types";
+import { signToken } from "../../utils/server/auth.util";
+import { ERROR_JWT_CODE, verifyToken } from "../../utils/auth.util";
+
+import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
+import { SignUpCredentialSchema } from "../../validations/auth.validation";
+import {
+  AddressValidationSchema,
+  PhoneValidationSchema,
+} from "../../validations/user-infor.valiator";
+import { publicProcedure, router } from "../trpc";
 
 const CartItemSchema = z.object({
   product: z.string(),
@@ -40,14 +42,25 @@ const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
   if (!token)
     throw new TRPCError({
       code: "UNAUTHORIZED",
-      message: AUTH_MESSAGE.INVALID_OR_EXPIRED,
+      message: AUTH_MESSAGE.EXPIRED,
     });
   const decodedToken = await verifyToken(token);
-  const userId = decodedToken.userId;
+
+  if (decodedToken.code === ERROR_JWT_CODE.ERR_JWS_INVALID) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: AUTH_MESSAGE.INVALID_OTP,
+    });
+  }
+  if (decodedToken.code === ERROR_JWT_CODE.ERR_JWT_EXPIRED) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: AUTH_MESSAGE.EXPIRED });
+  }
+  // @ts-ignore
+  const userId = decodedToken?.userId;
   const payload = await getPayloadClient();
   const user = await payload.findByID({
     collection: "customer-phone-number",
-    id: userId,
+    id: userId || "",
   });
   if (!user)
     throw new TRPCError({
@@ -84,7 +97,7 @@ const CustomerPhoneNumberRouter = router({
           },
         });
 
-        return { success: true ,message:OTP_MESSAGE.SUCCESS};
+        return { success: true, message: OTP_MESSAGE.SUCCESS };
       } catch (error) {
         throwTrpcInternalServer(error);
       }
@@ -103,7 +116,7 @@ const CustomerPhoneNumberRouter = router({
       if (!docs.length) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: AUTH_MESSAGE.INVALID_OR_EXPIRED,
+          message: AUTH_MESSAGE.EXPIRED,
         });
       }
       const lastOtp = docs[docs.length - 1];
@@ -205,7 +218,7 @@ const CustomerPhoneNumberRouter = router({
           },
           data: {
             // after login already set the default and can't change
-            phoneNumbers:updatedPhoneNumbers
+            phoneNumbers: updatedPhoneNumbers,
           },
         });
         return {

@@ -26,8 +26,7 @@ const ProductPage = async ({
 }) => {
   const nextCookies = cookies();
   const user = await getUserServer(nextCookies);
-  const data = await getProduct({ id });
-  const product = data?.product;
+  const {data:product} = await getProduct({ id });
   if (!product) notFound();
   const currentQuantityOptionParams = searchParams?.currentQuantityOption;
   const currentQuantityOption =

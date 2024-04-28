@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "./constants/configs.constant";
 import { APP_URL } from "./constants/navigation.constant";
 import { verifyToken } from "./utils/auth.util";
-import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "./constants/configs.constant";
 export async function middleware(req: NextRequest) {
   if (req.nextUrl.pathname.startsWith("/_next") || req.nextUrl.pathname.startsWith("/favicon.ico") ) {
     return NextResponse.next();
@@ -13,7 +13,14 @@ export async function middleware(req: NextRequest) {
   const userToken = req.cookies.get(COOKIE_USER_PHONE_NUMBER_TOKEN)?.value;
 
   const isVerifiedToken = userToken && (await verifyToken(userToken));
-  const isAuthenticated = payloadToken || isVerifiedToken;
+  // if have token on the server but expire generate a new token based on the refresh token
+  const isValidToken= isVerifiedToken && !('code' in isVerifiedToken)
+  console.log('--------------')
+  console.log(isVerifiedToken)
+  // const validToken=
+  const isAuthenticated = payloadToken || isValidToken;
+console.log('authen ticate')
+console.log(isAuthenticated)
   const isLoginOrSignUpRoute =
     req.nextUrl.pathname.startsWith('/login') ||
     req.nextUrl.pathname.startsWith('/sign-up');

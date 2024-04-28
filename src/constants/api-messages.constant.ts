@@ -24,7 +24,7 @@ export const USER_MESSAGE={
     NOT_FOUND:"Không có người dùng nào với tài khoản này"
 }
 export const AUTH_MESSAGE={
-    INVALID_OR_EXPIRED:"Mã OTP đã hết hạn hoặc sai vui lòng nhập lại.",
+    EXPIRED:"Mã OTP đã hết hạn",
     INVALID_OTP:"Mã OTP không đúng"
 
 }

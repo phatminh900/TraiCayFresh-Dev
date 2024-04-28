@@ -6,7 +6,7 @@ import { PayloadRequest } from "payload/types";
 import { Customer } from "@/payload/payload-types";
 import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../constants/configs.constant";
 import { AUTH_MESSAGE, USER_MESSAGE } from "../constants/api-messages.constant";
-import { verifyToken } from "../utils/auth.util";
+import { ERROR_JWT_CODE, verifyToken } from "../utils/auth.util";
 import { getPayloadClient } from "../payload/get-client-payload";
 const t = initTRPC.context<Context>().create();
 
@@ -49,10 +49,19 @@ export const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
   if (!token)
     throw new TRPCError({
       code: "UNAUTHORIZED",
-      message: AUTH_MESSAGE.INVALID_OR_EXPIRED,
+      message: AUTH_MESSAGE.INVALID_OTP,
     });
   const decodedToken = await verifyToken(token);
-  const userId = decodedToken.userId;
+  decodedToken
+  if(decodedToken.code===ERROR_JWT_CODE.ERR_JWS_INVALID){
+    throw new TRPCError({code:"BAD_REQUEST",message:AUTH_MESSAGE.INVALID_OTP})
+  }
+  if(decodedToken.code===ERROR_JWT_CODE.ERR_JWT_EXPIRED){
+    throw new TRPCError({code:"BAD_REQUEST",message:AUTH_MESSAGE.EXPIRED})
+  }
+  
+  // @ts-ignore
+  const userId = decodedToken?.userId
   const payload = await getPayloadClient();
   const userPhoneNumber = await payload.findByID({
     collection: "customer-phone-number",

@@ -1,20 +1,15 @@
 import { TRPCError } from "@trpc/server";
-import cookie from "cookie";
 import { PayloadRequest } from "payload/types";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { z } from "zod";
 import {
-  AUTH_MESSAGE,
-  COUPON_MESSAGE,
-  USER_MESSAGE,
+  COUPON_MESSAGE
 } from "../../constants/api-messages.constant";
-import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
-import { CartItems, Customer, Product } from "../../payload/payload-types";
-import { verifyToken } from "../../utils/auth.util";
+import { CartItems, Product } from "../../payload/payload-types";
 
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
-import { getUserProcedure, publicProcedure, router, USER_TYPE } from "../trpc";
+import { getUserProcedure, router, USER_TYPE } from "../trpc";
 
 
 const rateLimiter = new RateLimiterMemory({

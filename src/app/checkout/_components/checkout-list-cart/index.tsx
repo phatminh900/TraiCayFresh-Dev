@@ -1,21 +1,19 @@
 
-import { cookies } from "next/headers";
 import CartList from "@/components/molecules/cart-list";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import { getCartOfUser } from "@/services/server/payload.service";
-import { getUserServer } from "@/services/server/auth.service";
+import { IUser } from "@/types/common-types";
 import { isEmailUser } from "@/utils/util.utls";
 
-const CheckoutListCart = async () => {
-  const nextCookies = cookies();
-  const user = await getUserServer(nextCookies);
-  const userCartData =
+
+interface CheckoutListCartProps extends IUser{}
+const CheckoutListCart = async ({user}:CheckoutListCartProps) => {
+  const {data:userCart} =
     (await getCartOfUser(
       user && isEmailUser(user) ? "email" : "phoneNumber",
       user?.id
     )) || [];
 
-   const userCart=userCartData.ok?userCartData.userCart:[]
   return (
     <div className="mt-8">
       <PageSubTitle>Sản phẩm</PageSubTitle>

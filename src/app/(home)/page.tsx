@@ -7,7 +7,7 @@ import ProductList from "./_components/product-list";
 import { notFound } from "next/navigation";
 
 export default async function Home() {
-  const { products } = await getProducts();
+  const { data :products} = await getProducts();
   if(!products) notFound()
   return (
     <section>

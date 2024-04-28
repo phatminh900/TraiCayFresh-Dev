@@ -46,6 +46,9 @@ declare namespace Cypress {
     loginByPhoneNumberHavingCartItem(): Chainable<Subject>;
     loginByEmailHavingCartItemsAndAddress():Chainable<Subject>
     loginByPhoneNumberHavingCartItemsAndAddress():Chainable<Subject>
+
+    loginByEmailHavingOrders():Chainable<Subject>
+    loginByPhoneNumberHavingOrders():Chainable<Subject>
   }
 }
 
@@ -189,3 +192,49 @@ Cypress.Commands.add("loginByPhoneNumberHavingCartItemsAndAddress", () => {
   cy.location("pathname").should("eq", "/");
 });
 
+
+
+
+
+
+Cypress.Commands.add("loginByEmailHavingOrders", () => {
+  cy.visit("/login");
+  cy.get("[data-cy='input-email-login']").type("testUserOrder@gmail.com");
+  cy.get("[data-cy='input-password-login']").type("test12345");
+  cy.get("[data-cy='btn-submit-login']").click();
+  cy.location("pathname").should("eq", "/");
+});
+
+
+Cypress.Commands.add("loginByPhoneNumberHavingOrders", () => {
+  cy.visit("/login");
+
+  cy.get("[data-cy='login-by-phone-number-alternative']")
+    .contains("Đăng nhập bằng số điện thoại")
+    .as("button-trigger-open");
+  cy.get("@button-trigger-open").click({ force: true });
+
+  cy.get("[data-cy='login-by-phone-number-form']").as(
+    "login-by-phone-number-form"
+  );
+  cy.get("[data-cy='login-by-phone-number-submit-btn']").as(
+    "login-by-phone-number-submit-btn"
+  );
+  cy.get("@login-by-phone-number-form").find("input").type("0988139978");
+  cy.get("@login-by-phone-number-submit-btn").click();
+  cy.get("[data-cy='otp-verification-form']").as(
+    "otp-verification-container-form"
+  );
+  cy.get("@otp-verification-container-form").find("input").as("otp-inputs");
+  cy.get("[data-cy='otp-verification-submit-btn']").as("otp-submit-btn");
+  cy.get("@otp-inputs").eq(0).type("0");
+  cy.get("@otp-inputs").eq(1).type("0");
+  cy.get("@otp-inputs").eq(2).type("0");
+  cy.get("@otp-inputs").eq(3).type("0");
+  cy.get("@otp-inputs").eq(4).type("0");
+  cy.get("@otp-inputs").eq(5).type("0");
+  cy.get("@otp-submit-btn").click();
+  cy.contains("Xác thực thành công");
+
+  cy.location("pathname").should("eq", "/");
+});

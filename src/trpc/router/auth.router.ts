@@ -6,7 +6,7 @@ import { privateProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { z } from "zod";
-
+// PREVENT LOGIN TOO MUCH
 const AuthRouter = router({
   signUp: publicProcedure
     .input(SignUpCredentialSchema)
