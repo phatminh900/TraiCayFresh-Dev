@@ -15,8 +15,8 @@ import {
 import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { CartItems } from "../../payload/payload-types";
-import { signRefreshToken, signToken } from "../../utils/server/auth.util";
 import { ERROR_JWT_CODE, verifyToken } from "../../utils/auth.util";
+import { signRefreshToken, signToken } from "../../utils/server/auth.util";
 
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { SignUpCredentialSchema } from "../../validations/auth.validation";
@@ -35,7 +35,9 @@ const CartItemSchema = z.object({
   shippingCost: z.number().nullable().optional(),
 });
 
+
 const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
+
   const headerCookie = ctx.req.headers.cookie;
   const parsedCookie = cookie.parse(headerCookie || "");
   const token = parsedCookie[COOKIE_USER_PHONE_NUMBER_TOKEN];
@@ -75,6 +77,7 @@ const CustomerPhoneNumberRouter = router({
     .input(PhoneValidationSchema)
     .mutation(async ({ input }) => {
       try {
+
         const { phoneNumber } = input;
         const payload = await getPayloadClient();
 
@@ -105,9 +108,13 @@ const CustomerPhoneNumberRouter = router({
   verifyOtp: publicProcedure
     .input(PhoneValidationSchema.extend({ otp: z.string() }))
     .mutation(async ({ input, ctx }) => {
+
       const { res } = ctx;
       const { phoneNumber, otp } = input;
       const payload = await getPayloadClient();
+      // the token will be expire at the same time with the refresh token still keep the access token in the cookie to perform refresh
+          const expirationDays=process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME_NUMBER||7
+
       // check if the otp  matches the phone number
       const { docs } = await payload.find({
         collection: "otp",
@@ -146,14 +153,16 @@ const CustomerPhoneNumberRouter = router({
           });
           const userId=docs[0].id
           const token = await signToken(userId);
+          const expiresAt= new Date(Date.now() + (+expirationDays) * 24 * 60 * 60 * 1000)
           const refreshToken=await signRefreshToken(userId)
           await payload.update({collection:'customer-phone-number',data:{refreshToken},id:userId})
-          // TODO: extract to utility function
+         
           res.setHeader(
             "Set-Cookie",
             cookie.serialize(COOKIE_USER_PHONE_NUMBER_TOKEN, token, {
               secure: process.env.NODE_ENV === "production",
               path: "/",
+              expires:expiresAt,
               httpOnly: true,
             })
           );
@@ -172,12 +181,16 @@ const CustomerPhoneNumberRouter = router({
           const token = await signToken(userId);
           // can consider using the hook
           const refreshToken=await signRefreshToken(userId)
+          const expiresAt= new Date(Date.now() + (+expirationDays) * 24 * 60 * 60 * 1000)
           await payload.update({collection:'customer-phone-number',data:{refreshToken},id:userId})
+         
           res.setHeader(
             "Set-Cookie",
             cookie.serialize(COOKIE_USER_PHONE_NUMBER_TOKEN, token, {
               secure: process.env.NODE_ENV === "production",
               path: "/",
+              expires:expiresAt,
+
               httpOnly: true,
             })
           );
@@ -191,6 +204,7 @@ const CustomerPhoneNumberRouter = router({
     }),
 
   logOut: publicProcedure.mutation(({ ctx }) => {
+
     const { res } = ctx;
     res.clearCookie(COOKIE_USER_PHONE_NUMBER_TOKEN);
     return { success: true };

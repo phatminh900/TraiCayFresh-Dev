@@ -14,6 +14,9 @@ export const Customers: CollectionConfig = {
   },
 
   auth: {
+    cookies:{
+      secure:true
+    },
     // token expires after 30days
     tokenExpiration: 2592000000,
     maxLoginAttempts: 7,

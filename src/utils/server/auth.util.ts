@@ -12,8 +12,6 @@ export const signToken = async (userId: string) => {
 };
 
 
-
-
 export const signRefreshToken = async (userId: string) => {
   const token = await new SignJWT({ userId })
     .setProtectedHeader({ alg: "HS256" })

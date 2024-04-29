@@ -22,7 +22,6 @@ export const verifyToken = async (
     return payload;
   } catch (error) {
     const { code } = error as { code: ERROR_JWT_CODE };
-    console.log(code);
     return { code }; // Return error code
   }
 };
