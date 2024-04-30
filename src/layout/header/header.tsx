@@ -1,14 +1,12 @@
-import Link from "next/link";
-import { cookies } from "next/headers";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getUserServer } from "@/services/server/auth.service";
+import { getUserServer } from "@/services/server/payload/users.service";
+import Link from "next/link";
 import { IoPersonOutline } from "react-icons/io5";
 import HeaderCart from "./header-cart/header-cart";
 import HeaderNavMobile from "./header-nav-mobile";
 
 const Header = async () => {
-  const nextCookie = cookies();
-  const user = await getUserServer(nextCookie);
+  const user = await getUserServer();
   return (
     <header className='h-20 px-6 flex justify-between items-center shadow border-b border-b-zinc-100'>
       {/* Logo */}

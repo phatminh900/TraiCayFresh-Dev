@@ -3,7 +3,8 @@ import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import { buttonVariants } from "@/components/ui/button";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getUserServer } from "@/services/server/auth.service";
+import { getUserServer } from "@/services/server/payload/users.service";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Logout from "./_components/logout-btn";
@@ -14,11 +15,10 @@ import UserAddress from "./_components/user-address";
 import UserEmail from "./_components/user-email";
 
 const MyProfilePage = async () => {
-  const nextCookies = cookies();
-  const user = await getUserServer(nextCookies);
+  const user = await getUserServer();
   if(!user) redirect(APP_URL.login)
   return (
-    <>
+    <section>
       <BreadCrumbLinks
         deep={1}
         links={[{ href: APP_URL.myProfile, label: "Thông tin tài khoản" }]}
@@ -46,11 +46,11 @@ const MyProfilePage = async () => {
             className: "w-full mt-6",
           })}
         >
-          Tất cả đơn hàng của bạn
+         Đơn hàng của tôi
         </Link>
         <Logout user={user} />
       </div>
-    </>
+    </section>
   );
 };
 

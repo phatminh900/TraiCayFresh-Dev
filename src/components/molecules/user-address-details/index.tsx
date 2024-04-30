@@ -216,7 +216,7 @@ const UserAddressDetails = ({
             <DeliveryAddress
               errors={errors}
               defaultUserName={name}
-              phoneNumberList={"email" in user! ? user.phoneNumbers : undefined}
+              phoneNumberList={"email" in user! ? user.phoneNumbers : user?.phoneNumbers}
               onSetName={setNameValue}
               onSetPhoneNumber={setPhoneNumberValue}
               defaultUserPhoneNumber={phoneNumber}

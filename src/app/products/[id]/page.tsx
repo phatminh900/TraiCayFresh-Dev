@@ -7,7 +7,7 @@ import PageSubTitle from "@/components/ui/page-subTitle";
 import PageTitle from "@/components/ui/page-title";
 import ReviewRating from "@/components/ui/review-rating/review-rating";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getProduct } from "@/services/server/payload.service";
+import { getProduct } from "@/services/server/payload/products.service";
 import { formatPriceToVND } from "@/utils/util.utls";
 import ProductAddToCart from "./_components/product-add-to-cart";
 import ProductBuyNow from "./_components/product-buy-now";
@@ -15,7 +15,8 @@ import QuantityOptions from "./_components/product-quantity-option";
 import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
-import { getUserServer } from "@/services/server/auth.service";
+import { getUserServer } from "@/services/server/payload/users.service";
+
 
 const ProductPage = async ({
   searchParams,
@@ -24,8 +25,7 @@ const ProductPage = async ({
   params: { id: string };
   searchParams: { [key: string]: string };
 }) => {
-  const nextCookies = cookies();
-  const user = await getUserServer(nextCookies);
+  const user = await getUserServer();
   const {data:product} = await getProduct({ id });
   if (!product) notFound();
   const currentQuantityOptionParams = searchParams?.currentQuantityOption;
@@ -36,7 +36,7 @@ const ProductPage = async ({
       : 1;
 
   return (
-    <div>
+    <section>
       <BreadCrumbLinks
         links={[
           { label: product.title, href: `${APP_URL.products}/${product.id}` },
@@ -120,10 +120,11 @@ const ProductPage = async ({
 
         {/* Reviews */}
         {/* TODO: load on request time */}
+        {/* use <Suspend />> */}
         <ProductReviews />
       </div>
       {/* <ProductPrice price={product.originalPrice} /> */}
-    </div>
+    </section>
   );
 };
 

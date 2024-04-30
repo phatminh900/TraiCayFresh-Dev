@@ -123,6 +123,7 @@ export const Customers: CollectionConfig = {
               type: "relationship",
               relationTo: "products",
             },
+            {name:"price",type:'number'},
             {
               name: "quantity",
               type: "number",

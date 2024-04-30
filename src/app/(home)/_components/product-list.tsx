@@ -1,22 +1,18 @@
 import ProductItem from "@/components/molecules/product-item";
 import { APP_URL } from "@/constants/navigation.constant";
 import { Product } from "@/payload/payload-types";
-import { getUserServer } from "@/services/server/auth.service";
+import { getUserServer } from "@/services/server/payload/users.service";
 import { getImgUrlMedia } from "@/utils/util.utls";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 interface ProductListProps {
   products: Product[];
 }
 const ProductList = async ({ products }: ProductListProps) => {
-  const nextCookies = cookies();
-  const user = await getUserServer(nextCookies);
+  const user = await getUserServer();
   return (
     <ul className='space-y-4'>
       {products?.map((product) => {
         const productImg = getImgUrlMedia(product.thumbnailImg);
-
         return (
           <ProductItem
             user={user}

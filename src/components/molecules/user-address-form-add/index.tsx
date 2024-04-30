@@ -82,7 +82,7 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
       onSubmit={handleAddNewAddress}
     >
       <DeliveryAddress
-        phoneNumberList={isEmailUser(user!) ? user?.phoneNumbers : undefined}
+        phoneNumberList={isEmailUser(user!) ? user?.phoneNumbers : user?.phoneNumbers}
         errors={errors}
         onSetName={setNameValue}
         defaultUserName={defaultUserName}

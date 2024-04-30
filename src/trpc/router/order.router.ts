@@ -5,6 +5,7 @@ import { Order } from "../../payload/payload-types";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { getUserProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { USER_ORDERS_SHOW_LIMIT } from "../../constants/configs.constant";
 
 const cancelReasons: Record<
   NonNullable<Order["cancelReason"]>,
@@ -70,5 +71,33 @@ const OrderRouter = router({
         throwTrpcInternalServer(error);
       }
     }),
+
+  getOrders:getUserProcedure.input(z.object({page:z.number()})).query(async({ctx,input})=>{
+    const {user}=ctx
+    const {page}=input
+    const payload=await getPayloadClient()
+    try {
+      const result = await payload.find({
+        collection: "orders",
+        
+        where: {
+          "orderBy.value": {
+            equals: user.id,
+          },
+          
+        },
+        page,
+        limit:USER_ORDERS_SHOW_LIMIT,
+        // get all the imgs nested as well
+        depth:2,
+        
+      });
+      const {limit,docs:orders,totalPages,totalDocs,hasNextPage,pagingCounter}=result
+      // TODO: limit
+      return { success: true,  orders,totalPages,totalDocs,hasNextPage, pagingCounter};
+    } catch (error) {
+      throw error
+    }
+  })
 });
 export default OrderRouter;

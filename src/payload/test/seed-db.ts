@@ -44,7 +44,7 @@ export const seedDb = async () => {
         cart: {
           items: [
             { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3},
           ],
         },
         // cart for later
@@ -58,7 +58,7 @@ export const seedDb = async () => {
         cart: {
           items: [
             { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3},
           ],
         },
         // cart for later
@@ -77,7 +77,7 @@ export const seedDb = async () => {
         cart: {
           items: [
             { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3},
           ],
         },
         address: [
@@ -113,7 +113,7 @@ export const seedDb = async () => {
         cart: {
           items: [
             { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3},
           ],
         },
         // cart for later
@@ -133,8 +133,8 @@ export const seedDb = async () => {
         _verified: true,
         cart: {
           items: [
-            { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+            { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
           ],
         },
         address: [
@@ -173,8 +173,8 @@ export const seedDb = async () => {
         orderNotes: "Giao trước 14h",
         // 4.5 kg mangosteens and 3 kg durian
         items: [
-          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
         ],
         orderBy: { relationTo: "customers", value: orderUserEmail.id },
       },
@@ -198,8 +198,8 @@ export const seedDb = async () => {
         ],
         cart: {
           items: [
-            { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+            { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+            { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
           ],
         },
       },
@@ -226,8 +226,8 @@ export const seedDb = async () => {
         orderNotes: "Giao trước 14h",
         // 4.5 kg mangosteens and 3 kg durian
         items: [
-          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
         ],
         orderBy: {
           relationTo: "customer-phone-number",
@@ -261,8 +261,8 @@ export const seedDb = async () => {
         orderNotes: "Giao trước 14h",
         // 4.5 kg mangosteens and 3 kg durian
         items: [
-          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
         ],
         orderBy: { relationTo: "customers", value: orderUserEmail.id },
       },
@@ -291,8 +291,8 @@ export const seedDb = async () => {
         orderNotes: "Giao trước 14h",
         // 4.5 kg mangosteens and 3 kg durian
         items: [
-          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
         ],
         orderBy: {
           relationTo: "customer-phone-number",
@@ -326,8 +326,8 @@ export const seedDb = async () => {
         orderNotes: "Giao trước 14h",
         // 4.5 kg mangosteens and 3 kg durian
         items: [
-          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
         ],
         orderBy: { relationTo: "customers", value: orderUserEmail.id },
       },
@@ -354,8 +354,8 @@ export const seedDb = async () => {
         orderNotes: "Giao trước 14h",
         // 4.5 kg mangosteens and 3 kg durian
         items: [
-          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5 },
-          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 },
+          { product: "660e7631eec6f5aff6b5b77c", quantity: 4.5,price:80000 },
+          { product: "660eaf2fcfcdb0d6817dcd32", quantity: 3 ,price:42000},
         ],
         orderBy: {
           relationTo: "customer-phone-number",

@@ -85,6 +85,7 @@ const CartList = ({ user, userCart }: CartListProps) => {
           priceAfterDiscount,
         })
       );
+      console.log('set again in here huh...')
       setCartItem(cartItem);
       init = false;
     }

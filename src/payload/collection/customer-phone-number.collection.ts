@@ -100,6 +100,7 @@ export const CustomerPhoneNumber: CollectionConfig = {
               type: "relationship",
               relationTo: "products",
             },
+            
             {
               name: "quantity",
               type: "number",
@@ -109,6 +110,8 @@ export const CustomerPhoneNumber: CollectionConfig = {
                 step: 0.5,
               },
             },
+            {name:"price",type:'number'},
+
             {
               name: "isAppliedCoupon",
               type: "checkbox",

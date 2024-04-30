@@ -4,21 +4,22 @@ import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import EmptyCart from "@/components/molecules/empty-cart";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getUserServer } from "@/services/server/auth.service";
+import { getUserServer } from "@/services/server/payload/users.service";
+
 import CheckoutClient from "./_components/checkout-client";
 import CheckoutListCart from "./_components/checkout-list-cart";
-import { getCartOfUser } from "@/services/server/payload.service";
+import { getCartOfUser } from "@/services/server/payload/carts.service";
+
 import { isEmailUser } from "@/utils/util.utls";
 import { redirect } from "next/navigation";
 
 const CheckoutPage = async () => {
-  const nextCookies = cookies();
-  const user = await getUserServer(nextCookies);
+  const user = await getUserServer();
   // register
-  getCartOfUser(isEmailUser(user!)?'email':'phoneNumber',user?.id)
+  // getCartOfUser(isEmailUser(user!)?'email':'phoneNumber',user?.id)
   if(!user) redirect(APP_URL.login)
    return (
-    <div>
+    <section>
       <BreadCrumbLinks
         links={[{ href: APP_URL.checkout, label: "Thanh toán" }]}
       />
@@ -30,7 +31,7 @@ const CheckoutPage = async () => {
           <CheckoutListCart user={user}/>
         </CheckoutClient>
       )}
-    </div>
+    </section>
   );
 };
 

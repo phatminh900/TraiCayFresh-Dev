@@ -1,7 +1,7 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getProducts } from "@/services/server/payload.service";
+import { getProducts } from "@/services/server/payload/products.service";
 import Link from "next/link";
 import ProductList from "./_components/product-list";
 import { notFound } from "next/navigation";

@@ -1,7 +1,7 @@
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import { buttonVariants } from "@/components/ui/button";
 import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
-import { getOrderStatus } from "@/services/server/payload.service";
+import { getOrderStatus } from "@/services/server/payload/orders.service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -18,7 +18,6 @@ const OrderStatus = async ({
   if (!orderId) notFound();
   const {data:order} = await getOrderStatus({ orderId });
   if(!order) notFound()
-
   let content = (
     <div className='text-center mt-8'>
       <p className='font-bold mb-2 text-lg'>
@@ -32,6 +31,7 @@ const OrderStatus = async ({
   if (order) {
     content = (
       <OrderStatusInfo
+      items={order.items}
       orderNotes={order.orderNotes}
         shippingAddress={order.shippingAddress}
         deliveryStatus={order.deliveryStatus}
@@ -42,13 +42,13 @@ const OrderStatus = async ({
     );
   }
   return (
-    <div>
+    <section>
       <BreadCrumbLinks
         links={[{ label: "Trạng thái đơn hàng", href: APP_URL.orderStatus }]}
       />
       <PageTitle>Trạng thái đơn hàng</PageTitle>
       {content}
-    </div>
+    </section>
   );
 };
 

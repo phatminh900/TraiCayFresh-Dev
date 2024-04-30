@@ -1,5 +1,5 @@
 import "server-only";
-
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 import { API_ROUTES } from "@/constants/api-routes.constant";
@@ -52,21 +52,22 @@ export const getMeServer = async (token?: string) => {
 };
 
 export const getUserServer = async (
-  cookies: NextRequest["cookies"] | ReadonlyRequestCookies
 ) => {
   try {
-    const payloadToken = cookies.get(COOKIE_PAYLOAD_TOKEN)?.value;
+    const nextCookies=cookies()
+    const payloadToken = nextCookies.get(COOKIE_PAYLOAD_TOKEN)?.value;
     if (payloadToken) {
       const { data: user } = await getMeServer(payloadToken);
       return user;
     }
 
-    const userToken = cookies.get(COOKIE_USER_PHONE_NUMBER_TOKEN)?.value;
+    const userToken = nextCookies.get(COOKIE_USER_PHONE_NUMBER_TOKEN)?.value;
     if (userToken) {
       const { data: user } = await getUserPhoneNumberProfile(userToken);
       return user;
     }
   } catch (error) {
+    console.error(error)
     // console.log(error)
   }
 };

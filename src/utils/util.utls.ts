@@ -1,8 +1,9 @@
+import { ORDER_ID_LENGTH } from "../constants/configs.constant";
 import type {
   Customer,
   CustomerPhoneNumber,
   Media,
-} from "@/payload/payload-types";
+} from "../payload/payload-types";
 
 export function formatPriceToVND(price: number) {
   const formatter = new Intl.NumberFormat("vi-VN", {
@@ -16,6 +17,9 @@ export const getImgUrlMedia = (img: string | Media) => {
   return typeof img === "string" ? img : img.url;
 };
 
+export const sliceOrderId=(id:string)=>{
+  return `#${id.slice(-ORDER_ID_LENGTH)}`
+}
 export const validateNumericInput = (value: string) => {
   // Regular expression to match only numeric characters
   const numericRegex = /^[0-9]*$/;

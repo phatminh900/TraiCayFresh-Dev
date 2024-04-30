@@ -10,7 +10,7 @@ const PageTitle = ({ children, className, ...rest }: PageTitleProps) => {
   return (
     <h2
       {...rest}
-      className={cn("text-2xl font-bold mt-4 text-gray-800", className)}
+      className={cn("text-2xl font-bold mt-4 mb-6 text-gray-800", className)}
     >
       {children}
     </h2>

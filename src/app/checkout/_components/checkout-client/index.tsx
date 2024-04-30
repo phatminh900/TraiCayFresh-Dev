@@ -50,13 +50,13 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
     trpc.customerPhoneNumber.addNewAddress.useMutation({});
 
   // checkout by cash is a little bit different than others
-  const { mutateAsync: checkoutCash, isPending: isCheckingOutCash } =
+  const { mutateAsync: checkoutCash, isPending: isCheckingOutCash,isSuccess:isSuccessCheckoutCash } =
     trpc.payment.payWithCash.useMutation({
       onError: (err) => {
         handleTrpcErrors(err);
       },
     });
-  const { mutate: checkoutWithMomo, isPending: isCheckingOutMomo } =
+  const { mutate: checkoutWithMomo, isPending: isCheckingOutMomo ,isSuccess:isSuccessCheckoutMomo} =
     trpc.payment.payWithMomo.useMutation({
       onError: (err) => {
         handleTrpcErrors(err);
@@ -65,14 +65,14 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
         // @ts-ignore
         if (data?.url) {
           // @ts-ignore
-          router.replace(data.url);
+          router.push(data.url);
           // clear the user cart
-          clearCart();
+      
           router.refresh();
         }
       },
     });
-  const { mutate: checkoutWithVnPay, isPending: isCheckingOutVnPay } =
+  const { mutate: checkoutWithVnPay, isPending: isCheckingOutVnPay,isSuccess:isSuccessCheckoutVnPay } =
     trpc.payment.payWithVnPay.useMutation({
       onError: (err) => {
         handleTrpcErrors(err);
@@ -81,10 +81,10 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
         // @ts-ignore
         if (data?.url) {
           // @ts-ignore
-          router.replace(data.url);
+          router.push(data.url);
           // clear the user cart
-          clearCart();
           router.refresh();
+         
         }
       },
     });
@@ -127,7 +127,6 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
       // isValidShipping address => for user hasn't added address yet
 
       const isValidShippingAddress = await trigger();
-      console.log(isValidShippingAddress);
       if (!isValidShippingAddress) {
         document
           .getElementById("delivery-address-checkout-box")
@@ -136,7 +135,6 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
       }
 
       if (!user!.address?.length && isValidShippingAddress) {
-        console.log("go in here");
         const ward = watch("ward");
         const district = watch("district");
         const street = watch("street");
@@ -189,17 +187,17 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
         orderNotes: checkoutNote,
       }).catch((err) => handleTrpcErrors(err));
       if (result?.url) {
-        router.replace(result?.url);
+        console.log('why no clear the cart')
+    
+        router.push(result?.url);
       }
       router.refresh();
-      setTimeout(() => {
-        clearCart();
-      });
+     
     }
   };
   const isCheckingOut =
     isCheckingOutMomo || isCheckingOutVnPay || isCheckingOutCash;
-
+  const isSuccessCheckout=isSuccessCheckoutCash||isSuccessCheckoutMomo||isSuccessCheckoutVnPay
   // when checking not allowing any actions
   useEffect(() => {
     if (isCheckingOut) {
@@ -216,8 +214,12 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
     };
   }, [isCheckingOut]);
 
-  // if the valid enter is valid set address
-  useEffect(() => {}, []);
+  // if successfully checkout clear the cart
+  useEffect(() => {
+    if(isSuccessCheckout){
+      clearCart()
+    }
+  }, [isSuccessCheckout,clearCart]);
   return (
     <section className="checkout-page">
       <CheckoutAddress

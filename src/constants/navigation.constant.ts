@@ -9,7 +9,7 @@ export const APP_URL = {
   checkout:'/checkout',
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
-  orderStatus:'/order-status'
+  orderStatus:'/order-status',
 } as const;
 
 export const APP_PARAMS = {

@@ -14,6 +14,7 @@ export type CartItems =
   | {
       product?: (string | null) | Product;
       quantity?: number | null;
+      price?: number | null;
       isAppliedCoupon?: boolean | null;
       coupon?: string | null;
       discountAmount?: number | null;
@@ -157,8 +158,9 @@ export interface Order {
   deliveryStatus: 'pending' | 'delivering' | 'delivered' | 'canceled';
   items: {
     product: string | Product;
-    price?: number | null;
-    quantity?: number | null;
+    price: number;
+    originalPrice?: number | null;
+    quantity: number;
     id?: string | null;
   }[];
   cancelReason?:

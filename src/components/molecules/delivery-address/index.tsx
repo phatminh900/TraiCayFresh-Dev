@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { SUPPORTED_PROVINCE } from "@/constants/configs.constant";
 import UserNameAddress from "./user-name-address";
 import UserPhoneNumberAddress from "./user-phone-number-address";
-import { Customer } from "@/payload/payload-types";
+import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
 import {
   REQUIRED_DISTRICT,
   REQUIRED_NAME,
@@ -42,7 +42,7 @@ export interface DeliveryAddressProps {
   defaultUserPhoneNumber?: string;
   register: UseFormRegister<IAddressValidation>;
   errors: FieldErrors<IAddressValidation>;
-  phoneNumberList?: Customer["phoneNumbers"];
+  phoneNumberList?: Customer["phoneNumbers"] |CustomerPhoneNumber['phoneNumbers'];
   onSetDistrict: (district: string) => void;
 
   onSetName: (userName: string) => void;

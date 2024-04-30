@@ -77,7 +77,8 @@ const calculateUserAmountAndCreateOrderItems=async(user:Customer|CustomerPhoneNu
     return {
       product: product.id,
       price: product.priceAfterDiscount || product.originalPrice,
-      quantity: item.quantity,
+      originalPrice:product.originalPrice,
+      quantity: item.quantity!,
     };
   });
   return {amount,totalAfterCoupon,orderItems,userCart}

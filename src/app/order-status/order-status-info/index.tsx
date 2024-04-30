@@ -1,15 +1,12 @@
 "use client";
 import {
-  HOST_PHONE_NUMBER,
-  ORDER_ID_LENGTH,
+  HOST_PHONE_NUMBER
 } from "@/constants/configs.constant";
 import { cn } from "@/lib/utils";
-import { Order } from "@/payload/payload-types";
-import { formatPriceToVND } from "@/utils/util.utls";
-import { BsFillBagXFill } from "react-icons/bs";
-import { IoBagCheck } from "react-icons/io5";
+import { Order, Product } from "@/payload/payload-types";
+import { formatPriceToVND, sliceOrderId } from "@/utils/util.utls";
+import { useState } from "react";
 import CancelOrderRequest from "./cancel-order-request";
-import { useState, FormEvent } from "react";
 import FeedbackBox from "./feedback-box";
 import OrderStatusTitleInfo from "./order-status-title-info";
 
@@ -19,6 +16,7 @@ interface OrderStatusInfoProps {
   totalPrice: number;
   orderStatus: Order["status"];
   deliveryStatus: Order["deliveryStatus"];
+  items:Order['items']
   orderNotes?: Order["orderNotes"];
 }
 const OrderStatusInfo = ({
@@ -26,11 +24,17 @@ const OrderStatusInfo = ({
   shippingAddress,
   totalPrice,
   orderNotes,
+  items,
   deliveryStatus,
   orderStatus,
 }: OrderStatusInfoProps) => {
   const [isOpenCancelRequest, setIsOpenCancelRequest] = useState(false);
   const toggleOpenCancelRequest = () => setIsOpenCancelRequest((prev) => !prev);
+  const orderSpecificDetails=items?.reduce((acc,item)=>{
+    const productDetails=item.product as Product
+    return `${acc}${acc ? " , " : ""} ${item.quantity}Kg ${productDetails.title}`;
+    return acc
+  },'')
   // TODO: IPNURL
   // TODO: pullIsPaid useQuery (enable:isPaid===false,refetchInterval)
 
@@ -53,7 +57,7 @@ const OrderStatusInfo = ({
         <div className='flex justify-between'>
           {/* get only the last ten characters of the id */}
           <p data-cy='order-status-id'>
-            Đơn hàng: <span>#{orderId.slice(-ORDER_ID_LENGTH)}</span>
+            Đơn hàng: <span>{sliceOrderId(orderId)}</span>
           </p>
           {orderStatus === "pending" && deliveryStatus === "pending" && (
             <CancelOrderRequest
@@ -62,6 +66,14 @@ const OrderStatusInfo = ({
               onToggleOpenCancelRequest={toggleOpenCancelRequest}
             />
           )}
+        </div>
+        <div>
+          <p data-cy='order-specific-order-status'>
+            Chi tiết đơn hàng:
+            <span className="italic">
+          { orderSpecificDetails}
+            </span>
+          </p>
         </div>
         <div>
           <p data-cy='user-info-order-status'>
@@ -88,7 +100,7 @@ const OrderStatusInfo = ({
           <p data-cy='order-confirmation-status'>
             Trạng thái:{" "}
             <span
-              className={cn({
+              className={cn('font-bold',{
                 "text-primary": orderStatus === "confirmed",
                 "text-accent": orderStatus === "pending",
                 "text-destructive":

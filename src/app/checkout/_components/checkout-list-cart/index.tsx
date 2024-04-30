@@ -1,7 +1,8 @@
 
 import CartList from "@/components/molecules/cart-list";
 import PageSubTitle from "@/components/ui/page-subTitle";
-import { getCartOfUser } from "@/services/server/payload.service";
+import { getCartOfUser } from "@/services/server/payload/carts.service";
+
 import { IUser } from "@/types/common-types";
 import { isEmailUser } from "@/utils/util.utls";
 
@@ -13,7 +14,6 @@ const CheckoutListCart = async ({user}:CheckoutListCartProps) => {
       user && isEmailUser(user) ? "email" : "phoneNumber",
       user?.id
     )) || [];
-
   return (
     <div className="mt-8">
       <PageSubTitle>Sản phẩm</PageSubTitle>
