@@ -49,9 +49,7 @@ const OrderRouter = router({
         // orderUserId=
         orderUserId = order.orderBy.value.id;
       }
-      console.log(orderUserId,user.id)
-      console.log(order.orderBy.value === user.id)
-      if (order.orderBy.value !== user.id)
+      if (orderUserId!== user.id)
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: ORDER_MESSAGE.BAD_REQUEST,
@@ -68,7 +66,7 @@ const OrderRouter = router({
         });
         return { success: true, message: ORDER_MESSAGE.SUCCESS_CANCEL_ORDER };
       } catch (error) {
-        throwTrpcInternalServer(error);
+       throw error
       }
     }),
 

@@ -19,14 +19,14 @@ const OrderSpecificDetails = ({orderId,deliveryStatus,createdAt}:OrderSpecificDe
   return (
  <OrderSpecificSectionWrapper>
     <IoReceiptOutline size={35} />
-          <div className='flex flex-col'>
-            <div className='font-bold sm:text-lg flex items-center justify-between'>
+          <div className='flex flex-col flex-1'>
+            <div className='font-bold flex-1 sm:text-lg flex items-center justify-between'>
               <p>
                 {" "}
                 Đơn hàng:{" "}
                 <span className='text-sm'>{sliceOrderId(orderId)}</span>
               </p>
-              <div className='text-xs sm:text-base'>
+              <div className='text-sm sm:text-base'>
                 <DeliveryStatus deliveryStatus={deliveryStatus} />
               </div>
             </div>

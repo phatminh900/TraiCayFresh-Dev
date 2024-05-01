@@ -186,7 +186,8 @@ const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
         orderNotes: checkoutNote,
       }).catch((err) => handleTrpcErrors(err));
       if (result?.url) {
-    
+        console.log(shippingAddress)
+        console.log(result.url)
         router.push(result?.url);
       }
       router.refresh();

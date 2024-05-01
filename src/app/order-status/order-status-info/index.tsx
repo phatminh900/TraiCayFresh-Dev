@@ -1,13 +1,11 @@
 "use client";
-import {
-  HOST_PHONE_NUMBER
-} from "@/constants/configs.constant";
+import { HOST_PHONE_NUMBER } from "@/constants/configs.constant";
 import { cn } from "@/lib/utils";
 import { Order, Product } from "@/payload/payload-types";
 import { formatPriceToVND, sliceOrderId } from "@/utils/util.utls";
 import { useState } from "react";
-import CancelOrderRequest from "./cancel-order-request";
-import FeedbackBox from "./feedback-box";
+import CancelOrderRequest from "@/components/molecules/cancel-order-request";
+import FeedbackBox from "@/components/molecules/feed-back-box";
 import OrderStatusTitleInfo from "./order-status-title-info";
 
 interface OrderStatusInfoProps {
@@ -16,7 +14,7 @@ interface OrderStatusInfoProps {
   totalPrice: number;
   orderStatus: Order["status"];
   deliveryStatus: Order["deliveryStatus"];
-  items:Order['items']
+  items: Order["items"];
   orderNotes?: Order["orderNotes"];
 }
 const OrderStatusInfo = ({
@@ -30,11 +28,13 @@ const OrderStatusInfo = ({
 }: OrderStatusInfoProps) => {
   const [isOpenCancelRequest, setIsOpenCancelRequest] = useState(false);
   const toggleOpenCancelRequest = () => setIsOpenCancelRequest((prev) => !prev);
-  const orderSpecificDetails=items?.reduce((acc,item)=>{
-    const productDetails=item.product as Product
-    return `${acc}${acc ? " , " : ""} ${item.quantity}Kg ${productDetails.title}`;
-    return acc
-  },'')
+  const orderSpecificDetails = items?.reduce((acc, item) => {
+    const productDetails = item.product as Product;
+    return `${acc}${acc ? " , " : ""} ${item.quantity}Kg ${
+      productDetails.title
+    }`;
+    return acc;
+  }, "");
   // TODO: IPNURL
   // TODO: pullIsPaid useQuery (enable:isPaid===false,refetchInterval)
 
@@ -70,9 +70,7 @@ const OrderStatusInfo = ({
         <div>
           <p data-cy='order-specific-order-status'>
             Chi tiết đơn hàng:
-            <span className="italic">
-          { orderSpecificDetails}
-            </span>
+            <span className='italic'>{orderSpecificDetails}</span>
           </p>
         </div>
         <div>
@@ -100,7 +98,7 @@ const OrderStatusInfo = ({
           <p data-cy='order-confirmation-status'>
             Trạng thái:{" "}
             <span
-              className={cn('font-bold',{
+              className={cn("font-bold", {
                 "text-primary": orderStatus === "confirmed",
                 "text-accent": orderStatus === "pending",
                 "text-destructive":
@@ -111,7 +109,6 @@ const OrderStatusInfo = ({
               {orderStatus === "confirmed" && "Thành công"}
               {orderStatus === "failed" && "Thất bại"}
               {orderStatus === "canceled" && "Đã hủy"}
-
             </span>
           </p>
         </div>

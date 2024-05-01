@@ -11,6 +11,8 @@ import OrderSpecificShippingAddress from "./__components/order-specific-shipping
 import OrderSpecificSummary from "./__components/order-specific-sumary";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import OrderSpecificCancelOrder from "./__components/order-specific-cancel-order";
+import FeedbackBox from "@/components/molecules/feed-back-box";
 const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
   const orderId = params.id;
   if (!orderId) notFound();
@@ -44,10 +46,28 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
         />
         <OrderSpecificPayment paymentMethod={order.paymentMethod} />
         <OrderSpecificProducts items={order.items} />
-        <OrderSpecificSummary totalAfterCoupon={order.totalAfterCoupon} shippingCost={order.shippingFee} total={order.total} provisional={order.provisional} />
-
-        <Link href={APP_URL.myOrders} className={buttonVariants({variant:'outline',className:'mt-8 w-full'})}>Trở về danh sách đơn hàng</Link>
+        <OrderSpecificSummary
+          totalAfterCoupon={order.totalAfterCoupon}
+          shippingCost={order.shippingFee}
+          total={order.total}
+          provisional={order.provisional}
+        />
       </div>
+      <div className='mt-8'>
+        {order.status === "pending" && order.deliveryStatus === "pending" && (
+          <OrderSpecificCancelOrder orderId={orderId} />
+        )}
+        <Link
+          href={APP_URL.myOrders}
+          className={buttonVariants({
+            variant: "outline",
+            className: " w-full",
+          })}
+        >
+          Trở về danh sách đơn hàng
+        </Link>
+      </div>
+      <FeedbackBox />
     </section>
   );
 };

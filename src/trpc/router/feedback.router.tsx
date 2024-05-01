@@ -5,26 +5,34 @@ import { Feedback } from "../../payload/payload-types";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { isEmailUser } from "../../utils/util.utls";
 import { getUserProcedure, router } from "../trpc";
+import { FEED_BACK } from "../../constants/api-messages.constant";
 
-const preFilledFeedback:Record<NonNullable<Feedback['feedbackOption']>,NonNullable<Feedback['feedbackOption']>>={
-  'better-serve-attitude':'better-serve-attitude',
-  'delivery-faster':'delivery-faster'
+type FeedbackOption = NonNullable<Feedback['feedbackOptions']>[number];
+const preFilledFeedback:Record<NonNullable<FeedbackOption['options']>,NonNullable<FeedbackOption['options']>>={
+    'better-serve-attitude':'better-serve-attitude',
+    'delivery-faster':'delivery-faster'
 }
+// const preFilledFeedback:Record<NonNullable<Feedback['feedbackOptions']>,NonNullable<Feedback['feedbackOptions']>>={
+//   // 'better-serve-attitude':'better-serve-attitude',
+//   // 'delivery-faster':'delivery-faster'
+// }
 
 const FeedbackRouter = router({
   createFeedback: getUserProcedure
-    .input(z.object({ feedback: z.string().min(10, INVALID_FEEDBACK) ,feedBackOption:z.literal(preFilledFeedback['better-serve-attitude']).or(z.literal(preFilledFeedback['delivery-faster'])).optional()}))
+    .input(z.object({ feedback: z.string().optional(),
+      feedbackOptions:z.array(z.enum([preFilledFeedback['better-serve-attitude'],preFilledFeedback['delivery-faster']])).nullable().optional()
+    }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const { feedBackOption,feedback } = input;
-
+      const { feedback,feedbackOptions} = input;
+      const feedbackOptionValues:Feedback['feedbackOptions']=feedbackOptions?.map(option=>({options:option}))
       try {
         const payload = await getPayloadClient();
         await payload.create({
           collection: "feedback",
           data: {
             feedback,
-            feedbackOption:feedBackOption,
+            feedbackOptions:feedbackOptionValues,
             user: {
               value: user.id,
               relationTo: isEmailUser(user)
@@ -33,6 +41,7 @@ const FeedbackRouter = router({
             },
           },
         });
+        return {success:true,message:FEED_BACK.SUCCESS}
       } catch (error) {
         throwTrpcInternalServer(error);
       }

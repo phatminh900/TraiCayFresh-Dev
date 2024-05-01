@@ -302,8 +302,13 @@ export interface Coupon {
  */
 export interface Feedback {
   id: string;
-  feedback: string;
-  feedbackOption?: ('delivery-faster' | 'better-serve-attitude') | null;
+  feedback?: string | null;
+  feedbackOptions?:
+    | {
+        options?: ('delivery-faster' | 'better-serve-attitude') | null;
+        id?: string | null;
+      }[]
+    | null;
   user:
     | {
         relationTo: 'customers';

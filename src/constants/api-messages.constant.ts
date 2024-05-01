@@ -64,3 +64,7 @@ export const ORDER_MESSAGE={
     BAD_REQUEST:"Không thể hủy đơn hàng"
 
 }
+
+export const FEED_BACK={
+    SUCCESS:"Cảm ơn bạn đã gửi góp ý cho chúng tôi."
+}

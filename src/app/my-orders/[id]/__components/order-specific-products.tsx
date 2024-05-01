@@ -18,7 +18,7 @@ const OrderSpecificProducts = ({ items }: OrderSpecificProductsProps) => {
       <IoBagHandleOutline size={35} />
       <div className='flex flex-col gap-2 flex-1'>
         <p className='font-bold sm:text-lg'>Thông tin sản phẩm</p>
-        <ul className="mt-6 space-y-3">
+        <ul className="mt-6 space-y-4">
           {items.map((item) => {
             const product = item.product as Product;
             const imgSrc = getImgUrlMedia(product.thumbnailImg);

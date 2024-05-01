@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,14 +12,13 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 import { Order } from "@/payload/payload-types";
 import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
-import { useRouter } from "next/navigation";
-import { FormEvent, useRef, useState } from "react";
+import { VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
+
 
 type ICancelReason = Order["cancelReason"];
 const CANCEL_REQUEST_REASONS: {
@@ -50,10 +50,14 @@ interface CancelOrderRequestProps {
   isOpen: boolean;
   orderId: string;
   onToggleOpenCancelRequest: () => void;
+  btnVariant?:VariantProps<typeof buttonVariants> 
+  btnClassName?:string
 }
 const CancelOrderRequest = ({
   isOpen,
   orderId,
+  btnClassName,
+  btnVariant,
   onToggleOpenCancelRequest,
 }: CancelOrderRequestProps) => {
   const router = useRouter();
@@ -71,17 +75,19 @@ const CancelOrderRequest = ({
   const handleSubmitCancelReason = () => {
     cancelOrder({ cancelReason: cancelReason!, orderId });
   };
-  const isMutating=isCancelingOrder
+  const isMutating = isCancelingOrder;
   return (
     <Dialog open={isOpen}>
       <DialogTrigger asChild>
-        <button
-        data-cy='cancel-request-open-btn'
+        <Button
+          data-cy='cancel-request-open-btn'
           onClick={onToggleOpenCancelRequest}
-          className='text-destructive font-bold'
+          className={cn('text-destructive font-bold',buttonVariants({...btnVariant}),btnClassName)}
+
         >
           Hủy
-        </button>
+        </Button>
+      
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
@@ -93,7 +99,7 @@ const CancelOrderRequest = ({
         <div className='mt-4'>
           <RadioGroup
             data-cy='cancel-request-radio-list'
-            className='mt-8 space-y-3'
+            className='space-y-3'
             value={cancelReason!}
             // id={`${props.id}`}
           >
@@ -113,14 +119,12 @@ const CancelOrderRequest = ({
               </div>
             ))}
           </RadioGroup>
-
-        
         </div>
         <DialogFooter>
           <div className='flex items-center gap-2'>
             <Button
               className='flex-1'
-              disabled={isCancelingOrder}
+              disabled={isMutating}
               onClick={onToggleOpenCancelRequest}
               type='button'
               variant='destructive'
@@ -128,8 +132,12 @@ const CancelOrderRequest = ({
               Hủy yêu cầu
             </Button>
 
-            <Button 
-            disabled={isCancelingOrder} onClick={handleSubmitCancelReason} className='flex-1' variant='destructive-contained'>
+            <Button
+              disabled={isCancelingOrder}
+              onClick={handleSubmitCancelReason}
+              className='flex-1'
+              variant='destructive-contained'
+            >
               Hủy đơn hàng
             </Button>
           </div>

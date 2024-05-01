@@ -16,6 +16,7 @@ const CheckoutPage = async () => {
   if (!user) redirect(APP_URL.login);
   const userCart = user.cart;
   let content = <EmptyCart />;
+  console.log(userCart!.items!.length)
   if (userCart!.items!.length) {
     content = (
       <CheckoutClient user={user}>

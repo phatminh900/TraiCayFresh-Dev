@@ -15,13 +15,24 @@ export const Feedback: CollectionConfig = {
     {
       name: "feedback",
       type: "textarea",
-      required: true,
+      required: false,
     },
     {
-      name: "feedbackOption",
+      name: "feedbackOptions",
       label: "FeedBack Options",
-      type:'select',
-        options:[{label:"Delivery Faster",value:'delivery-faster'},{label:"Need better serve attitude",value:'better-serve-attitude'}]
+      type: 'array',
+      fields: [
+        {
+          type: 'radio',
+          name: 'options',
+          label: 'Options',
+          options: [
+            {label:"Delivery Faster",value:'delivery-faster'},{label:"Need better serve attitude",value:'better-serve-attitude'}
+          ],
+        },
+      ],
+      // type:'select',
+      //   options:[{label:"Delivery Faster",value:'delivery-faster'},{label:"Need better serve attitude",value:'better-serve-attitude'}]
     },
     {
       name: "user",
