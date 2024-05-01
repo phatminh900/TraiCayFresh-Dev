@@ -63,6 +63,7 @@ const OrderStatusInfo = ({
             <CancelOrderRequest
               orderId={orderId}
               isOpen={isOpenCancelRequest}
+              btnVariant={{variant:'text-destructive'}}
               onToggleOpenCancelRequest={toggleOpenCancelRequest}
             />
           )}

@@ -9,8 +9,8 @@ import OrderList from "./__components/order-list";
 
 const MyOrderPage = async () => {
   const user = await getUserServer();
-  const { data} = await getUserOrders({ userId: user?.id || "" });
-  const orders=data?.orders
+  const { data } = await getUserOrders({ userId: user?.id || "" });
+  const orders = data?.orders;
   return (
     <section>
       <BreadCrumbLinks
@@ -18,7 +18,14 @@ const MyOrderPage = async () => {
         links={[{ href: APP_URL.myOrders, label: "Đơn hàng đã mua" }]}
       />
       <PageTitle>Đơn hàng đã mua</PageTitle>
-      {!orders?.length ?<EmptyCart message="Bạn chưa mua đơn hàng nào"/>:   <OrderList initialOrders={orders} hasNextPage={data?.hasNextPage||false}/>}
+      {!orders?.length ? (
+        <EmptyCart message='Bạn chưa mua đơn hàng nào' />
+      ) : (
+        <OrderList
+          initialOrders={orders}
+          hasNextPage={data?.hasNextPage || false}
+        />
+      )}
     </section>
   );
 };

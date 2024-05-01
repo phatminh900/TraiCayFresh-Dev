@@ -9,6 +9,7 @@ interface DeliveryStatusProps {
 const DeliveryStatus = ({className, deliveryStatus }: DeliveryStatusProps) => {
   return (
     <p
+    data-cy='delivery-status'
       className={cn(`${className}`,{
         "text-primary":
           deliveryStatus === "delivered" || deliveryStatus === "delivering",
