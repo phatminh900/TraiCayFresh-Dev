@@ -36,7 +36,7 @@ export const getOrderStatus = async ({ orderId }: { orderId: string }) => {
     const order = await payload.findByID({
       collection: "orders",
       id: orderId,
-      depth: 1,
+      depth: 2,
       
     });
     return { success: true, data: order };

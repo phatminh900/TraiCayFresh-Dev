@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import EmptyCart from "@/components/molecules/empty-cart";
 import PageTitle from "@/components/ui/page-title";
@@ -8,29 +6,30 @@ import { getUserServer } from "@/services/server/payload/users.service";
 
 import CheckoutClient from "./_components/checkout-client";
 import CheckoutListCart from "./_components/checkout-list-cart";
-import { getCartOfUser } from "@/services/server/payload/carts.service";
 
-import { isEmailUser } from "@/utils/util.utls";
 import { redirect } from "next/navigation";
 
 const CheckoutPage = async () => {
   const user = await getUserServer();
   // register
   // getCartOfUser(isEmailUser(user!)?'email':'phoneNumber',user?.id)
-  if(!user) redirect(APP_URL.login)
-   return (
+  if (!user) redirect(APP_URL.login);
+  const userCart = user.cart;
+  let content = <EmptyCart />;
+  if (userCart!.items!.length) {
+    content = (
+      <CheckoutClient user={user}>
+        {userCart!.items!.length && <CheckoutListCart user={user} />}
+      </CheckoutClient>
+    );
+  }
+  return (
     <section>
       <BreadCrumbLinks
         links={[{ href: APP_URL.checkout, label: "Thanh toán" }]}
       />
       <PageTitle>Thanh toán</PageTitle>
-      {user!.cart!.items!.length < 1 ? (
-        <EmptyCart />
-      ) : (
-        <CheckoutClient user={user}>
-          <CheckoutListCart user={user}/>
-        </CheckoutClient>
-      )}
+      {content}
     </section>
   );
 };

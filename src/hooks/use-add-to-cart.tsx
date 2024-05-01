@@ -31,47 +31,53 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
   } = product ?? {};
 
 
-  const addItemToCart=()=>{
-    addItem({
-      id,
-      originalPrice,
-      quantity,
-      thumbnailImg,
-      title,
-      priceAfterDiscount,
-    });
+  // const addItemToCart=()=>{
+  //   addItem({
+  //     id,
+  //     originalPrice,
+  //     quantity,
+  //     thumbnailImg,
+  //     title,
+  //     priceAfterDiscount,
+  //   });
   
-    toast.success("Thêm vào giỏ hàng thành công", { duration: 1000 });
-    router.refresh();
-  }
+  //   toast.success("Thêm vào giỏ hàng thành công", { duration: 1000 });
+  //   router.refresh();
+  // }
   const handleAddItemToCart = async () => {
     const productInTheCart = cartItemsLocal.find(
       (item) => item.id === product.id
     );
+    console.log('----product')
+    console.log(product)
+
+
     // if already in the cart and buy excess 15kg
 
     const updatedUserCart = productInTheCart
       ? cartItemsLocal.map((item) =>
-          item.id === product.id
-            ? // Make sure not over 15kg
-              {
-                product: item.id,
-                ...item,
-                quantity:
-                  item.quantity + product.quantity >=
-                  MAXIMUN_KG_CAN_BUY_THROUGH_WEB
-                    ? 15
-                    : item.quantity + product.quantity,
-              }
-            : { product: product.id,...item, quantity: product.quantity }
+        {
+          return   item.id === product.id
+          ? // Make sure not over 15kg
+            {
+              ...item,
+              product:item.id,
+              quantity:
+                item.quantity + product.quantity >=
+                MAXIMUN_KG_CAN_BUY_THROUGH_WEB
+                  ? 15
+                  : item.quantity + product.quantity,
+            }
+          :{...item,product:item.id}
+        }
         )
       : [
           ...cartItemsLocal.map((item) => ({
-            product: item.id,
             ...item,
+            product: item.id,
             quantity: item.quantity,
           })),
-          { product: product.id, quantity },
+          {  ...product,quantity ,product: product.id},
         ];
     if (user) {
       if('email' in user){

@@ -45,7 +45,7 @@ const CheckoutAddressList = ({
   return (
     <ul
       data-cy='user-address-list-checkout'
-      className='bg-gray-200 rounded-md py-3 px-4 space-y-2'
+      className='bg-gray-200 rounded-md py-3 px-2 space-y-2 sm:px-4'
     >
       <RadioGroup defaultValue={sortedAddress![0].id!}>
         {sortedAddress

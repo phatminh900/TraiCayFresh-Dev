@@ -12,8 +12,11 @@ import CheckoutAddress from "../checkout-address";
 import CheckoutDetails from "../checkout-details";
 import CheckoutDiscount from "../checkout-discount";
 import CheckoutNote from "../checkout-note";
-import CheckoutPaymentMethods from "../checkout-payment-methods";
-interface CheckoutClientProps extends IUser, PropsWithChildren {}
+import CheckoutPaymentMethods from "../checkout-payment-methods"
+;
+interface CheckoutClientProps extends IUser, PropsWithChildren {
+
+}
 
 export enum PAYMENT_METHOD {
   "BY_CASH" = "BY_CASH",
@@ -27,7 +30,7 @@ export type IShippingAddress = {
   userPhoneNumber: string;
   address: string;
 };
-const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
+const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
   const router = useRouter();
   const clearCart = useCart((store) => store.clearCart);
 
@@ -109,8 +112,6 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
           }
         : null
     );
-  console.log(shippingAddress);
-  console.log(paymentMethod);
   const [checkoutNote, setCheckoutNote] = useState("");
   const onSetShippingAddress = (shippingAddress: IShippingAddress) => {
     setShippingAddress(shippingAddress);
@@ -141,7 +142,6 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
         const userName = watch("name");
         const userPhoneNumber = watch("phoneNumber");
 
-        console.log(userPhoneNumber);
         const newUserAddress = {
           name: userName,
           district,
@@ -169,7 +169,6 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
     // if user has no address before create one
     // create user address before proceeding to checkout
     await userAddress;
-    console.log("procceding checkout");
 
     if (paymentMethod === PAYMENT_METHOD.MOMO && shippingAddressToUser) {
       checkoutWithMomo({ shippingAddress:shippingAddressToUser, orderNotes: checkoutNote });
@@ -187,7 +186,6 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
         orderNotes: checkoutNote,
       }).catch((err) => handleTrpcErrors(err));
       if (result?.url) {
-        console.log('why no clear the cart')
     
         router.push(result?.url);
       }

@@ -24,6 +24,13 @@ export const Orders: CollectionConfig = {
       min: 1,
     },
     {
+      name: "provisional",
+      label: "Provisional",
+      type: "number",
+      required: true,
+    },
+    {name:'shippingFee',label:"Shipping Fee",type:'number',required:true,defaultValue:0},
+    {
       name: "totalAfterCoupon",
       label: "Total After Coupon",
       type: "number",

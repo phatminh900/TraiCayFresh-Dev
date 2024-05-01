@@ -13,6 +13,7 @@ import { CHECKOUT_MESSAGE } from "../../constants/api-messages.constant";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 
+// TODO: freeship for orders meet condition
 
 
 
@@ -81,7 +82,7 @@ const calculateUserAmountAndCreateOrderItems=async(user:Customer|CustomerPhoneNu
       quantity: item.quantity!,
     };
   });
-  return {amount,totalAfterCoupon,orderItems,userCart}
+  return {amount,totalAfterCoupon,orderItems,userCart,provisional:cartTotalPrice}
 }
 
 const CheckoutInfoSchema = z.object({
@@ -116,12 +117,14 @@ const PaymentRouter = router({
       // new order
       const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
       if(!resultCalculateAndOrderItems) return
-      const {amount,orderItems,totalAfterCoupon,userCart}=resultCalculateAndOrderItems
+      const {amount,orderItems,totalAfterCoupon,userCart,provisional}=resultCalculateAndOrderItems
+      const shippingFee=50000
       const newOrder = await payload.create({
         collection: "orders",
         data: {
           deliveryStatus:'pending',
           paymentMethod:'cash',
+          provisional,
           orderBy: {
             value: user.id,
             relationTo:
@@ -129,10 +132,12 @@ const PaymentRouter = router({
                 ? "customers"
                 : "customer-phone-number",
           },
-          total: amount,
+          total: amount+shippingFee,
+          
           items: orderItems,
           orderNotes,
           _isPaid: false,
+          shippingFee,
           totalAfterCoupon,
           shippingAddress: shippingAddress,
           status: "pending",
@@ -155,7 +160,7 @@ const PaymentRouter = router({
         // if no user already handle in the previous middleware
         const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
         if(!resultCalculateAndOrderItems) return
-        const {amount,orderItems,totalAfterCoupon,userCart}=resultCalculateAndOrderItems
+        const {amount,orderItems,totalAfterCoupon,userCart,provisional}=resultCalculateAndOrderItems
        
        
         // create order
@@ -171,12 +176,13 @@ const PaymentRouter = router({
           return `${acc}${acc ? "," : ""} ${item.quantity}KG ${product.title}`;
         }, "");
         const orderInfo = `Thanh toán ${orderDetails}`;
-
+        const shippingFee=0
         // create new order in db
         const newOrder = await payload.create({
           collection: "orders",
           data: {
             deliveryStatus:'pending',
+            provisional,
             paymentMethod:'momo',
             orderBy: {
               value: user.id,
@@ -185,10 +191,10 @@ const PaymentRouter = router({
                   ? "customers"
                   : "customer-phone-number",
             },
-            total: amount,
+            total: amount+shippingFee,
             items: orderItems,
             orderNotes,
-
+            shippingFee:0,
             _isPaid: false,
             totalAfterCoupon,
             shippingAddress: shippingAddress,
@@ -331,14 +337,14 @@ const PaymentRouter = router({
         const { user, type: userType, req } = ctx;
         const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
         if(!resultCalculateAndOrderItems) return
-        const {amount,orderItems,totalAfterCoupon,userCart}=resultCalculateAndOrderItems
+        const {amount,orderItems,totalAfterCoupon,userCart,provisional}=resultCalculateAndOrderItems
         // if no user already handle in the previous middleware
        
 
         //parameters
         console.log("----amount");
         console.log(amount);
-
+        const shippingFee=0
         // create new order in db
         const newOrder = await payload.create({
           collection: "orders",
@@ -352,10 +358,11 @@ const PaymentRouter = router({
                   ? "customers"
                   : "customer-phone-number",
             },
-            total: amount,
+            total: amount+shippingFee,
+            provisional,
             items: orderItems,
             orderNotes,
-
+            shippingFee,
             _isPaid: false,
             totalAfterCoupon,
             shippingAddress: shippingAddress,

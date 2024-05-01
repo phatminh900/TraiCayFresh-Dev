@@ -146,6 +146,8 @@ export interface Order {
       };
   orderNotes?: string | null;
   total: number;
+  provisional: number;
+  shippingFee: number;
   totalAfterCoupon?: number | null;
   _isPaid?: boolean | null;
   shippingAddress: {
