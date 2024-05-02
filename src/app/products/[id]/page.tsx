@@ -16,6 +16,7 @@ import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
 import { getUserServer } from "@/services/server/payload/users.service";
+import ProductReview from "@/components/molecules/product-review";
 
 
 const ProductPage = async ({
@@ -123,6 +124,7 @@ const ProductPage = async ({
         {/* Reviews */}
         {/* TODO: load on request time */}
         {/* use <Suspend />> */}
+        <ProductReview productId={product.id} title={product.title} imgSrc={product.thumbnailImg}/>
         <ProductReviews />
       </div>
       {/* <ProductPrice price={product.originalPrice} /> */}
