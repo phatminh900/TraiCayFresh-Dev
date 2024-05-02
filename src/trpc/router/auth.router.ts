@@ -6,12 +6,17 @@ import { privateProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { z } from "zod";
+import { AUTH_MESSAGE } from "../../constants/api-messages.constant";
+import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 // PREVENT LOGIN TOO MUCH
 const AuthRouter = router({
   signUp: publicProcedure
     .input(SignUpCredentialSchema)
     .mutation(async ({ input }) => {
       const { email, password, passwordConfirm, name } = input;
+      try {
+        
+      
       if (password !== passwordConfirm) {
         throw new TRPCError({
           code: "BAD_REQUEST",
@@ -42,6 +47,9 @@ const AuthRouter = router({
         },
       });
       return { success: true, emailSentTo: email };
+      } catch (error) {
+        throw error
+      }
     }),
   login: publicProcedure
     .input(AuthCredentialSchema)
@@ -89,15 +97,19 @@ const AuthRouter = router({
     .query(async ({ input }) => {
       const { token } = input;
       if(!token) return
-      const payload = await getPayloadClient();
+      try {
+        const payload = await getPayloadClient();
 
-      const isVerified = await payload.verifyEmail({
-        collection: "customers",
-        token,
-      });
-
-      if (!isVerified) throw new TRPCError({ code: "UNAUTHORIZED" });
-      return { success: true };
+        const isVerified = await payload.verifyEmail({
+          collection: "customers",
+          token,
+        });
+  
+        if (!isVerified) throw new TRPCError({ code: "UNAUTHORIZED" ,message:AUTH_MESSAGE.INVALID_EMAIL_TOKEN});
+        return { success: true };
+      } catch (error) {
+        throw error
+      }
     }),
   resetPassword: publicProcedure
     .input(
@@ -114,8 +126,8 @@ const AuthRouter = router({
           message: "Mật khẩu và xác nhận mật khẩu không giống nhau",
         });
       }
-      const payload = await getPayloadClient();
       try {
+      const payload = await getPayloadClient();
         await payload.resetPassword({
           collection: "customers",
           data: { password, token },
@@ -136,21 +148,26 @@ const AuthRouter = router({
     .input(AuthCredentialSchema.pick({ email: true }))
     .mutation(async ({ input }) => {
       const { email } = input;
-      const payload = await getPayloadClient();
-      const { docs } = await payload.find({
-        collection: "customers",
-        where: {
-          email: {
-            equals: email,
+
+      try {
+        const payload = await getPayloadClient();
+        const { docs } = await payload.find({
+          collection: "customers",
+          where: {
+            email: {
+              equals: email,
+            },
           },
-        },
-      });
-      if (!docs.length)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Email chưa được đăng kí. Đăng kí ngay nhé",
         });
-      return { success: true, email };
+        if (!docs.length)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Email chưa được đăng kí. Đăng kí ngay nhé",
+          });
+        return { success: true, email };
+      } catch (error) {
+        throwTrpcInternalServer(error)
+      }
     }),
 });
 

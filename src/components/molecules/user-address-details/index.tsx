@@ -53,21 +53,18 @@ const UserAddressDetails = ({
 
   const { mutateAsync: setDefaultAddress, isPending: isSettingDefaultAddress } =
     trpc.user.setDefaultAddress.useMutation({
-      onError: (err) => handleTrpcErrors(err),
       onSuccess: (data) => {
         handleTrpcSuccess(router, data?.message);
       },
     });
   const { mutateAsync: deleteUserAddress, isPending: isDeletingUserAddress } =
     trpc.user.deleteAddress.useMutation({
-      onError: (err) => handleTrpcErrors(err),
       onSuccess: (data) => {
         handleTrpcSuccess(router, data?.message);
       },
     });
   const { mutateAsync: adjustUserAddress, isPending: isAdjustingUserAddress } =
     trpc.user.adjustUserAddress.useMutation({
-      onError: (err) => handleTrpcErrors(err),
       onSuccess: (data) => handleTrpcSuccess(router, data?.message),
     });
   // end user -----
@@ -77,7 +74,6 @@ const UserAddressDetails = ({
     mutateAsync: setDefaultAddressUserPhoneNumber,
     isPending: isSettingDefaultAddressUserPhoneNumber,
   } = trpc.customerPhoneNumber.setDefaultAddress.useMutation({
-    onError: (err) => handleTrpcErrors(err),
     onSuccess: (data) => {
       handleTrpcSuccess(router, data?.message);
     },
@@ -86,14 +82,12 @@ const UserAddressDetails = ({
     mutateAsync: adjustUserPhoneNumberAddress,
     isPending: isAdjustingUserAddressCustomerPhoneNumber,
   } = trpc.customerPhoneNumber.adjustUserAddress.useMutation({
-    onError: (err) => handleTrpcErrors(err),
     onSuccess: (data) => handleTrpcSuccess(router, data?.message),
   });
   const {
     mutateAsync: deleteUserPhoneNumberAddress,
     isPending: isDeletingUserPhoneNumberAddress,
   } = trpc.customerPhoneNumber.deleteAddress.useMutation({
-    onError: (err) => handleTrpcErrors(err),
     onSuccess: (data) => {
       handleTrpcSuccess(router, data?.message);
     },

@@ -27,7 +27,7 @@ const Logout = ({ user }: LogoutProps) => {
       notifyUserLogoutSuccessfully();
     }
     if (user && !(isEmailUser(user!))) {
-      await logOutUserPhoneNumber().catch((err) =>
+      await logOutUserPhoneNumber().catch(() =>
         toast.error(GENERAL_ERROR_MESSAGE)
       );
       notifyUserLogoutSuccessfully();

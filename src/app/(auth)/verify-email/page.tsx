@@ -31,7 +31,6 @@ interface VerifyEmailPageProps {
 const VerifyEmailPage = ({ searchParams }: VerifyEmailPageProps) => {
   const token = (searchParams?.token as string) || "";
   const emailTo = (searchParams?.toEmail as string) || "";
-  const pathName = usePathname();
   const { refetch, data, isLoading, isError } = trpc.auth.verifyEmail.useQuery(
     {
       token,

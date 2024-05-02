@@ -27,17 +27,24 @@ const CartItemSchema = z.object({
 
 const getUserProcedure = privateProcedure.use(async ({ ctx, next }) => {
   const { user } = ctx;
-  const payload = await getPayloadClient();
-  const userInDb = await payload.findByID({
-    collection: "customers",
-    id: user.id,
-  });
-  if (!userInDb)
+  try {
+    const payload = await getPayloadClient();
+    const userInDb = await payload.findByID({
+      collection: "customers",
+      id: user.id,
+    });
+    if (!userInDb)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: USER_MESSAGE.NOT_FOUND,
+      });
+    return next({ ctx: { user: userInDb } });
+  } catch (error) {
     throw new TRPCError({
       code: "NOT_FOUND",
       message: USER_MESSAGE.NOT_FOUND,
     });
-  return next({ ctx: { user: userInDb } });
+  }
 });
 
 const UserRouter = router({
@@ -47,8 +54,9 @@ const UserRouter = router({
       // TODO: add middleware for this
       const { user } = ctx;
       const { phoneNumber } = input;
-      console.log(phoneNumber)
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       // with the same phoneNumber
@@ -61,7 +69,6 @@ const UserRouter = router({
           message: PHONE_NUMBER_MESSAGE.CONFLICT,
         });
 
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -78,7 +85,7 @@ const UserRouter = router({
           message: PHONE_NUMBER_MESSAGE.SUCCESS,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+       throw error
       }
     }),
   changeUserName: getUserProcedure
@@ -87,10 +94,11 @@ const UserRouter = router({
       const { user } = ctx;
       const { name } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
       if (name === user.name)
         return { success: true, message: NAME_MESSAGE.UPDATE_SUCCESSFULLY };
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -113,6 +121,8 @@ const UserRouter = router({
       const { user } = ctx;
       const { phoneNumber, id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       const phoneNumberUpdatedToDefault = user.phoneNumbers?.find(
@@ -128,7 +138,6 @@ const UserRouter = router({
           ? { ...number, isDefault: true }
           : { ...number, isDefault: false }
       );
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -145,7 +154,7 @@ const UserRouter = router({
           message: PHONE_NUMBER_MESSAGE.SET_DEFAULT_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   changeUserPhoneNumber: getUserProcedure
@@ -154,12 +163,13 @@ const UserRouter = router({
       const { user } = ctx;
       const { phoneNumber, id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
       const isTryingModifySameNumber =
         user.phoneNumbers?.find((phone) => phone.id === id)?.phoneNumber ===
         phoneNumber;
       if (isTryingModifySameNumber) return;
-      try {
         const updatedPhoneNumbers = user.phoneNumbers?.map((phone) =>
           phone.id === id ? { ...phone, phoneNumber } : phone
         );
@@ -183,11 +193,14 @@ const UserRouter = router({
       }
     }),
   deletePhoneNumber: getUserProcedure
-    .input(z.object({id:z.string()}))
+    .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
-      const {  id } = input;
+      const { id } = input;
+
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       if (!user)
@@ -214,7 +227,6 @@ const UserRouter = router({
       const updatedPhoneNumbers = user.phoneNumbers?.filter(
         (number) => number.id !== id
       );
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -234,7 +246,7 @@ const UserRouter = router({
            thành công`,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   addNewAddress: getUserProcedure
@@ -244,6 +256,8 @@ const UserRouter = router({
       const { user } = ctx;
       const { district, street, ward, name, phoneNumber } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       // with the same address
@@ -261,7 +275,6 @@ const UserRouter = router({
           message: ADDRESS_MESSAGE.CONFLICT,
         });
 
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -294,7 +307,7 @@ const UserRouter = router({
         });
         return { success: true, message: ADDRESS_MESSAGE.SUCCESS };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   setDefaultAddress: getUserProcedure
@@ -303,6 +316,8 @@ const UserRouter = router({
       const { user } = ctx;
       const { id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       const addressUpdateToDefault = user.address?.find((ad) => ad.id === id);
@@ -315,7 +330,6 @@ const UserRouter = router({
       const updatedToDefault = user.address?.map((ad) =>
         ad.id === id ? { ...ad, isDefault: true } : { ...ad, isDefault: false }
       );
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -332,7 +346,7 @@ const UserRouter = router({
           message: ADDRESS_MESSAGE.SET_DEFAULT_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   adjustUserAddress: getUserProcedure
@@ -341,6 +355,8 @@ const UserRouter = router({
       const { user } = ctx;
       const { id, ward, district, street, phoneNumber, name } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       const existingAddress = user.address?.find((ad) => ad.id === id);
@@ -357,15 +373,15 @@ const UserRouter = router({
           ad.phoneNumber === phoneNumber &&
           ad.name === name
       );
-   
+
       // TODO: THINK IF SHOULD NOTIFY USER OR NOT
-      if (isTheSameAddress) return {success:true,message:ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY};
+      if (isTheSameAddress)
+        return { success: true, message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY };
       const updatedAddress = user.address?.map((ad) =>
         ad.id === id
           ? { ...ad, ward, district, street, name, phoneNumber }
           : { ...ad }
       );
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -382,7 +398,7 @@ const UserRouter = router({
           message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   deleteAddress: getUserProcedure
@@ -391,6 +407,8 @@ const UserRouter = router({
       const { user } = ctx;
       const { id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       if (!user)
@@ -412,7 +430,6 @@ const UserRouter = router({
           message: ADDRESS_MESSAGE.CANT_DELETE,
         });
       const updatedAddress = user.address?.filter((ad) => ad.id !== id);
-      try {
         await payload.update({
           collection: "customers",
           where: {
@@ -429,17 +446,18 @@ const UserRouter = router({
           message: ADDRESS_MESSAGE.DELETE_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+       throw error
       }
     }),
   setUserCart: getUserProcedure
     .input(z.array(CartItemSchema))
     .mutation(async ({ input, ctx }) => {
       const { user } = ctx;
+      try {
+
       const payload = await getPayloadClient();
       const updatedCart: CartItems = input;
       // TODO: should i extend with the existing one or simply replace it
-      try {
         await payload.update({
           collection: "customers",
           where: {

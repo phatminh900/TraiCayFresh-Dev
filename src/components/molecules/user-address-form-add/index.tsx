@@ -40,7 +40,6 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
     isPending: isAddingNewAddressUserEmail,
     isSuccess: isSuccessUserEmail,
   } = trpc.user.addNewAddress.useMutation({
-    onError: (err) => handleTrpcErrors(err),
     onSuccess: (data) => {
       handleTrpcSuccess(router, data?.message);
     },
@@ -53,10 +52,7 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
     isPending: isAddingNewAddressPhoneNumber,
     isSuccess: isSuccessUserPhoneNumber,
   } = trpc.customerPhoneNumber.addNewAddress.useMutation({
-    onError: (err) => {
-      handleTrpcErrors(err);
-      return;
-    },
+   
     onSuccess: (data) => {
       handleTrpcSuccess(router, data?.message);
     },

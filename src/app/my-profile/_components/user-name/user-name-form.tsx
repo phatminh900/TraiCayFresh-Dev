@@ -31,9 +31,7 @@ const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
 
   const { isPending: isChangingUserName, mutateAsync: changeUserName } =
     trpc.user.changeUserName.useMutation({
-      onError: (err) => {
-        handleTrpcErrors(err);
-      },
+     
       onSuccess: (data) => {
         handleTrpcSuccess(router,data?.message)
       },

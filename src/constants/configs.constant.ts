@@ -14,6 +14,9 @@ export const SUPPORTED_PROVINCE = "Hồ Chí Minh";
 export const MAX_PHONE_NUMBER_ALLOWED=5
 export const MAX_ADDRESS_ALLOWED=5
 export const HOST_PHONE_NUMBER='0985215845'
+export const HOST_EMAIL='traicayfreshtmp315@gmail.com'
+export const ZALO_NUMBER='0985215845'
+export const HOST_ADDRESS="42 đường số 8, Linh Tây ,Thủ Đức, HCM"
 
 export const FREESHIP_FROM='150.000'
 

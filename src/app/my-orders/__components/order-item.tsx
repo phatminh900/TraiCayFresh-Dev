@@ -1,7 +1,6 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { APP_URL } from "@/constants/navigation.constant";
-import { cn } from "@/lib/utils";
 import { Order, Product } from "@/payload/payload-types";
 import { formatPriceToVND, getImgUrlMedia, sliceOrderId } from "@/utils/util.utls";
 import Image from "next/image";
@@ -22,7 +21,7 @@ const OrderItem = ({
 }: OrderItemProps) => {
   return (
     <li data-cy='order-item-my-order' className="border border-gray-300 rounded-md">
-      <div className='text-sm px-3 py-2 bg-gray-200 flex justify-between'>
+      <div className='text-sm px-3 py-2 bg-gray-200 flex justify-between border-b border-b-gray-200'>
         <p data-cy='order-id-my-order'>
           Đơn hàng: <span>{sliceOrderId(orderId)}</span>
         </p>
@@ -57,20 +56,21 @@ const OrderItem = ({
                 </div>
               </div>
               <div className="flex justify-end">
-                <p data-cy='price-my-order' className='font-bold text-destructive text-sm '>
-                  {formatPriceToVND(productPrice)}
+                <p data-cy='price-my-order' className='text-sm '>
+                  {formatPriceToVND(productPrice)}/kg
                 </p>
               </div>
             </li>
           );
         })}
           </ul>
-        <div className='flex justify-end mt-6'>
-          <p data-cy='total-price-my-order' className='text-xl'>Tổng tiền: <span className="text-destructive">{formatPriceToVND(totalPrice)}</span></p>
+        <div className='flex gap-2 flex-col items-end mt-6 py-3 border-t border-t-gray-200'>
+          <p data-cy='total-price-my-order' className='text-xl font-bold'>Tổng tiền: <span className="text-destructive">{formatPriceToVND(totalPrice)}</span></p>
+          {/* <div className='flex justify-center mt-4'> */}
+          <Button variant='outline'>Xem chi tiết</Button>
+        {/* </div> */}
         </div>
-        <div className='flex justify-center mt-4'>
-          <Button variant='link'>Xem chi tiết</Button>
-        </div>
+      
       </Link>
     </li>
   );

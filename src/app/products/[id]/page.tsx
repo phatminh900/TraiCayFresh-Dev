@@ -31,10 +31,12 @@ const ProductPage = async ({
   const currentQuantityOptionParams = searchParams?.currentQuantityOption;
   const currentQuantityOption =
     // do not allow buy above 16kg in the app
-    currentQuantityOptionParams && +currentQuantityOptionParams < 16
+    currentQuantityOptionParams && (+currentQuantityOptionParams >0 &&  +currentQuantityOptionParams <16)
       ? Number(currentQuantityOptionParams)
       : 1;
-
+      console.log('---')
+      console.log(+currentQuantityOptionParams)
+  console.log(currentQuantityOption)
   return (
     <section>
       <BreadCrumbLinks

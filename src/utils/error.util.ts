@@ -14,7 +14,6 @@ export const handleTrpcErrors = (
     error.data?.code === "NOT_FOUND"
   ) {
     toast.error(error.message);
-    toast.error(error.message);
 
     return;
   }

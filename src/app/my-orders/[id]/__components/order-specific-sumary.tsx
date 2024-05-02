@@ -19,24 +19,24 @@ const OrderSpecificSummary = ({
   return (
     <OrderSpecificSectionWrapper className='text-lg'>
       <MdAttachMoney size={35} />
-      <div className='flex flex-col gap-2 flex-1'>
-        <p className='font-bold sm:text-lg'>Tóm tắt chi phí</p>
+      <div data-cy="order-summary-box" className='flex flex-col gap-2 flex-1'>
+        <p data-cy="title-box" className='font-bold sm:text-lg'>Tóm tắt chi phí</p>
         <div className='space-y-2'>
-          <div className='text-gray-700 font-semibold flex items-center justify-between'>
+          <div data-cy="provisional-price"  className='text-gray-700 font-semibold flex items-center justify-between'>
             <p className='text-sm'>Tổng tiền sản phẩm</p>
             <p className='text-xs font-medium'>{formatPriceToVND(provisional)}</p>
           </div>
           { (totalAfterCoupon) ? (
-            <div className='text-gray-700 font-semibold flex items-center justify-between'>
+            <div data-cy="price-after-coupon" className='text-gray-700 font-semibold flex items-center justify-between'>
               <p className='text-sm'>Giảm giá</p>
               <p className='text-xs font-medium text-primary'>-{formatPriceToVND(provisional-totalAfterCoupon)}</p>
             </div>
           ):null}
-          <div className='text-gray-700 font-semibold flex items-center justify-between'>
+          <div data-cy="shipping-free" className='text-gray-700 font-semibold flex items-center justify-between'>
             <p className='text-sm'>Phí vận chuyển</p>
             <p className='text-xs font-medium'>{formatPriceToVND(shippingCost)}</p>
           </div>
-          <div className='font-semibold flex items-center justify-between mt-2'>
+          <div  data-cy="final-price" className='font-bold flex items-center text-lg justify-between mt-2'>
             <p>Tổng cộng</p>
             <p className="text-lg text-destructive">{formatPriceToVND(total)}</p>
           </div>

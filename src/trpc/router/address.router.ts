@@ -21,7 +21,7 @@ const AddressRouter = router({
         }
       );
       if (!response.ok) {
-        throw Error("Đang có lỗi vui lòng thử lại sau");
+        throw Error();
       }
       const result: { message: string; data: IDistrict[] } =
         await response.json();
@@ -49,7 +49,7 @@ const AddressRouter = router({
           }
         );
         if (!response.ok) {
-          throw Error("Đang có lỗi vui lòng thử lại sau");
+          throw Error();
         }
         const result: { message: string; data: IWard[] } =
           await response.json();

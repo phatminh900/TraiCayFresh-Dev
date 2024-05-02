@@ -11,13 +11,13 @@ const OrderSpecificShippingAddress = ({userName,phoneNumber,address}:OrderSpecif
   return (
    <OrderSpecificSectionWrapper>
      <IoLocationOutline size={35} />
-            <div className='flex flex-col gap-2'>
-              <p className='font-bold sm:text-lg'>Thông tin nhận hàng</p>
-              <p className='font-bold'>
+            <div data-cy='shipping-address-info-box' className='flex flex-col gap-2'>
+              <p data-cy='title-box' className='font-bold sm:text-lg'>Thông tin nhận hàng</p>
+              <p data-cy='user-info-shipping-address' className='font-bold'>
                 {userName} -{" "}
-                {userName}
+                {phoneNumber}
               </p>
-              <p>{address}</p>
+              <p data-cy='address-shipping-address'>{address}</p>
             </div>
     </OrderSpecificSectionWrapper>
   )

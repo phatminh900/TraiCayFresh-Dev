@@ -1,5 +1,5 @@
 "use client";
-import { HOST_PHONE_NUMBER } from "@/constants/configs.constant";
+import { HOST_PHONE_NUMBER, ZALO_NUMBER } from "@/constants/configs.constant";
 import { cn } from "@/lib/utils";
 import { Order, Product } from "@/payload/payload-types";
 import { formatPriceToVND, sliceOrderId } from "@/utils/util.utls";
@@ -148,7 +148,7 @@ const OrderStatusInfo = ({
             <a
               data-cy='zalo-order-status'
               className='font-bold'
-              href='https://zalo.me/0985215845'
+              href={`https://zalo.me/${ZALO_NUMBER}`}
               target='_blank'
             >
               Zalo

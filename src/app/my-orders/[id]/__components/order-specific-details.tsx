@@ -21,7 +21,7 @@ const OrderSpecificDetails = ({orderId,deliveryStatus,createdAt}:OrderSpecificDe
     <IoReceiptOutline size={35} />
           <div className='flex flex-col flex-1'>
             <div className='font-bold flex-1 sm:text-lg flex items-center justify-between'>
-              <p>
+              <p data-cy='order-id'>
                 {" "}
                 Đơn hàng:{" "}
                 <span className='text-sm'>{sliceOrderId(orderId)}</span>
@@ -30,8 +30,8 @@ const OrderSpecificDetails = ({orderId,deliveryStatus,createdAt}:OrderSpecificDe
                 <DeliveryStatus deliveryStatus={deliveryStatus} />
               </div>
             </div>
-            <p className="capitalize">
-              Đặt lúc: <span>{formattedDate}</span>
+            <p data-cy='ordered-date'>
+              Đặt lúc: <span className="capitalize">{formattedDate}</span>
             </p>
           </div>
  </OrderSpecificSectionWrapper>

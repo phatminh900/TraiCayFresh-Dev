@@ -25,11 +25,12 @@ export const USER_MESSAGE={
 }
 export const AUTH_MESSAGE={
     EXPIRED:"Mã OTP đã hết hạn",
-    INVALID_OTP:"Mã OTP không đúng"
+    INVALID_OTP:"Mã OTP không đúng",
+    INVALID_EMAIL_TOKEN:"Xác thực không thành công"
 
 }
 export const OTP_MESSAGE={
-    SUCCESS: "Mã xác nhận đã được gửi đến số điện thoại của bạn và có hiệu lực trong 3 phút",
+    SUCCESS: "Mã xác nhận đã được gửi đến số điện thoại của bạn và có hiệu lực trong 5 phút",
     SUCCESS_SENT_OTP_AGAIN:"OTP đã được gửi lại vào số điện thoại của bạn",
     VERIFY_SUCCESSFULLY:"Xác thực thành công"
 }

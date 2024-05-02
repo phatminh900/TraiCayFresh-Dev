@@ -31,10 +31,12 @@ const OrderRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const payload = await getPayloadClient();
       const { user } = ctx;
       const { orderId, cancelReason } = input;
       // check if the same user otherwise login user knows the orderId can cancel other order
+      try {
+        const payload = await getPayloadClient();
+
       const order = await payload.findByID({
         collection: "orders",
         id: orderId,
@@ -49,12 +51,12 @@ const OrderRouter = router({
         // orderUserId=
         orderUserId = order.orderBy.value.id;
       }
-      if (orderUserId!== user.id)
+      if (orderUserId!== user.id || (order.deliveryStatus!=='pending'  ))
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: ORDER_MESSAGE.BAD_REQUEST,
         });
-      try {
+     
         await payload.update({
           collection: "orders",
           id: orderId,

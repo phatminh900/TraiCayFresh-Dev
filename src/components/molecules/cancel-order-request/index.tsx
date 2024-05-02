@@ -19,7 +19,6 @@ import { handleTrpcSuccess } from "@/utils/success.util";
 import { VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-
 type ICancelReason = Order["cancelReason"];
 const CANCEL_REQUEST_REASONS: {
   label: string;
@@ -50,13 +49,15 @@ interface CancelOrderRequestProps {
   isOpen: boolean;
   orderId: string;
   onToggleOpenCancelRequest: () => void;
-  btnVariant?:VariantProps<typeof buttonVariants> 
-  btnClassName?:string
+  btnVariant?: VariantProps<typeof buttonVariants>;
+  btnClassName?: string;
+  btnTitle?: string;
 }
 const CancelOrderRequest = ({
   isOpen,
   orderId,
   btnClassName,
+  btnTitle,
   btnVariant,
   onToggleOpenCancelRequest,
 }: CancelOrderRequestProps) => {
@@ -82,12 +83,14 @@ const CancelOrderRequest = ({
         <Button
           data-cy='cancel-request-open-btn'
           onClick={onToggleOpenCancelRequest}
-          className={cn('text-destructive font-bold',buttonVariants({...btnVariant}),btnClassName)}
-
+          className={cn(
+            "text-destructive font-bold",
+            buttonVariants({ ...btnVariant }),
+            btnClassName
+          )}
         >
-          Hủy
+          {btnTitle ? btnTitle : "Hủy"}
         </Button>
-      
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>

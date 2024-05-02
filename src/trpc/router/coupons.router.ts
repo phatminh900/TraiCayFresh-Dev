@@ -40,6 +40,8 @@ const CouponRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { user, type } = ctx;
       const { coupon } = input;
+      try {
+
       const payload = await getPayloadClient();
       const { docs: coupons } = await payload.find({
         collection: "coupons",
@@ -89,7 +91,6 @@ const CouponRouter = router({
           };
         }
       );
-      try {
         if (type === USER_TYPE.email) {
           await payload.update({
             collection: "customers",
@@ -117,7 +118,7 @@ const CouponRouter = router({
       } catch (error) {
         console.log("---------------error");
         console.log(error);
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
 });

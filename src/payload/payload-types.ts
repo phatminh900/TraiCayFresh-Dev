@@ -267,7 +267,15 @@ export interface Review {
   rating: number;
   reviewImgs?: (string | Media)[] | null;
   product: string | Product;
-  user: string | Customer;
+  user:
+    | {
+        relationTo: 'customers';
+        value: string | Customer;
+      }
+    | {
+        relationTo: 'customer-phone-number';
+        value: string | CustomerPhoneNumber;
+      };
   updatedAt: string;
   createdAt: string;
 }

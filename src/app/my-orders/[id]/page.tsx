@@ -13,6 +13,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import OrderSpecificCancelOrder from "./__components/order-specific-cancel-order";
 import FeedbackBox from "@/components/molecules/feed-back-box";
+import OrderSpecificNotes from "./__components/order-specific-notes";
 const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
   const orderId = params.id;
   if (!orderId) notFound();
@@ -45,6 +46,7 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
           userName={order.shippingAddress.userName}
         />
         <OrderSpecificPayment paymentMethod={order.paymentMethod} />
+        {order.orderNotes && <OrderSpecificNotes notes={order.orderNotes} />}
         <OrderSpecificProducts items={order.items} />
         <OrderSpecificSummary
           totalAfterCoupon={order.totalAfterCoupon}
@@ -59,6 +61,7 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
         )}
         <Link
           href={APP_URL.myOrders}
+          data-cy='come-back-to-orders'
           className={buttonVariants({
             variant: "outline",
             className: " w-full",

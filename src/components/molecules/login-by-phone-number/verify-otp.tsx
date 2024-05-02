@@ -64,7 +64,6 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
   });
   const { mutateAsync: sendOtpAgain, isPending: isSendingOtp } =
     trpc.customerPhoneNumber.requestOtp.useMutation({
-      onError: (err) => handleTrpcErrors(err),
       onSuccess: () => {
         toast.success(OTP_MESSAGE.SUCCESS_SENT_OTP_AGAIN);
         setDisabled(false);

@@ -34,7 +34,6 @@ const WardAddress = ({
   defaultValue,
 }: WardAddressProps) => {
   const [value, setValue] = useState(defaultValue || "");
-  console.log(districtId)
   const [open, setOpen] = useState(false);
   const {data:wardsResult,refetch:getWards}=trpc.address.getHcmWards.useQuery({districtId:districtId||1},{enabled:false})
   const wardsData=wardsResult?.wards||[]

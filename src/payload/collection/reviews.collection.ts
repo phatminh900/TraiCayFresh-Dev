@@ -24,7 +24,7 @@ export const Reviews: CollectionConfig = {
       type: "relationship",
       relationTo: "media",
       hasMany: true,
-      maxRows: 2,
+      maxRows: 3,
     },
     {
       name: "product",
@@ -38,7 +38,7 @@ export const Reviews: CollectionConfig = {
       name: "user",
       label: "Review's of User",
       type: "relationship",
-      relationTo: "customers",
+      relationTo: ["customers", "customer-phone-number"],
       hasMany:false,
       required: true,
     },

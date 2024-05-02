@@ -111,7 +111,8 @@ const CustomerPhoneNumberRouter = router({
 
       const { res } = ctx;
       const { phoneNumber, otp } = input;
-      const payload = await getPayloadClient();
+      try {
+        const payload = await getPayloadClient();
       // the token will be expire at the same time with the refresh token still keep the access token in the cookie to perform refresh
           const expirationDays=process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME_NUMBER||7
 
@@ -127,11 +128,16 @@ const CustomerPhoneNumberRouter = router({
         });
       }
       const lastOtp = docs[docs.length - 1];
+
+      console.log('-----last otp')
+      console.log(lastOtp)
+      console.log('----otp')
+      console.log(otp)
       // TODO: check again in production
 
       // TODO:  checking otp for testing
       const isValidOtp =
-        otp === "000000" || (await bcrypt.compare(otp, lastOtp.otp!));
+      ( process.env.NODE_ENV==='test' && otp === "000000") || (await bcrypt.compare(otp, lastOtp.otp!));
       if (!isValidOtp) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -201,13 +207,20 @@ const CustomerPhoneNumberRouter = router({
           return { success: true, message: OTP_MESSAGE.VERIFY_SUCCESSFULLY };
         }
       }
+      } catch (error) {
+        throw error
+      }
     }),
 
   logOut: publicProcedure.mutation(({ ctx }) => {
 
-    const { res } = ctx;
-    res.clearCookie(COOKIE_USER_PHONE_NUMBER_TOKEN);
-    return { success: true };
+    try {
+      const { res } = ctx;
+      res.clearCookie(COOKIE_USER_PHONE_NUMBER_TOKEN);
+      return { success: true };
+    } catch (error) {
+      throwTrpcInternalServer(error)
+    }
   }),
   addNewPhoneNumber: getUserProcedure
     .input(PhoneValidationSchema)
@@ -216,6 +229,8 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { phoneNumber } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       // with the same phoneNumber
@@ -232,7 +247,6 @@ const CustomerPhoneNumberRouter = router({
         ...user.phoneNumbers!,
         { isDefault: false, phoneNumber },
       ];
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {
@@ -248,7 +262,7 @@ const CustomerPhoneNumberRouter = router({
           message: PHONE_NUMBER_MESSAGE.SUCCESS,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
 
@@ -258,12 +272,13 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { phoneNumber, id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
       const isTryingModifySameNumber =
         user.phoneNumbers?.find((phone) => phone.id === id)?.phoneNumber ===
         phoneNumber;
       if (isTryingModifySameNumber) return;
-      try {
         const updatedPhoneNumbers = user.phoneNumbers?.map((phone) =>
           phone.id === id ? { ...phone, phoneNumber } : phone
         );
@@ -292,6 +307,8 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       if (!user)
@@ -318,7 +335,6 @@ const CustomerPhoneNumberRouter = router({
       const updatedPhoneNumbers = user.phoneNumbers?.filter(
         (number) => number.id !== id
       );
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {
@@ -338,7 +354,7 @@ const CustomerPhoneNumberRouter = router({
            thành công`,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
 
@@ -348,9 +364,10 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { name } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
       if (name === user.name) return;
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {
@@ -374,6 +391,8 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { district, street, ward, name, phoneNumber } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       // with the same address
@@ -391,7 +410,6 @@ const CustomerPhoneNumberRouter = router({
           message: ADDRESS_MESSAGE.CONFLICT,
         });
 
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {
@@ -424,7 +442,7 @@ const CustomerPhoneNumberRouter = router({
         });
         return { success: true, message: ADDRESS_MESSAGE.SUCCESS };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   setDefaultAddress: getUserProcedure
@@ -433,6 +451,8 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       const addressUpdateToDefault = user.address?.find((ad) => ad.id === id);
@@ -445,7 +465,6 @@ const CustomerPhoneNumberRouter = router({
       const updatedToDefault = user.address?.map((ad) =>
         ad.id === id ? { ...ad, isDefault: true } : { ...ad, isDefault: false }
       );
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {
@@ -462,7 +481,7 @@ const CustomerPhoneNumberRouter = router({
           message: ADDRESS_MESSAGE.SET_DEFAULT_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   adjustUserAddress: getUserProcedure
@@ -471,6 +490,8 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { id, ward, district, street, phoneNumber, name } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       const existingAddress = user.address?.find((ad) => ad.id === id);
@@ -497,7 +518,6 @@ const CustomerPhoneNumberRouter = router({
           ? { ...ad, ward, district, street, name, phoneNumber }
           : { ...ad }
       );
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {
@@ -514,7 +534,7 @@ const CustomerPhoneNumberRouter = router({
           message: ADDRESS_MESSAGE.UPDATE_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   deleteAddress: getUserProcedure
@@ -523,6 +543,8 @@ const CustomerPhoneNumberRouter = router({
       const { user } = ctx;
       const { id } = input;
       // to make sure have actual user
+      try {
+
       const payload = await getPayloadClient();
 
       if (!user)
@@ -544,7 +566,6 @@ const CustomerPhoneNumberRouter = router({
           message: ADDRESS_MESSAGE.CANT_DELETE,
         });
       const updatedAddress = user.address?.filter((ad) => ad.id !== id);
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {
@@ -561,18 +582,18 @@ const CustomerPhoneNumberRouter = router({
           message: ADDRESS_MESSAGE.DELETE_SUCCESSFULLY,
         };
       } catch (error) {
-        throwTrpcInternalServer(error);
+        throw error
       }
     }),
   setUserCart: getUserProcedure
     .input(z.array(CartItemSchema))
     .mutation(async ({ input, ctx }) => {
       const { user } = ctx;
+      try {
 
       const payload = await getPayloadClient();
       const updatedCart: CartItems = input;
       // TODO: should i extend with the existing one or simply replace it
-      try {
         await payload.update({
           collection: "customer-phone-number",
           where: {

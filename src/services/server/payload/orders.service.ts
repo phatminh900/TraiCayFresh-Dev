@@ -26,7 +26,6 @@ export const getUserOrders = async ({ userId }: { userId: string }) => {
     // TODO: limit
     return { success: true, data: { orders, hasNextPage } };
   } catch (error) {
-    console.error(error);
     return { ok: false, data: null };
   }
 };
@@ -41,7 +40,6 @@ export const getOrderStatus = async ({ orderId }: { orderId: string }) => {
     });
     return { success: true, data: order };
   } catch (error) {
-    console.error(error);
     return { ok: false, data: null };
   }
 };
