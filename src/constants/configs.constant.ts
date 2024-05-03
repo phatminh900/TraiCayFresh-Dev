@@ -23,3 +23,5 @@ export const FREESHIP_FROM='150.000'
 export const ORDER_ID_LENGTH=6
 
 export const USER_ORDERS_SHOW_LIMIT=5
+
+export const ALLOW_UPLOAD_IMG_LENGTH=3

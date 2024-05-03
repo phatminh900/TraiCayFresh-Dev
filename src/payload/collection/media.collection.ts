@@ -1,5 +1,12 @@
+import dotenv from "dotenv";
+import path from "path";
+
 import { CollectionConfig } from "payload/types";
 import { isAdmins } from "../access/isAdmin";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -13,28 +20,33 @@ export const Media: CollectionConfig = {
    
   },
   upload: {
-    staticURL: "/media",
-    staticDir: "media",
+    staticURL: '/media',
+    staticDir: 'media',
+    disableLocalStorage: true,
+
     imageSizes: [
       {
-        name: "thumbnail",
+        name: 'thumbnail',
         width: 400,
         height: 300,
-        position: "centre",
+        crop: 'center'
       },
       {
-        name: "card",
+        name: 'card',
         width: 768,
         height: 1024,
-        position: "centre",
+        crop: 'center'
       },
       {
-        name: "tablet",
+        name: 'tablet',
         width: 1024,
         height: undefined,
-        position: "centre",
-      },
+        crop: 'center'
+      }
     ],
+    adminThumbnail: ({ doc }) =>
+      `${process.env.AWS_S3_ENDPOINT}/${doc.filename}`,
+  
     mimeTypes: ["image/*"],
   },
   fields: [
@@ -44,5 +56,25 @@ export const Media: CollectionConfig = {
       type: "text",
       required: true,
     },
+    {
+      name: 'url',
+      type: 'text',
+      access: {
+        create: () => false,
+      },
+     
+      hooks: {
+        afterRead: [
+          ({ data: doc }) =>{
+            if(doc){
+           
+            return `${process.env.AWS_S3_ENDPOINT}/${doc.type}/${doc.filename}`
+            
+            }
+          }
+        ],
+      },
+    },
   ],
+
 };
