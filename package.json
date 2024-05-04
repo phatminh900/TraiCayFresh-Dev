@@ -15,9 +15,8 @@
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload/payload.config.js NODE_ENV=production node dist/server/server.js",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:types",
     "lint": "next lint",
-    "cypress:open": "cypress open",
-    "test:open": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts dotenv dotenv -e .env.test -- concurrently \"dotenv -e .env.test npm run dev\" \"cypress open\" ",
-    "test:run": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts dotenv dotenv -e .env.test -- concurrently \"dotenv -e .env.test npm run dev\"  "
+    "test:open": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts  dotenv dotenv -e .env.test   -- concurrently \"dotenv -e .env.test npm run dev\" \"cypress open\" ",
+    "test:run": "cross-env  PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts dotenv dotenv -e .env.test   -- concurrently \"dotenv -e .env.test npm run dev\"  "
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.568.0",
@@ -85,6 +84,7 @@
     "uuidv4": "^6.2.13",
     "vaul": "^0.9.0",
     "zod": "^3.22.4",
+    "zod-form-data": "^2.0.2",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

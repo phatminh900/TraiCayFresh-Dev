@@ -5,9 +5,8 @@ import { CollectionConfig } from "payload/types";
 import { isAdmins } from "../access/isAdmin";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../.env"),
+  path: path.resolve(__dirname, "../../../.env"),
 });
-
 export const Media: CollectionConfig = {
   slug: "media",
   access: {
@@ -23,7 +22,7 @@ export const Media: CollectionConfig = {
     staticURL: '/media',
     staticDir: 'media',
     disableLocalStorage: true,
-
+    
     imageSizes: [
       {
         name: 'thumbnail',
@@ -44,11 +43,15 @@ export const Media: CollectionConfig = {
         crop: 'center'
       }
     ],
-    adminThumbnail: ({ doc }) =>
-      `${process.env.AWS_S3_ENDPOINT}/${doc.filename}`,
+    
+    adminThumbnail: ({ doc }) =>{
+      return   `https://my-app-buckets.s3.ap-southeast-2.amazonaws.com/${doc.filename}`
+    }
+    ,
   
     mimeTypes: ["image/*"],
   },
+  
   fields: [
     {
       name: "alt",
@@ -68,7 +71,7 @@ export const Media: CollectionConfig = {
           ({ data: doc }) =>{
             if(doc){
            
-            return `${process.env.AWS_S3_ENDPOINT}/${doc.type}/${doc.filename}`
+            return `${process.env.NEXT_PUBLIC_AWS_S3_ENDPOINT}/${doc.filename}`
             
             }
           }

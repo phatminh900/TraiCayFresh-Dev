@@ -50,10 +50,11 @@ const UserPhoneNumberAddress = ({
 
     return (
       <Popover
+
         open={isOpenPhoneNumberList}
         onOpenChange={() => setIsOpenPhoneNumberList(true)}
       >
-        <PopoverTrigger asChild>
+        <PopoverTrigger  asChild>
           {!isOpenPhoneNumberList ? (
             <Button
               data-cy='open-phone-number-address-btn'
@@ -79,7 +80,7 @@ const UserPhoneNumberAddress = ({
               }}
             >
               <Input
-              data-cy='user-phone-number-input'
+                data-cy='user-phone-number-input'
                 error={error}
                 value={phoneNumber}
                 onChange={(e) => {
@@ -142,7 +143,7 @@ const UserPhoneNumberAddress = ({
     );
   }
   return (
-    <div data-cy='user-phone-number-address' className='flex-1'>
+    <div className='flex-1'>
       <Input
         data-cy='user-phone-number-input'
         value={phoneNumber}

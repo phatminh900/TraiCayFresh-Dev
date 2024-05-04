@@ -123,7 +123,7 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
     if (isExpanded && type === "add-new") {
       setValue("phoneNumber", "");
     }
-  }, [isExpanded,setValue,type]);
+  }, [isExpanded, setValue, type]);
   if (!isExpanded)
     return (
       <>
@@ -156,7 +156,8 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
         )}
       </>
     );
-
+console.log('-type---')
+console.log(type)
   return (
     <>
       <form
@@ -167,7 +168,10 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
         <Input
           type='tel'
           value={phoneNumber}
-         error={errors.phoneNumber}
+          error={errors.phoneNumber}
+          className={cn({
+            'bg-slate-200':type==='adjust'
+          })}
           pattern='^[0-9]*$'
           {...register("phoneNumber", {
             required: "Vui lòng nhập số điện thoại",

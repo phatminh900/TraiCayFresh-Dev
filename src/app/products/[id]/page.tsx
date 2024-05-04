@@ -35,9 +35,6 @@ const ProductPage = async ({
     currentQuantityOptionParams && (+currentQuantityOptionParams >0 &&  +currentQuantityOptionParams <16)
       ? Number(currentQuantityOptionParams)
       : 1;
-      console.log('---')
-      console.log(+currentQuantityOptionParams)
-  console.log(currentQuantityOption)
   return (
     <section>
       <BreadCrumbLinks
@@ -111,21 +108,13 @@ const ProductPage = async ({
           </div>
         </div>
 
-        <div>
-          <PageSubTitle className='mb-2'>Đánh giá sản phẩm:</PageSubTitle>
-          <p className='font-semibold text-center mb-4'>
-            Cảm ơn bạn đã mua hàng gửi đánh giá giúp bọn mình nhé
-          </p>
-          <div className='flex justify-center'>
-            <Button variant={"secondary-outline"}>Gửi đánh giá</Button>
-          </div>
-        </div>
+    
 
         {/* Reviews */}
         {/* TODO: load on request time */}
         {/* use <Suspend />> */}
-        <ProductReview productId={product.id} title={product.title} imgSrc={product.thumbnailImg}/>
-        <ProductReviews />
+        {/* <ProductReview productId={product.id} title={product.title} imgSrc={product.thumbnailImg}/> */}
+        <ProductReviews productImgSrc={product.thumbnailImg} productTitle={product.title} productId={product.id} user={user}/>
       </div>
       {/* <ProductPrice price={product.originalPrice} /> */}
     </section>

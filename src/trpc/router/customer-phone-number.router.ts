@@ -15,7 +15,6 @@ import {
 import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "../../constants/configs.constant";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { CartItems } from "../../payload/payload-types";
-import { ERROR_JWT_CODE, verifyToken } from "../../utils/auth.util";
 import { signRefreshToken, signToken } from "../../utils/server/auth.util";
 
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
@@ -24,6 +23,7 @@ import {
   AddressValidationSchema,
   PhoneValidationSchema,
 } from "../../validations/user-infor.valiator";
+import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
 import { publicProcedure, router } from "../trpc";
 
 const CartItemSchema = z.object({
@@ -35,42 +35,6 @@ const CartItemSchema = z.object({
   shippingCost: z.number().nullable().optional(),
 });
 
-
-const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
-
-  const headerCookie = ctx.req.headers.cookie;
-  const parsedCookie = cookie.parse(headerCookie || "");
-  const token = parsedCookie[COOKIE_USER_PHONE_NUMBER_TOKEN];
-  if (!token)
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: AUTH_MESSAGE.EXPIRED,
-    });
-  const decodedToken = await verifyToken(token);
-
-  if (decodedToken.code === ERROR_JWT_CODE.ERR_JWS_INVALID) {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: AUTH_MESSAGE.INVALID_OTP,
-    });
-  }
-  if (decodedToken.code === ERROR_JWT_CODE.ERR_JWT_EXPIRED) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: AUTH_MESSAGE.EXPIRED });
-  }
-  // @ts-ignore
-  const userId = decodedToken?.userId;
-  const payload = await getPayloadClient();
-  const user = await payload.findByID({
-    collection: "customer-phone-number",
-    id: userId || "",
-  });
-  if (!user)
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: USER_MESSAGE.NOT_FOUND,
-    });
-  return next({ ctx: { user } });
-});
 
 const CustomerPhoneNumberRouter = router({
   requestOtp: publicProcedure
@@ -137,7 +101,7 @@ const CustomerPhoneNumberRouter = router({
 
       // TODO:  checking otp for testing
       const isValidOtp =
-      ( process.env.NODE_ENV==='test' && otp === "000000") || (await bcrypt.compare(otp, lastOtp.otp!));
+      ( process.env.NODE_ENV==='development' && otp === "000000") || (await bcrypt.compare(otp, lastOtp.otp!));
       if (!isValidOtp) {
         throw new TRPCError({
           code: "UNAUTHORIZED",

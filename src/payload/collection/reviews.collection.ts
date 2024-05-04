@@ -4,11 +4,9 @@ export const Reviews: CollectionConfig = {
   slug: "reviews",
   fields: [
     {
-      name: "text",
+      name: "reviewText",
       label: "Review",
       type: "text",
-      minLength: 1,
-      required: true,
     },
     {
       name: "rating",

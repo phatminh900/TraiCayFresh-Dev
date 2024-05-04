@@ -43,3 +43,27 @@ export const getOrderStatus = async ({ orderId }: { orderId: string }) => {
     return { ok: false, data: null };
   }
 };
+
+export const getUserOrdersNoPopulate = async ({ userId }: { userId: string }) => {
+  try {
+    const payload = await getPayloadClient();
+    const {
+      docs: orders,
+      hasNextPage,
+    } = await payload.find({
+      collection: "orders",
+      where: {
+        "orderBy.value": {
+          equals: userId,
+        },
+      },
+      // get all the imgs nested as well
+      depth: 0,
+      // pagination:3
+    });
+    // TODO: limit
+    return { success: true, data: { orders, hasNextPage } };
+  } catch (error) {
+    return { ok: false, data: null };
+  }
+};

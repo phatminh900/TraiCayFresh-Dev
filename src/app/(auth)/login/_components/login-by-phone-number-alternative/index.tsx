@@ -3,22 +3,19 @@ import { IoCloseOutline } from "react-icons/io5";
 import { useMediaQuery } from "usehooks-ts";
 
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
-  Dialog,
-  DialogContent,
-  DialogTrigger
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerTrigger
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
 
 import LoginByPhoneNumber from "@/components/molecules/login-by-phone-number";
 import { APP_URL_KEY } from "@/types/common-types";
 import { useSearchParams } from "next/navigation";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 interface LoginByPhoneNumberAlternativeProps {
   isOpen: boolean;
@@ -50,17 +47,14 @@ export function LoginByPhoneNumberAlternative({
                 (origin || APP_URL.home) as APP_URL_KEY
               }
             />
-               <DrawerClose
+            <DialogClose
               onClick={handleClose}
               className='absolute top-[5%] right-[4%]'
               asChild
             >
-              <button>
-                <IoCloseOutline className='hover:text-destructive' size={30} />
-              </button>
-            </DrawerClose>
+              <IoCloseOutline className='hover:text-destructive' size={30} />
+            </DialogClose>
           </DialogContent>
-       
         </Dialog>
       </div>
     );
@@ -68,11 +62,12 @@ export function LoginByPhoneNumberAlternative({
 
   return (
     <div data-cy='login-by-phone-number-alternative'>
-      <Drawer open={isOpen}>
-        <DrawerTrigger asChild onClick={handleOpen}>
+      <Sheet  open={isOpen}>
+        <SheetTrigger asChild onClick={handleOpen}>
           <Button variant='outline'>Đăng nhập bằng số điện thoại</Button>
-        </DrawerTrigger>
-        <DrawerContent
+        </SheetTrigger>
+        <SheetContent
+        side={'bottom'}
           style={{
             height: isOpenOtp === "false" || !isOpenOtp ? "30vh" : "50vh",
           }}
@@ -85,18 +80,15 @@ export function LoginByPhoneNumberAlternative({
               }
             />
 
-            <DrawerClose
+            <button
               onClick={handleClose}
               className='absolute top-[2%] right-[4%]'
-              asChild
             >
-              <button>
-                <IoCloseOutline className='hover:text-destructive' size={30} />
-              </button>
-            </DrawerClose>
+              <IoCloseOutline className='hover:text-destructive' size={30} />
+            </button>
           </div>
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

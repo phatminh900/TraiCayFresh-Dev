@@ -66,6 +66,11 @@ export const ORDER_MESSAGE={
 
 }
 
-export const FEED_BACK={
+export const FEED_BACK_MESSAGE={
     SUCCESS:"Cảm ơn bạn đã gửi góp ý cho chúng tôi."
+}
+
+export const REVIEW_MESSAGE={
+    SUCCESS:"Cảm ơn bạn đã đánh giá",
+    BAD_REQUEST:"Không thể đánh giá khi bạn chưa mua hàng"
 }

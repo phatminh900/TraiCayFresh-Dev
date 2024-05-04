@@ -3,13 +3,14 @@ import dotenv from "dotenv";
 import { z } from "zod";
 import moment from "moment";
 import querystring from "qs";
-import { getUserProcedure, router, USER_TYPE } from "../trpc";
+import {  router, USER_TYPE } from "../trpc";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { isEmailUser } from "../../utils/util.utls";
 import { Customer, CustomerPhoneNumber, Product } from "../../payload/payload-types";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { APP_PARAMS, APP_URL } from "../../constants/navigation.constant";
 import { CHECKOUT_MESSAGE } from "../../constants/api-messages.constant";
+import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 
@@ -111,7 +112,7 @@ const CheckoutInfoSchema = z.object({
 const PaymentRouter = router({
   payWithCash:getUserProcedure.input(CheckoutInfoSchema).mutation(async({ctx,input})=>{
     const { orderNotes, shippingAddress } = input;
-    const { user, type: userType } = ctx;
+    const { user } = ctx;
     try {
       const payload=await getPayloadClient()
       // new order
@@ -128,7 +129,7 @@ const PaymentRouter = router({
           orderBy: {
             value: user.id,
             relationTo:
-              userType === USER_TYPE.email
+              isEmailUser(user)
                 ? "customers"
                 : "customer-phone-number",
           },
@@ -156,7 +157,7 @@ const PaymentRouter = router({
         const payload = await getPayloadClient();
         //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
         const { orderNotes, shippingAddress } = input;
-        const { user, type: userType } = ctx;
+        const { user } = ctx;
         // if no user already handle in the previous middleware
         const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
         if(!resultCalculateAndOrderItems) return
@@ -187,7 +188,7 @@ const PaymentRouter = router({
             orderBy: {
               value: user.id,
               relationTo:
-                userType === USER_TYPE.email
+              isEmailUser(user)
                   ? "customers"
                   : "customer-phone-number",
             },
@@ -334,7 +335,7 @@ const PaymentRouter = router({
         const payload = await getPayloadClient();
         //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
         const { orderNotes, shippingAddress } = input;
-        const { user, type: userType, req } = ctx;
+        const { user,  req } = ctx;
         const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
         if(!resultCalculateAndOrderItems) return
         const {amount,orderItems,totalAfterCoupon,userCart,provisional}=resultCalculateAndOrderItems
@@ -354,7 +355,7 @@ const PaymentRouter = router({
             orderBy: {
               value: user.id,
               relationTo:
-                userType === USER_TYPE.email
+             isEmailUser(user)
                   ? "customers"
                   : "customer-phone-number",
             },

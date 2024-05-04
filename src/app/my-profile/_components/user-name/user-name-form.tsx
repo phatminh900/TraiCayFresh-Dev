@@ -17,8 +17,9 @@ import { handleTrpcSuccess } from "@/utils/success.util";
 import { isEmailUser } from "@/utils/util.utls";
 interface UserNameFormProps extends IUser {
   onExpand: (state: boolean) => void;
+  type?:'adjust'|'add-new'
 }
-const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
+const UserNameForm = ({type='add-new', user, onExpand }: UserNameFormProps) => {
   const router = useRouter();
   const {
     register,
@@ -74,6 +75,9 @@ const UserNameForm = ({ user, onExpand }: UserNameFormProps) => {
       className='my-4 w-full fade-in-15'
     >
       <Input
+      className={cn({
+        'bg-slate-200':type==='adjust'
+      })}
        error={errors.name}
         {...register("name")}
       />

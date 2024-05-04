@@ -3,9 +3,10 @@ import { ORDER_MESSAGE } from "../../constants/api-messages.constant";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { Order } from "../../payload/payload-types";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
-import { getUserProcedure, router } from "../trpc";
+import {  router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { USER_ORDERS_SHOW_LIMIT } from "../../constants/configs.constant";
+import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
 
 const cancelReasons: Record<
   NonNullable<Order["cancelReason"]>,

@@ -22,6 +22,7 @@ import { Coupons } from "./collection/coupon.collection";
 import { Feedback } from "./collection/feedback.collection";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 
+
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
 });
@@ -80,6 +81,11 @@ export default buildConfig({
     Coupons,
     Feedback,
   ],
+  upload: {
+    limits: {
+      fileSize: 5000000, // 5MB, written in bytes
+    },
+  },
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },

@@ -14,14 +14,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { APP_URL } from "@/constants/navigation.constant";
 
 import LoginByPhoneNumber from "@/components/molecules/login-by-phone-number";
@@ -91,38 +91,38 @@ export function CartRequestLogin({
   }
 
   return (
-    <Drawer open={isOpen}>
-      <DrawerTrigger asChild onClick={handleOpen}>
+    <Sheet open={isOpen}>
+      <SheetTrigger asChild onClick={handleOpen}>
         <Button variant='outline'>Thanh toán</Button>
-      </DrawerTrigger>
-      <DrawerContent style={{ height: "60vh" }}>
+      </SheetTrigger>
+      <SheetContent side='bottom' style={{ height: "60vh" }}>
         <div className='mx-auto w-4/5 pb-6 max-w-sm h-[50vh]'>
-          <DrawerHeader>
-            <DrawerTitle className='text-lg text-center font-semibold'>
+          <SheetHeader>
+            <SheetTitle className='text-lg text-center font-semibold'>
               Bạn chưa đăng nhập
-            </DrawerTitle>
-            <DrawerDescription className='text-sm text-center sm:text-base'>
+            </SheetTitle>
+            <SheetDescription className='text-sm text-center sm:text-base'>
               Vui lòng đăng nhập tại đây
-            </DrawerDescription>
+            </SheetDescription>
             <div className='flex justify-center my-2'>{LinkLogin}</div>
 
-          </DrawerHeader>
+          </SheetHeader>
           <SeparatorOption />
           <LoginByPhoneNumber
             title='Mua hàng bằng số điện thoại'
             routeToPushAfterVerifying={APP_URL.checkout as APP_URL_KEY}
           />
 
-          <DrawerClose
+          <SheetClose
             onClick={handleClose}
             className='absolute top-[5%] right-[8%]'
             asChild
           >
             {BtnClose}
-          </DrawerClose>
+          </SheetClose>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   );
 }
 

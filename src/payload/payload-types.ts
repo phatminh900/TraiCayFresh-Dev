@@ -263,7 +263,7 @@ export interface CustomerPhoneNumber {
  */
 export interface Review {
   id: string;
-  text: string;
+  reviewText?: string | null;
   rating: number;
   reviewImgs?: (string | Media)[] | null;
   product: string | Product;
