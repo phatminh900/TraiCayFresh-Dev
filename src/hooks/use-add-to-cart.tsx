@@ -7,7 +7,7 @@ import { trpc } from "@/trpc/trpc-client";
 import { Customer, CustomerPhoneNumber } from "@/payload/payload-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 
-const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|CustomerPhoneNumber}) => {
+const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|CustomerPhoneNumber|null}) => {
     const router = useRouter();
     const {
       mutateAsync: setUserPhoneNumberCart,

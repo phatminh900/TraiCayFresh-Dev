@@ -23,12 +23,14 @@ export const imageSchema = z.object({
 export const imagesSchema = z.object({
   imgs: z
     .array(z.any())
-    .refine((files:{img:File}[]) => {
-      console.log(files.every((file)=> file.img.size <= MAX_FILE_SIZE))
-       return files.every((file)=> file.img.size <= MAX_FILE_SIZE)
+    .refine((files:File[]) => {
+      console.log('file------------')
+      console.log(files)
+      console.log(files.every((file)=> file.size <= MAX_FILE_SIZE))
+       return files.every((file)=> file.size <= MAX_FILE_SIZE)
     }, `Vui lòng gửi ảnh có dung lượng dưới  5MB.`)
     .refine(
-      (files:{img:File}[]) => files.every((file)=>ACCEPTED_IMAGE_MIME_TYPES.includes(file.img?.type)),
+      (files:File[]) => files.every((file)=>ACCEPTED_IMAGE_MIME_TYPES.includes(file?.type)),
       "Chỉ có file với .jpg, .jpeg, .png and .webp được hỗ trợ"
     ).optional()
 })

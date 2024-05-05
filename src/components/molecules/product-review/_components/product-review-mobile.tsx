@@ -10,13 +10,21 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { PropsWithChildren } from "react";
+import { IReviewSchema } from "../actions/review.action";
 
 interface ProductReviewMobileProps extends PropsWithChildren {
   selectedImgLength: number;
+  createReviewAction:(payload:FormData)=>void
+
+
+
+
 }
 const ProductReviewMobile = ({
   selectedImgLength,
   children,
+  createReviewAction
+
 }: ProductReviewMobileProps) => {
   return (
     <Drawer>
@@ -29,14 +37,14 @@ const ProductReviewMobile = ({
           <DrawerTitle className='text-center'>Đánh giá sản phẩm</DrawerTitle>
         </DrawerHeader>
         <div className='mx-auto w-[90%] pb-16 max-w-sm h-[50vh]'>
-          {children}
+          <form action={createReviewAction}>{children}</form>
 
           <DrawerClose
             // onClick={handleClose}
             className='absolute top-[2%] right-[4%] cursor-pointer'
             asChild
           >
-            <IoCloseOutline size={30} className="hover:text-destructive" />
+            <IoCloseOutline size={30} className='hover:text-destructive' />
           </DrawerClose>
         </div>
       </DrawerContent>

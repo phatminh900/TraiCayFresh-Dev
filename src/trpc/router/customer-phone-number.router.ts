@@ -23,7 +23,7 @@ import {
   AddressValidationSchema,
   PhoneValidationSchema,
 } from "../../validations/user-infor.valiator";
-import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
+import getUserProcedure from "../middlewares/get-user-procedure";
 import { publicProcedure, router } from "../trpc";
 
 const CartItemSchema = z.object({
@@ -180,6 +180,7 @@ const CustomerPhoneNumberRouter = router({
 
     try {
       const { res } = ctx;
+      console.log('why not logout')
       res.clearCookie(COOKIE_USER_PHONE_NUMBER_TOKEN);
       return { success: true };
     } catch (error) {
@@ -374,7 +375,7 @@ const CustomerPhoneNumberRouter = router({
           message: ADDRESS_MESSAGE.CONFLICT,
         });
 
-        await payload.update({
+       const {docs:userResult}= await payload.update({
           collection: "customer-phone-number",
           where: {
             id: { equals: user.id },
@@ -404,7 +405,8 @@ const CustomerPhoneNumberRouter = router({
                 ],
           },
         });
-        return { success: true, message: ADDRESS_MESSAGE.SUCCESS };
+        const userAddresses=userResult[0].address
+        return { success: true, message: ADDRESS_MESSAGE.SUCCESS ,userAddresses};
       } catch (error) {
         throw error
       }

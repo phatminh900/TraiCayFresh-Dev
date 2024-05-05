@@ -6,4 +6,5 @@ export const API_ROUTES = {
   forgotPassword: BASE_API + "/customers/forgot-password",
   logOut: BASE_API + "/customers/logout",
   product: BASE_API + "/products",
+  createReview:BASE_API+'/reviews'
 } as const;

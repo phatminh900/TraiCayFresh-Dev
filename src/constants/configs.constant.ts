@@ -18,8 +18,8 @@ export const HOST_EMAIL='traicayfreshtmp315@gmail.com'
 export const ZALO_NUMBER='0985215845'
 export const HOST_ADDRESS="42 đường số 8, Linh Tây ,Thủ Đức, HCM"
 
-export const FREESHIP_FROM='150.000'
-
+export const FREESHIP_FROM='300.000'
+export const FREESHIP_BY_CASH_FROM='400.000'
 export const ORDER_ID_LENGTH=6
 
 export const USER_ORDERS_SHOW_LIMIT=5

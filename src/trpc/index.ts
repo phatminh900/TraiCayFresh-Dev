@@ -8,7 +8,7 @@ import PaymentRouter from "./router/payment.router";
 import AddressRouter from "./router/address.router";
 import FeedbackRouter from "./router/feedback.router";
 import OrderRouter from "./router/order.router";
-import ReviewRouter from "./router/reviews-router";
+import ReviewRouter from "./router/reviews.router";
 // import { productRouter } from "./routes/product-router";
 // import { PaymentRouter } from "./routes/payment-router";
 

@@ -28,6 +28,7 @@ const CheckoutPaymentMethods = ({
       label: "Thanh toán tiền mặt khi nhận hàng",
       icon: <IoCashOutline size={35} />,
       id: "by-cash",
+      freeShip:true,
       value: PAYMENT_METHOD.BY_CASH,
     },
     {

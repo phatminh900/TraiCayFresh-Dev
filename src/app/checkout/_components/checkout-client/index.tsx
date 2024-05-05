@@ -12,11 +12,9 @@ import CheckoutAddress from "../checkout-address";
 import CheckoutDetails from "../checkout-details";
 import CheckoutDiscount from "../checkout-discount";
 import CheckoutNote from "../checkout-note";
-import CheckoutPaymentMethods from "../checkout-payment-methods"
-;
-interface CheckoutClientProps extends IUser, PropsWithChildren {
-
-}
+import CheckoutPaymentMethods from "../checkout-payment-methods";
+import EmptyCart from "@/components/molecules/empty-cart";
+interface CheckoutClientProps extends IUser, PropsWithChildren {}
 
 export enum PAYMENT_METHOD {
   "BY_CASH" = "BY_CASH",
@@ -24,16 +22,18 @@ export enum PAYMENT_METHOD {
   "CREDIT_TRANSFER" = "CREDIT_TRANSFER",
   "VN_PAY" = "VN_PAY",
 }
+type T=    Partial<IShippingAddress>
 
 export type IShippingAddress = {
   userName: string;
   userPhoneNumber: string;
   address: string;
+  id: string
 };
-const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
+const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
   const router = useRouter();
   const clearCart = useCart((store) => store.clearCart);
-
+  const cartItems=useCart(store=>store.items)
   const {
     errors,
     register,
@@ -53,44 +53,52 @@ const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
     trpc.customerPhoneNumber.addNewAddress.useMutation({});
 
   // checkout by cash is a little bit different than others
-  const { mutateAsync: checkoutCash, isPending: isCheckingOutCash,isSuccess:isSuccessCheckoutCash } =
-    trpc.payment.payWithCash.useMutation({
-      onError: (err) => {
-        handleTrpcErrors(err);
-      },
-    });
-  const { mutate: checkoutWithMomo, isPending: isCheckingOutMomo ,isSuccess:isSuccessCheckoutMomo} =
-    trpc.payment.payWithMomo.useMutation({
-      onError: (err) => {
-        handleTrpcErrors(err);
-      },
-      onSuccess: (data) => {
+  const {
+    mutateAsync: checkoutCash,
+    isPending: isCheckingOutCash,
+    isSuccess: isSuccessCheckoutCash,
+  } = trpc.payment.payWithCash.useMutation({
+    onError: (err) => {
+      handleTrpcErrors(err);
+    },
+  });
+  const {
+    mutate: checkoutWithMomo,
+    isPending: isCheckingOutMomo,
+    isSuccess: isSuccessCheckoutMomo,
+  } = trpc.payment.payWithMomo.useMutation({
+    onError: (err) => {
+      handleTrpcErrors(err);
+    },
+    onSuccess: (data) => {
+      // @ts-ignore
+      if (data?.url) {
         // @ts-ignore
-        if (data?.url) {
-          // @ts-ignore
-          router.push(data.url);
-          // clear the user cart
-      
-          router.refresh();
-        }
-      },
-    });
-  const { mutate: checkoutWithVnPay, isPending: isCheckingOutVnPay,isSuccess:isSuccessCheckoutVnPay } =
-    trpc.payment.payWithVnPay.useMutation({
-      onError: (err) => {
-        handleTrpcErrors(err);
-      },
-      onSuccess: (data) => {
+        router.push(data.url);
+        // clear the user cart
+
+        router.refresh();
+      }
+    },
+  });
+  const {
+    mutate: checkoutWithVnPay,
+    isPending: isCheckingOutVnPay,
+    isSuccess: isSuccessCheckoutVnPay,
+  } = trpc.payment.payWithVnPay.useMutation({
+    onError: (err) => {
+      handleTrpcErrors(err);
+    },
+    onSuccess: (data) => {
+      // @ts-ignore
+      if (data?.url) {
         // @ts-ignore
-        if (data?.url) {
-          // @ts-ignore
-          router.push(data.url);
-          // clear the user cart
-          router.refresh();
-         
-        }
-      },
-    });
+        router.push(data.url);
+        // clear the user cart
+        router.refresh();
+      }
+    },
+  });
 
   const userAddress = user?.address;
 
@@ -109,11 +117,12 @@ const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
             }),
             userName: defaultUserAddress.name,
             userPhoneNumber: defaultUserAddress.phoneNumber,
+            id: defaultUserAddress.id!,
           }
         : null
     );
   const [checkoutNote, setCheckoutNote] = useState("");
-  const onSetShippingAddress = (shippingAddress: IShippingAddress) => {
+  const handleSetAddress = (shippingAddress: IShippingAddress) => {
     setShippingAddress(shippingAddress);
   };
   const handleSetPaymentMethod = (type: PAYMENT_METHOD) =>
@@ -122,11 +131,11 @@ const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
 
   const handleCheckout = async () => {
     let userAddress: boolean | Promise<any> = true;
-    let shippingAddressToUser = shippingAddress;
+    let shippingAddressToUser:Omit<IShippingAddress,'id'>|null = shippingAddress;
+  
 
     if (!shippingAddress) {
       // isValidShipping address => for user hasn't added address yet
-
       const isValidShippingAddress = await trigger();
       if (!isValidShippingAddress) {
         document
@@ -141,7 +150,6 @@ const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
         const street = watch("street");
         const userName = watch("name");
         const userPhoneNumber = watch("phoneNumber");
-
         const newUserAddress = {
           name: userName,
           district,
@@ -171,32 +179,36 @@ const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
     await userAddress;
 
     if (paymentMethod === PAYMENT_METHOD.MOMO && shippingAddressToUser) {
-      checkoutWithMomo({ shippingAddress:shippingAddressToUser, orderNotes: checkoutNote });
+      checkoutWithMomo({
+        shippingAddress: shippingAddressToUser,
+        orderNotes: checkoutNote,
+      });
 
       return;
     }
     if (paymentMethod === PAYMENT_METHOD.VN_PAY && shippingAddressToUser) {
-      checkoutWithVnPay({ shippingAddress:shippingAddressToUser, orderNotes: checkoutNote });
+      checkoutWithVnPay({
+        shippingAddress: shippingAddressToUser,
+        orderNotes: checkoutNote,
+      });
 
       return;
     }
     if (paymentMethod === PAYMENT_METHOD.BY_CASH && shippingAddressToUser) {
       const result = await checkoutCash({
-        shippingAddress:shippingAddressToUser,
+        shippingAddress: shippingAddressToUser,
         orderNotes: checkoutNote,
       }).catch((err) => handleTrpcErrors(err));
       if (result?.url) {
-        console.log(shippingAddress)
-        console.log(result.url)
         router.push(result?.url);
       }
       router.refresh();
-     
     }
   };
   const isCheckingOut =
     isCheckingOutMomo || isCheckingOutVnPay || isCheckingOutCash;
-  const isSuccessCheckout=isSuccessCheckoutCash||isSuccessCheckoutMomo||isSuccessCheckoutVnPay
+  const isSuccessCheckout =
+    isSuccessCheckoutCash || isSuccessCheckoutMomo || isSuccessCheckoutVnPay;
   // when checking not allowing any actions
   useEffect(() => {
     if (isCheckingOut) {
@@ -208,29 +220,31 @@ const CheckoutClient = ({ user, children}: CheckoutClientProps) => {
     return () => {
       document.body.style.pointerEvents = "auto";
       document
-      .querySelectorAll(".checkout-page button")
-      .forEach((button) => ((button as HTMLButtonElement).disabled = false))
+        .querySelectorAll(".checkout-page button")
+        .forEach((button) => ((button as HTMLButtonElement).disabled = false));
     };
   }, [isCheckingOut]);
 
   // if successfully checkout clear the cart
   useEffect(() => {
-    if(isSuccessCheckout){
-      clearCart()
+    if (isSuccessCheckout) {
+      clearCart();
     }
-  }, [isSuccessCheckout,clearCart]);
+  }, [isSuccessCheckout, clearCart]);
+  if(!cartItems.length) return <EmptyCart />
   return (
-    <section className="checkout-page">
+    <section className='checkout-page'>
       <CheckoutAddress
         onSetName={setNameValue}
         onSetPhoneNumber={setPhoneNumberValue}
         onSetDistrict={setDistrictValue}
-        defaultUserName={isEmailUser(user!)?user.name:''}
+        defaultUserName={isEmailUser(user!) ? user.name : ""}
         defaultUserPhoneNumber={!isEmailUser(user!) ? user?.phoneNumber : ""}
         onSetWard={setWardValue}
         register={register}
         errors={errors}
-        onSetShippingAddress={onSetShippingAddress}
+        currentShippingAddressId={shippingAddress?.id}
+        onSetShippingAddress={handleSetAddress}
         user={user}
       />
       {children}

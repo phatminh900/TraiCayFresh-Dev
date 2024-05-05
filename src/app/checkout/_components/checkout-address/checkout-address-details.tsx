@@ -15,9 +15,10 @@ interface CheckoutAddressDetailsProps
   name: string;
   phoneNumber: string;
   isDefault: boolean;
+  userAddressId:string
 }
 const CheckoutAddressDetails = (props: CheckoutAddressDetailsProps) => {
-  const { district, ward, street, name, phoneNumber, onSetShippingAddress } =
+  const { district, ward, street, name, phoneNumber, onSetShippingAddress,userAddressId } =
     props;
   return (
     <div
@@ -33,6 +34,7 @@ const CheckoutAddressDetails = (props: CheckoutAddressDetailsProps) => {
             address: formUserAddress({ street, ward, district }),
             userName: name,
             userPhoneNumber: phoneNumber,
+            id:userAddressId
           });
         }}
         data-cy='user-address-radio-checkout'

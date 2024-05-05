@@ -1,7 +1,15 @@
 import { CollectionConfig } from "payload/types";
+import { isAdmins } from "../access/isAdmin";
+import { isAdminAndCustomer } from "../access/adminsOrLoggedIn";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
+  access:{
+    delete:isAdmins,
+    update:isAdmins,
+    read:isAdmins,
+    create:isAdminAndCustomer
+  },
   fields: [
     {
       name: "reviewText",

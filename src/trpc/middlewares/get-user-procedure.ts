@@ -9,8 +9,15 @@ import { getPayloadClient } from "../../payload/get-client-payload";
 import { ERROR_JWT_CODE, verifyToken } from "../../utils/auth.util";
 
 import { publicProcedure } from "../trpc";
+import { PayloadRequest } from "payload/types";
+import { Customer, CustomerPhoneNumber } from "../../payload/payload-types";
 
 const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
+  const request = ctx.req as PayloadRequest;
+  if (request.user) {
+    const user=request.user as Customer|CustomerPhoneNumber
+    return next({ ctx: { user } });
+  }
   const headerCookie = ctx.req.headers.cookie;
   const parsedCookie = cookie.parse(headerCookie || "");
   const token = parsedCookie[COOKIE_USER_PHONE_NUMBER_TOKEN];
@@ -45,4 +52,4 @@ const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
   return next({ ctx: { user } });
 });
 
-export default getUserProcedure
+export default getUserProcedure;

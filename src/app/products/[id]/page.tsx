@@ -18,7 +18,6 @@ import ProductSlider from "./_components/product-slider";
 import { getUserServer } from "@/services/server/payload/users.service";
 import ProductReview from "@/components/molecules/product-review";
 
-
 const ProductPage = async ({
   searchParams,
   params: { id },
@@ -27,12 +26,14 @@ const ProductPage = async ({
   searchParams: { [key: string]: string };
 }) => {
   const user = await getUserServer();
-  const {data:product} = await getProduct({ id });
+  const { data: product } = await getProduct({ id });
   if (!product) notFound();
   const currentQuantityOptionParams = searchParams?.currentQuantityOption;
   const currentQuantityOption =
     // do not allow buy above 16kg in the app
-    currentQuantityOptionParams && (+currentQuantityOptionParams >0 &&  +currentQuantityOptionParams <16)
+    currentQuantityOptionParams &&
+    +currentQuantityOptionParams > 0 &&
+    +currentQuantityOptionParams < 16
       ? Number(currentQuantityOptionParams)
       : 1;
   return (
@@ -57,14 +58,29 @@ const ProductPage = async ({
         />
         <div className='mt-6'>
           <p>Giá:</p>
+          <div className="mb-1 flex gap-2">
+
+          {Boolean(product.priceAfterDiscount) && (
+            <p className='text-sm text-destructive line-through'>
+              {formatPriceToVND(product.originalPrice)}
+            </p>
+          )}
+           <p className='text-sm text-destructive'>
+              {formatPriceToVND(product.priceAfterDiscount||product.originalPrice)}/kg
+            </p>
+          </div>
+
           <p className='font-bold text-2xl text-destructive'>
-            {formatPriceToVND(product.originalPrice * currentQuantityOption)}
+            {formatPriceToVND(
+              (product.priceAfterDiscount || product.originalPrice) *
+                currentQuantityOption
+            )}
           </p>
         </div>
         <ProductBuyNow product={product} />
         <ProductAddToCart
           user={user}
-          product={{ ...product, quantity: currentQuantityOption ,}}
+          product={{ ...product, quantity: currentQuantityOption }}
         />
         <h4 className='text-lg font-bold mt-6 mb-2'>Mô tả sản phẩm</h4>
         <p className='mb-3'>
@@ -108,13 +124,16 @@ const ProductPage = async ({
           </div>
         </div>
 
-    
-
         {/* Reviews */}
         {/* TODO: load on request time */}
         {/* use <Suspend />> */}
         {/* <ProductReview productId={product.id} title={product.title} imgSrc={product.thumbnailImg}/> */}
-        <ProductReviews productImgSrc={product.thumbnailImg} productTitle={product.title} productId={product.id} user={user}/>
+        <ProductReviews
+          productImgSrc={product.thumbnailImg}
+          productTitle={product.title}
+          productId={product.id}
+          user={user}
+        />
       </div>
       {/* <ProductPrice price={product.originalPrice} /> */}
     </section>

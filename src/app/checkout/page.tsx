@@ -11,26 +11,17 @@ import { redirect } from "next/navigation";
 
 const CheckoutPage = async () => {
   const user = await getUserServer();
-  // register
-  // getCartOfUser(isEmailUser(user!)?'email':'phoneNumber',user?.id)
   if (!user) redirect(APP_URL.login);
-  const userCart = user.cart;
-  let content = <EmptyCart />;
-  console.log(userCart!.items!.length)
-  if (userCart!.items!.length) {
-    content = (
-      <CheckoutClient user={user}>
-        {userCart!.items!.length && <CheckoutListCart user={user} />}
-      </CheckoutClient>
-    );
-  }
+ 
   return (
     <section>
       <BreadCrumbLinks
         links={[{ href: APP_URL.checkout, label: "Thanh toán" }]}
       />
       <PageTitle>Thanh toán</PageTitle>
-      {content}
+      <CheckoutClient user={user}>
+     <CheckoutListCart user={user} />
+      </CheckoutClient>
     </section>
   );
 };

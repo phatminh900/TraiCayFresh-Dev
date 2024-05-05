@@ -17,12 +17,13 @@ const ProductList = async ({ products }: ProductListProps) => {
           <ProductItem
             user={user}
             id={product.id}
-            priceAfterDiscount={product.priceAfterDiscount}
+            priceAfterDiscount={product?.priceAfterDiscount}
             href={`${APP_URL.products}/${product.id}`}
             src={productImg || ""}
             key={product.id}
             title={product.title}
             subTitle={`(${product.estimateQuantityFor1Kg})`}
+
             originalPrice={product.originalPrice}
             reviewQuantity={0}
             reviewRating={5}

@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import next from "next";
+import { Express, Request, Response, NextFunction } from "express";
 
 import * as trpcExpress from "@trpc/server/adapters/express";
 import nextBuild from "next/dist/build";
 import path from "path";
-import VnpayRouter from "./routers/vn-pay.router";
-import RefreshTokenRouter from './routers/refresh-token.router'
+
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
 });
@@ -14,6 +14,11 @@ import express from "express";
 import payload from "payload";
 import { appRouter } from "../trpc";
 import { createContext } from "../trpc/context";
+import { GENERAL_ERROR_MESSAGE } from "../constants/api-messages.constant";
+import { protect } from "./middlewares/auth.middleware";
+import VnpayRouter from "./routers/vn-pay.router";
+import refreshTokenRouter from "./routers/refresh-token.router";
+import reviewRouter from './routers/review.router'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -53,7 +58,8 @@ const start = async (): Promise<void> => {
   //   }
   // });
   // limit the rate limit for applying coupon
-  app.use(RefreshTokenRouter)
+  app.use("/api", refreshTokenRouter);
+  app.use('/api',protect,reviewRouter)
   app.use("/verify-momo-payment-success", (req, res) => {
     const transactionInfo = req.body;
     console.log("--------");
@@ -64,9 +70,10 @@ const start = async (): Promise<void> => {
     // Phản hồi Momo với status code 200
     res.sendStatus(200);
   });
-  
+  // TODO: helmet xss
+
   app.use(VnpayRouter);
-  
+
   app.use(
     "/api/trpc",
     trpcExpress.createExpressMiddleware({
@@ -76,6 +83,12 @@ const start = async (): Promise<void> => {
   );
 
   app.use((req, res) => nextHandler(req, res));
+  // app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  //   return res.status(500).json({
+  //     status: "fail",
+  //     message: GENERAL_ERROR_MESSAGE,
+  //   });
+  // });
 
   nextApp.prepare().then(() => {
     payload.logger.info("Starting Next.js...");

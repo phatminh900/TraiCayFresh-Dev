@@ -13,7 +13,7 @@ export const refreshUserToken = async (req:NextRequest) => {
         if (!userToken) return;
         const jwtPayload = decodeJwt(userToken);
         const userId = jwtPayload?.userId;
-        const refreshTokenResponse=await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL!}/refresh-token`,{
+        const refreshTokenResponse=await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL!}/api/refresh-token`,{
             method:"POST",
             headers:{
                 "Content-Type":'application/json',

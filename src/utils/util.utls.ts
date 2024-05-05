@@ -17,9 +17,9 @@ export const getImgUrlMedia = (img: string | Media) => {
   return typeof img === "string" ? img : img.url;
 };
 
-export const sliceOrderId=(id:string)=>{
-  return `#${id.slice(-ORDER_ID_LENGTH)}`
-}
+export const sliceOrderId = (id: string) => {
+  return `#${id.slice(-ORDER_ID_LENGTH)}`;
+};
 export const validateNumericInput = (value: string) => {
   // Regular expression to match only numeric characters
   const numericRegex = /^[0-9]*$/;
@@ -50,6 +50,34 @@ export const sortIsDefaultFirst = <
     }) as T[];
 };
 
-export const formUserAddress=(address:{street:string,ward:string,district:string})=>{
-  return `${address.street} , ${address.ward} , ${address.district}`
+export const  sortArrayById=<T extends {id?:string|undefined|null}>(
+  array: T[],
+  currentId: string
+) =>{
+ return array.slice().sort(function (a, b) {
+    if (a.id === currentId) {
+      return -1; // `a` comes first
+    } else if (b.id === currentId) {
+      return 1; // `b` comes first
+    } else {
+      return 0; // Maintain the original order
+    }
+  }) as T[];
+}
+export const formUserAddress = (address: {
+  street: string;
+  ward: string;
+  district: string;
+}) => {
+  return `${address.street} , ${address.ward} , ${address.district}`;
+};
+
+
+
+export const  stringify=(obj:Record<string,any>) =>{
+  const replacer = [];
+  for (const key in obj) {
+      replacer.push(key);
+  }
+  return JSON.stringify(obj, replacer);
 }

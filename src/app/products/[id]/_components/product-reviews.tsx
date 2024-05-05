@@ -63,6 +63,7 @@ const ProductReviews = async ({
 
           <div className='flex justify-center mb-6'>
             <ProductReview
+            userId={user?.id}
               productId={productId}
               title={productTitle}
               imgSrc={productImgSrc}

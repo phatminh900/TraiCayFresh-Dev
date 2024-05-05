@@ -10,7 +10,7 @@ import { Customer, CustomerPhoneNumber, Product } from "../../payload/payload-ty
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { APP_PARAMS, APP_URL } from "../../constants/navigation.constant";
 import { CHECKOUT_MESSAGE } from "../../constants/api-messages.constant";
-import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
+import getUserProcedure from "../middlewares/get-user-procedure";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 

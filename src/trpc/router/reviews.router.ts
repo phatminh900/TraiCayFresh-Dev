@@ -1,13 +1,10 @@
-import { z } from "zod";
-import { zfd } from 'zod-form-data';
-import { Review } from "@/payload/payload-types";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import { getPayloadClient } from "../../payload/get-client-payload";
 
-import { imagesSchema } from "../../validations/img.validation";
-import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
-import { router } from "../trpc";
 import { isEmailUser } from "../../utils/util.utls";
+import getUserProcedure from "../middlewares/get-user-procedure";
+import { router } from "../trpc";
 
 import { REVIEW_MESSAGE } from "../../constants/api-messages.constant";
 export const MAX_FILE_SIZE = 1024 * 1024 * 5;
@@ -18,26 +15,25 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/webp",
 ];
 const ReviewRouter = router({
-  createReview: getUserProcedure.use(({next,ctx})=>{
-    delete ctx.req.headers['content-type']
-    return next()
-  })
+  createReview: getUserProcedure
+    .use(({ next, ctx }) => {
+      ctx.req.headers["content-type"] = "multipart/form-data";
+      return next();
+    })
 
     .input(
       z.object({
         productId: z.string(),
         rating: z.number().min(1).max(5),
         reviewText: z.string().optional(),
-        img:zfd.file().optional()
+        img:z.any(),
       })
-      // .merge(imagesSchema)
     )
     .mutation(async ({ ctx, input }) => {
-
-      const { user ,req} = ctx;
+      const { user, req } = ctx;
       const { rating, reviewText, productId, img } = input;
-      console.log('-----img')
-      console.log(img)
+      console.log("-----img");
+      console.log(img);
       try {
         const payload = await getPayloadClient();
         // check if user already bought the product
@@ -50,7 +46,7 @@ const ReviewRouter = router({
             },
           },
         });
-       
+
         if (
           !userOrders.length ||
           !userOrders?.some((order) => {

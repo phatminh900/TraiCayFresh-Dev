@@ -93,6 +93,7 @@ export interface Product {
  */
 export interface Media {
   id: string;
+  file?: string | Media | null;
   alt: string;
   updatedAt: string;
   createdAt: string;

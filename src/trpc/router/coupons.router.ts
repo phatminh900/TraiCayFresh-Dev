@@ -7,7 +7,7 @@ import { CartItems, Product } from "../../payload/payload-types";
 
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { isEmailUser } from "../../utils/util.utls";
-import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
+import getUserProcedure from "../middlewares/get-user-procedure";
 import { router } from "../trpc";
 
 const rateLimiter = new RateLimiterMemory({
@@ -63,7 +63,6 @@ const CouponRouter = router({
             code: "CONFLICT",
             message: COUPON_MESSAGE.ALREADY_APPLIED,
           });
-        console.log("-----------send ");
         // apply coupon
         const updatedUserCart: CartItems = user.cart!.items!.map(
           ({ product, quantity, isAppliedCoupon, ...rest }) => {
@@ -102,7 +101,7 @@ const CouponRouter = router({
         if (!isEmailUser(user)) {
           await payload.update({
             collection: "customer-phone-number",
-            where: { id: { equals: user.id } },
+            where: { id: { equals: user.id! } },
             data: { cart: { items: updatedUserCart } },
           });
           return {
@@ -112,7 +111,6 @@ const CouponRouter = router({
           };
         }
       } catch (error) {
-        console.log("---------------error");
         console.log(error);
         throw error;
       }

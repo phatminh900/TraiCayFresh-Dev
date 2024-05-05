@@ -1,3 +1,4 @@
+import { CheckoutAddressProps } from "@/app/checkout/_components/checkout-address";
 import DeliveryAddress from "@/components/molecules/delivery-address";
 import { Button } from "@/components/ui/button";
 import useAddress from "@/hooks/use-address";
@@ -5,14 +6,20 @@ import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
-import { isEmailUser } from "@/utils/util.utls";
+import { formUserAddress, isEmailUser } from "@/utils/util.utls";
 import { useRouter } from "next/navigation";
 
-interface UserAddressFormAddProps extends IUser {
+interface UserAddressFormAddProps
+  extends IUser,
+    Partial<Pick<CheckoutAddressProps, "onSetShippingAddress">> {
   onExpand: (state: boolean) => void;
 }
 
-const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
+const UserAddressFormAdd = ({
+  onSetShippingAddress,
+  onExpand,
+  user,
+}: UserAddressFormAddProps) => {
   const defaultUserName = user?.name || "";
   const defaultPhoneNumber = !isEmailUser(user!)
     ? user!.phoneNumber!
@@ -52,24 +59,53 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
     isPending: isAddingNewAddressPhoneNumber,
     isSuccess: isSuccessUserPhoneNumber,
   } = trpc.customerPhoneNumber.addNewAddress.useMutation({
-   
     onSuccess: (data) => {
       handleTrpcSuccess(router, data?.message);
     },
   });
   const handleAddNewAddress = handleSubmit(async (data) => {
+    let userAddressId: string;
     // if email in user ==> login by email
+
     if (user && isEmailUser(user)) {
-      await addNewAddressUserEmail({ ...data }).catch((err) =>
-        handleTrpcErrors(err)
-      );
+      await addNewAddressUserEmail({ ...data })
+        .then((data) => {
+          if (data.userAddresses && onSetShippingAddress) {
+            const lastAddedAddressId =
+              data.userAddresses[data.userAddresses.length - 1].id;
+            userAddressId = lastAddedAddressId!;
+          }
+        })
+        .catch((err) => handleTrpcErrors(err));
       onExpand(false);
       return;
     }
-    await addNewAddressPhoneNumber({ ...data }).catch((err) =>
-      handleTrpcErrors(err)
-    );
-    onExpand(false);
+    if (user && !isEmailUser(user)) {
+      await addNewAddressPhoneNumber({ ...data })
+        .then((data) => {
+          if (data.userAddresses && onSetShippingAddress) {
+            const lastAddedAddressId =
+              data.userAddresses[data.userAddresses.length - 1].id;
+            userAddressId = lastAddedAddressId!;
+          }
+        })
+        .catch((err) => handleTrpcErrors(err));
+      onExpand(false);
+    }
+
+    if (onSetShippingAddress) {
+      const shippingAddress = {
+        address: formUserAddress({
+          district: data.district,
+          street: data.street,
+          ward: data.ward,
+        }),
+        userName: data.name,
+        userPhoneNumber: data.phoneNumber,
+        id: userAddressId!,
+      };
+      onSetShippingAddress(shippingAddress);
+    }
   });
   return (
     <form
@@ -78,7 +114,9 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
       onSubmit={handleAddNewAddress}
     >
       <DeliveryAddress
-        phoneNumberList={isEmailUser(user!) ? user?.phoneNumbers : user?.phoneNumbers}
+        phoneNumberList={
+          isEmailUser(user!) ? user?.phoneNumbers : user?.phoneNumbers
+        }
         errors={errors}
         onSetName={setNameValue}
         defaultUserName={defaultUserName}
@@ -89,7 +127,6 @@ const UserAddressFormAdd = ({ onExpand, user }: UserAddressFormAddProps) => {
         register={register}
       />
       <div className='mt-4 flex items-center w-full gap-4'>
-       
         <Button
           data-cy='user-address-cancel-btn-my-profile'
           onClick={() => {

@@ -1,5 +1,4 @@
 "use client";
-import { zfd } from 'zod-form-data';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,11 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/api-messages.constant";
 import { ALLOW_UPLOAD_IMG_LENGTH } from "@/constants/configs.constant";
 import { cn } from "@/lib/utils";
-import { Product, Review } from "@/payload/payload-types";
-import { getImgUrlMedia } from "@/utils/util.utls";
-import { imageSchema, imagesSchema } from "@/validations/img.validation";
+import { Customer, CustomerPhoneNumber, Product, Review } from "@/payload/payload-types";
+import { getImgUrlMedia, stringify } from "@/utils/util.utls";
+import { imageSchema } from "@/validations/img.validation";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useActionState, useRef, useState } from "react";
 import {
   IoCameraOutline,
   IoCloseOutline,
@@ -21,24 +21,28 @@ import {
 import { toast } from "sonner";
 import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
+import ProductInspectReviewImg from "./_components/inspect-img";
 import ProductReviewDesktop from "./_components/product-review-desktop";
 import ProductReviewMobile from "./_components/product-review-mobile";
-import ProductInspectReviewImg from "./_components/inspect-img";
-import { trpc } from "@/trpc/trpc-client";
-import { handleTrpcErrors } from "@/utils/error.util";
-import { useRouter } from "next/navigation";
-import { handleTrpcSuccess } from "@/utils/success.util";
+import createNewReview from "./actions/review.action";
+import SubmitProductReviewBtn from "./_components/submit-product-review-btn";
+import { useFormState } from "react-dom";
+import ErrorMsg from "@/components/atoms/error-msg";
 interface ProductReviewProps {
   title: string;
   imgSrc: Product["thumbnailImg"];
   productId: string;
+  userId?: Customer['id']|CustomerPhoneNumber['id'];
 }
-const fileSchema=z.object({
-  file:zfd.file()
-})
+
 const ratings = Array.from({ length: 5 }).map((_, i) => i + 1);
 
-const ProductReview = ({ title, imgSrc, productId }: ProductReviewProps) => {
+const ProductReview = ({
+  userId,
+  title,
+  imgSrc,
+  productId,
+}: ProductReviewProps) => {
   const imgSource = getImgUrlMedia(imgSrc);
   const [reviewResult, setReviewResult] = useState<null | Review>(null);
   const [selectedRating, setSelectedRating] = useState(0);
@@ -49,17 +53,7 @@ const ProductReview = ({ title, imgSrc, productId }: ProductReviewProps) => {
   const [review, setReview] = useState("");
 
   const router = useRouter();
-  const {
-    mutate: createReview,
-    isPending: isCreatingReview,
-    isSuccess,
-  } = trpc.review.createReview.useMutation({
-    onError: (err) => handleTrpcErrors(err),
-    onSuccess: (data) => {
-      handleTrpcSuccess(router, data.message);
-      // setReviewResult(data.result)
-    },
-  });
+  // const { createNewReview, isCreatingNewReview } = useCreateNewProductReview();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const handleSetRating = (rating: number) => setSelectedRating(rating);
@@ -116,31 +110,27 @@ const ProductReview = ({ title, imgSrc, productId }: ProductReviewProps) => {
     setSelectedImgs((prev) => prev.filter((img) => img.id !== id));
   };
   const handleSubmitReview = () => {
-    const formData = new FormData();
-    // const reviewImg=selectedImgs.map(img=>({img:img.img}))
-    selectedImgs.forEach(img=>{
-      console.log(img.img instanceof File)
-    formData.append('file', img.img);
-
-    })
-
-    const formData2=new FormData()
-    fileSchema.parse({file:selectedImgs[0].img})
-    // formData2.append('file',selectedImgs[0].img)
-    // createReview({ rating:selectedRating, reviewText:review,productId, formData:formData2});
+    const reviewProductImgs = selectedImgs.map((img) => ({ img: img.img }));
   };
+  const selectedImgFiles=selectedImgs.map(img=>stringify(img.img))
+const createNewReviewAction=createNewReview.bind(null)
+const [formState,formAction]=useFormState(createNewReviewAction,null)
+console.log('---- form state')
+console.log(formState)
   const ReviewContent = (
     <div className='space-y-6'>
       <div className='flex justify-center relative'>
-      <Image
+        <Image
           src={imgSource || ""}
           alt='Product img'
           height={isDesktop ? 100 : 60}
           width={isDesktop ? 100 : 60}
         />
       </div>
+      <div>
+
       <ul className='flex gap-2 justify-center'>
-        {ratings.map((rating, index) => (
+        {ratings.map((_, index) => (
           <li className='cursor-pointer' key={index}>
             {index + 1 <= selectedRating ? (
               <IoStar
@@ -157,11 +147,18 @@ const ProductReview = ({ title, imgSrc, productId }: ProductReviewProps) => {
             )}
           </li>
         ))}
+
       </ul>
+      {formState?.rating && !selectedRating && <div className="flex justify-center mt-2">
+        <ErrorMsg msg={formState.rating[0]}/>
+        </div>}
+      </div>
+
       <div>
         <Textarea
           data-cy='feedback-text-area'
           value={review}
+          name='reviewText'
           onChange={(e) => setReview(e.target.value)}
           rows={5}
           className='placeholder:italic placeholder:text-muted-foreground'
@@ -179,6 +176,16 @@ const ProductReview = ({ title, imgSrc, productId }: ProductReviewProps) => {
           id='product-review-img'
           className='hidden'
         />
+         <Input
+         name="userId"
+         className="hidden"
+         onChange={()=>{}}
+         value={userId}
+        />
+        <Input  name="productId" className="hidden" onChange={()=>{}} value={productId}/>
+        <Input name="rating" className="hidden" onChange={()=>{}} value={selectedRating}/>
+        <Input className="hidden" name='reviewImgs'    onChange={()=>{}}
+          value={JSON.stringify(selectedImgFiles)}/>
         <button
           onClick={handleOpenImgPicker}
           className='flex text-primary items-center gap-2'
@@ -213,19 +220,16 @@ const ProductReview = ({ title, imgSrc, productId }: ProductReviewProps) => {
           </div>
         ))}
       </div>
-      <Button onClick={handleSubmitReview} disabled={isCreatingReview} className='w-full'>{isCreatingReview?"Đang gửi đánh giá...":"Gửi đánh giá"}</Button>
+     <SubmitProductReviewBtn selectedRating={selectedRating} />
     </div>
   );
-
-  if (isDesktop) {
-    return <ProductReviewDesktop>{ReviewContent}</ProductReviewDesktop>;
+  if(isDesktop){
+    return <ProductReviewDesktop createReviewAction={formAction}>{ReviewContent}</ProductReviewDesktop>;
   }
 
-  return (
-    <ProductReviewMobile selectedImgLength={selectedImgs.length}>
-      {ReviewContent}
-    </ProductReviewMobile>
-  );
-};
-
+    return   <ProductReviewMobile createReviewAction={formAction} selectedImgLength={selectedImgs.length}>
+        {ReviewContent}
+      </ProductReviewMobile>
+ 
+}
 export default ProductReview;

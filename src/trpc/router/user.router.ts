@@ -275,7 +275,7 @@ const UserRouter = router({
           message: ADDRESS_MESSAGE.CONFLICT,
         });
 
-        await payload.update({
+      const {docs:userResult}=  await payload.update({
           collection: "customers",
           where: {
             id: { equals: user.id },
@@ -305,7 +305,9 @@ const UserRouter = router({
                 ],
           },
         });
-        return { success: true, message: ADDRESS_MESSAGE.SUCCESS };
+        const userAddresses=userResult[0].address
+
+        return { success: true, message: ADDRESS_MESSAGE.SUCCESS ,userAddresses};
       } catch (error) {
         throw error
       }

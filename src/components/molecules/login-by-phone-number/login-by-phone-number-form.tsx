@@ -93,9 +93,11 @@ const LoginByPhoneNumber = ({
       <Button
         data-cy='login-by-phone-number-submit-btn'
         disabled={isSendingOtp}
-        className='w-1/2 self-center mt-4 block md:mt-6'
+        className={cn("self-center mt-4 block md:mt-6 w-1/2", {
+          "w-3/4": isSendingOtp,
+        })}
       >
-        {isSendingOtp ? "Đang gửi mã OTP " : <>Xác nhận</>}
+        {isSendingOtp ? "Đang gửi OTP " : <>Xác nhận</>}
       </Button>
     </form>
   );

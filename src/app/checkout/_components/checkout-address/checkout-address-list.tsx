@@ -1,7 +1,7 @@
 import { RadioGroup } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { IUser } from "@/types/common-types";
-import { sortIsDefaultFirst } from "@/utils/util.utls";
+import { sortArrayById, sortIsDefaultFirst } from "@/utils/util.utls";
 import { useEffect, useMemo, useState } from "react";
 import { IoCaretDownOutline } from "react-icons/io5";
 import CheckoutAddressDetails from "./checkout-address-details";
@@ -9,13 +9,17 @@ import { CheckoutAddressProps } from ".";
 
 export interface CheckoutAddressListProps
   extends IUser,
-    Pick<CheckoutAddressProps, "onSetShippingAddress"> {
+    Pick<
+      CheckoutAddressProps,
+      "onSetShippingAddress" | "currentShippingAddressId"
+    > {
   onExpand: (state: boolean) => void;
   isFormAddExpanded: boolean;
 }
 const CheckoutAddressList = ({
   isFormAddExpanded,
   onExpand,
+  currentShippingAddressId,
   onSetShippingAddress,
   user,
 }: CheckoutAddressListProps) => {
@@ -30,10 +34,12 @@ const CheckoutAddressList = ({
   const openAddressList = () => setIsExpandList(true);
   const sortedAddress = useMemo(() => {
     if (user?.address) {
-      return sortIsDefaultFirst(user?.address);
+      return currentShippingAddressId
+        ? sortArrayById(user.address, currentShippingAddressId)
+        : sortIsDefaultFirst(user?.address);
     }
     return [];
-  }, [user?.address]);
+  }, [user?.address, currentShippingAddressId]);
   // if the form add is open close the adjust address form
   useEffect(() => {
     if (isFormAddExpanded) {
@@ -41,14 +47,16 @@ const CheckoutAddressList = ({
     }
   }, [isFormAddExpanded]);
   // default set the default one
-
   return (
     <ul
       data-cy='user-address-list-checkout'
       className='bg-gray-200 rounded-md py-3 px-2 space-y-2 sm:px-4'
     >
-      <RadioGroup defaultValue={sortedAddress![0].id!}>
-        {sortedAddress
+      <RadioGroup
+        defaultValue={sortedAddress![0].id!}
+        value={currentShippingAddressId || sortedAddress![0].id!}
+      >
+        {sortedAddress!
           ?.slice(0, !isExpandList ? 1 : sortedAddress.length)!
           .map((ad, i) => (
             // <Fragment key={ad.id} sty >
@@ -60,7 +68,8 @@ const CheckoutAddressList = ({
               index={i}
               onExpand={handleOpenExpandedIndex}
               user={user}
-              {...ad}
+              {...ad!}
+              userAddressId={ad.id!}
               id={ad.id!}
               isDefault={ad.isDefault!}
             />

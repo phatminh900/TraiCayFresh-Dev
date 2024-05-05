@@ -54,6 +54,12 @@ export const Media: CollectionConfig = {
   
   fields: [
     {
+      name: 'file',
+      type: 'upload',
+      relationTo: 'media'
+
+    },
+    {
       name: "alt",
       label: "Alt",
       type: "text",

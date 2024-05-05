@@ -31,7 +31,11 @@ export function LoginByPhoneNumber({
           onSetPhoneNumber={(phoneNumber) => setPhoneNumber(phoneNumber)}
           onSetIsShowOtp={(state) => {
             setIsShowOtp(state);
-            router.push(!origin?`?${APP_PARAMS.isOpenOtp}=${state}`:`?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.isOpenOtp}=${state}`);
+            router.push(
+              !origin
+                ? `?${APP_PARAMS.isOpenOtp}=${state}`
+                : `?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.isOpenOtp}=${state}`
+            );
             // set the router is showotp on the browser
           }}
         />

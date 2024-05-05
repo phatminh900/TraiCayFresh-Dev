@@ -51,6 +51,9 @@ const ProductItem = ({
     },
     user,
   });
+  console.log('p---')
+  console.log(priceAfterDiscount)
+  console.log(originalPrice)
   let content = (
     <Link
       data-cy='product-item-home'
@@ -72,8 +75,12 @@ const ProductItem = ({
           <p className='text-muted-foreground text-sm'>{subTitle}</p>
         )}
         <p className='text-destructive text-xl font-bold mt-2'>
-          {formatPriceToVND(originalPrice)}
+          {formatPriceToVND(priceAfterDiscount||originalPrice)}
         </p>
+        {priceAfterDiscount && <p className='text-destructive text-sm line-through mt-2'>
+        {formatPriceToVND(originalPrice)}
+        
+      </p>}
         <div className='mt-2 mb-2'>
           <ReviewRating
             ratingAverage={reviewRating}
@@ -130,8 +137,13 @@ const ProductItem = ({
         </div>
       </div>
       <p className='text-destructive text-xl font-bold mt-2'>
-        {formatPriceToVND(originalPrice)}
+        {formatPriceToVND(priceAfterDiscount || originalPrice)}
+
       </p>
+      {priceAfterDiscount && <p className='text-destructive line-through mt-2'>
+        {formatPriceToVND(originalPrice)}
+        
+      </p>}
     </Link>;
   }
   return content;

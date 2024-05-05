@@ -6,7 +6,7 @@ import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import {  router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { USER_ORDERS_SHOW_LIMIT } from "../../constants/configs.constant";
-import getUserProcedure from "../middlewares/get-user-phone-number.middleware";
+import getUserProcedure from "../middlewares/get-user-procedure";
 
 const cancelReasons: Record<
   NonNullable<Order["cancelReason"]>,

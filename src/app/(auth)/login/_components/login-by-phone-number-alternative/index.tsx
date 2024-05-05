@@ -69,7 +69,7 @@ export function LoginByPhoneNumberAlternative({
         <SheetContent
         side={'bottom'}
           style={{
-            height: isOpenOtp === "false" || !isOpenOtp ? "30vh" : "50vh",
+            height: isOpenOtp === "false" || !isOpenOtp ? "35vh" : "70vh",
           }}
         >
           <div className='mx-auto w-4/5 pb-6 max-w-sm h-[50vh]'>
