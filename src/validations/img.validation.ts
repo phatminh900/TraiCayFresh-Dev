@@ -24,9 +24,6 @@ export const imagesSchema = z.object({
   imgs: z
     .array(z.any())
     .refine((files:File[]) => {
-      console.log('file------------')
-      console.log(files)
-      console.log(files.every((file)=> file.size <= MAX_FILE_SIZE))
        return files.every((file)=> file.size <= MAX_FILE_SIZE)
     }, `Vui lòng gửi ảnh có dung lượng dưới  5MB.`)
     .refine(

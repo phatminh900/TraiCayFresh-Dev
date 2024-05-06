@@ -13,7 +13,7 @@ export const Media: CollectionConfig = {
     read: () => true,
     update: isAdmins,
     delete: isAdmins,
-    create: isAdmins,
+    create: ()=>true,
   },
   hooks: {
    
@@ -53,13 +53,7 @@ export const Media: CollectionConfig = {
   },
   
   fields: [
-    {
-      name: 'file',
-      type: 'upload',
-      relationTo: 'media'
-
-    },
-    {
+    { 
       name: "alt",
       label: "Alt",
       type: "text",

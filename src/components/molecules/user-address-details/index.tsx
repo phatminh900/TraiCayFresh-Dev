@@ -6,10 +6,10 @@ import { IUser } from "@/types/common-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { useRouter } from "next/navigation";
-import ButtonDelete from "@/app/my-profile/_components/atoms/button-delete";
-import ButtonAdjust from "@/app/my-profile/_components/atoms/button-adjust";
+import ButtonDelete from "@/components/atoms/button-delete";
 import ButtonSetDefault from "@/app/my-profile/_components/atoms/button-set-default";
 import { formUserAddress, isEmailUser } from "@/utils/util.utls";
+import ButtonAdjust from "@/components/atoms/button-adjust";
 
 export interface UserAddressDetailsProps extends IUser {
   id: string;

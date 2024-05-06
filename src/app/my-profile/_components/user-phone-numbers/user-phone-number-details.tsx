@@ -4,7 +4,7 @@ import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { useRouter } from "next/navigation";
 import AddAdjustPhoneNumber from "../add-adjust-phone-number";
-import ButtonDelete from "../atoms/button-delete";
+import ButtonDelete from "@/components/atoms/button-delete";
 import { IUser } from "@/types/common-types";
 import { isEmailUser } from "@/utils/util.utls";
 

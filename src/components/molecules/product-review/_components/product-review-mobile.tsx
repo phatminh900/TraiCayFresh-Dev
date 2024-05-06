@@ -16,20 +16,23 @@ interface ProductReviewMobileProps extends PropsWithChildren {
   selectedImgLength: number;
   createReviewAction:(payload:FormData)=>void
 
-
+  isOpen:boolean,
+  onToggleModalState:()=>void
 
 
 }
 const ProductReviewMobile = ({
   selectedImgLength,
   children,
+  isOpen,onToggleModalState,
   createReviewAction
+  
 
 }: ProductReviewMobileProps) => {
   return (
-    <Drawer>
+    <Drawer open={isOpen}>
       <DrawerTrigger asChild>
-        <Button variant='secondary-outline'>Gửi đánh giá</Button>
+        <Button onClick={onToggleModalState} variant='secondary-outline'>Gửi đánh giá</Button>
       </DrawerTrigger>
 
       <DrawerContent style={{ height: !selectedImgLength ? "75vh" : "90vh" }}>

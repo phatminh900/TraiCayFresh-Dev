@@ -72,5 +72,6 @@ export const FEED_BACK_MESSAGE={
 
 export const REVIEW_MESSAGE={
     SUCCESS:"Cảm ơn bạn đã đánh giá",
-    BAD_REQUEST:"Không thể đánh giá khi bạn chưa mua hàng"
+    BAD_REQUEST:"Không thể đánh giá khi bạn chưa mua hàng",
+    DELETE_SUCCESSFULLY:"Xóa đánh giá thành công"
 }

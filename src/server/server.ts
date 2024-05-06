@@ -18,7 +18,6 @@ import { GENERAL_ERROR_MESSAGE } from "../constants/api-messages.constant";
 import { protect } from "./middlewares/auth.middleware";
 import VnpayRouter from "./routers/vn-pay.router";
 import refreshTokenRouter from "./routers/refresh-token.router";
-import reviewRouter from './routers/review.router'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -58,8 +57,8 @@ const start = async (): Promise<void> => {
   //   }
   // });
   // limit the rate limit for applying coupon
+  // TODO: add auth for refresh token
   app.use("/api", refreshTokenRouter);
-  app.use('/api',protect,reviewRouter)
   app.use("/verify-momo-payment-success", (req, res) => {
     const transactionInfo = req.body;
     console.log("--------");

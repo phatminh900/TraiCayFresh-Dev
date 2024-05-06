@@ -15,11 +15,13 @@ import {
   IPhoneNumberValidation,
   PhoneValidationSchema,
 } from "@/validations/user-infor.valiator";
-import ButtonAdjust from "./atoms/button-adjust";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { MAX_PHONE_NUMBER_ALLOWED } from "@/constants/configs.constant";
 import { IUser } from "@/types/common-types";
 import { INVALID_PHONE_NUMBER_TYPE } from "@/constants/validation-message.constant";
+
+import ButtonAdjust from "@/components/atoms/button-adjust";
+
 
 interface AddNewPhoneNumberProps<Type extends "add-new" | "adjust">
   extends IUser {

@@ -62,6 +62,8 @@ export const getUserOrdersNoPopulate = async ({ userId }: { userId: string }) =>
       // pagination:3
     });
     // TODO: limit
+    if(!orders.length) return {success:true,data:null}
+
     return { success: true, data: { orders, hasNextPage } };
   } catch (error) {
     return { ok: false, data: null };

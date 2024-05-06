@@ -7,6 +7,7 @@ import getUserProcedure from "../middlewares/get-user-procedure";
 import { router } from "../trpc";
 
 import { REVIEW_MESSAGE } from "../../constants/api-messages.constant";
+import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 export const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -26,7 +27,7 @@ const ReviewRouter = router({
         productId: z.string(),
         rating: z.number().min(1).max(5),
         reviewText: z.string().optional(),
-        img:z.any(),
+        img: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -81,6 +82,19 @@ const ReviewRouter = router({
         return { success: true, message: REVIEW_MESSAGE.SUCCESS };
       } catch (error) {
         throw error;
+      }
+    }),
+
+  deleteReview: getUserProcedure
+    .input(z.object({ reviewId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { reviewId } = input;
+      try {
+        const payload = await getPayloadClient();
+        await payload.delete({ collection: "reviews", id: reviewId });
+        return { success: true, message: REVIEW_MESSAGE.DELETE_SUCCESSFULLY };
+      } catch (error) {
+        throwTrpcInternalServer(error);
       }
     }),
 });

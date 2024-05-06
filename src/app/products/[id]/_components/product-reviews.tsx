@@ -1,11 +1,12 @@
 import ProductReview from "@/components/molecules/product-review";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PageSubTitle from "@/components/ui/page-subTitle";
-import ReviewRating from "@/components/ui/review-rating/review-rating";
-import { Product } from "@/payload/payload-types";
+import { Product, Review } from "@/payload/payload-types";
 import { getUserOrdersNoPopulate } from "@/services/server/payload/orders.service";
+import { checkUserHasReviewed } from "@/services/server/payload/reviews.service";
 import { IUser } from "@/types/common-types";
 import { IoStar } from "react-icons/io5";
+import ProductReviewDetails from "./product-review-details";
+import ProductReviewOfUser from "./product-reviewed-of-user";
 
 const reviewFilter: { label: string; option: string }[] = [
   { label: "Tất cả", option: "" },
@@ -30,32 +31,44 @@ const ProductReviews = async ({
   productTitle,
 }: ProductReviewsProps) => {
   let hasBoughtProduct = false;
+  let hasReviewedProduct = false;
+  let userReview: Review;
   if (user) {
-    const { data } = await getUserOrdersNoPopulate({ userId: user.id });
-    if (!data) hasBoughtProduct = false;
-    const userOrders = data?.orders;
+    // check if user bought the product before
+    const { data: userOrder } = await getUserOrdersNoPopulate({
+      userId: user.id,
+    });
+    if (!userOrder) hasBoughtProduct = false;
+    const userOrders = userOrder?.orders;
     if (!userOrders) hasBoughtProduct = false;
     if (
-      userOrders?.some(
-        (order) =>
-          {
-          return order._isPaid && order.items.find((item) => item.product === productId)
-          
-          }
-      )
+      userOrders?.some((order) => {
+        return (
+          order._isPaid &&
+          order.items.find((item) => item.product === productId)
+        );
+      })
     ) {
       hasBoughtProduct = true;
     }
+    // check if user reviewed the product
+    const { data: userReviewData } = await checkUserHasReviewed({
+      userId: user.id,
+      productId,
+    });
+    if (userReviewData) {
+      hasReviewedProduct = true;
+      // only 1 review on 1 product per user
+      userReview = userReviewData[0];
+    }
   }
   // TODO: is loading
-  console.log('--------')
-  console.log(hasBoughtProduct);
   return (
     <div id='reviews' className='mt-12'>
       <PageSubTitle className='mb-2'>Đánh giá sản phẩm:</PageSubTitle>
-      {hasBoughtProduct && (
+      {hasBoughtProduct && !hasReviewedProduct && (
         <>
-          <div>
+          <div className='mt-6'>
             <p className='font-semibold text-center mb-4'>
               Cảm ơn bạn đã mua hàng gửi đánh giá giúp bọn mình nhé
             </p>
@@ -63,7 +76,7 @@ const ProductReviews = async ({
 
           <div className='flex justify-center mb-6'>
             <ProductReview
-            userId={user?.id}
+              user={user}
               productId={productId}
               title={productTitle}
               imgSrc={productImgSrc}
@@ -71,46 +84,56 @@ const ProductReviews = async ({
           </div>
         </>
       )}
+      {hasReviewedProduct && (
+        <ProductReviewOfUser
+          reviewId={userReview!.id}
+          userName={user?.name || `User ${user?.id.slice(-6)}`}
+          reviewText={userReview!.reviewText || ""}
+        />
+      )}
       {/* filter */}
       <ul className='flex flex-wrap gap-2'>
         {reviewFilter.map((filter, i) => (
-          <li className='flex-1' key={filter.label}>
-            <button className='whitespace-nowrap w-full text-sm px-2 py-1.5 flex-center gap-1.5 border rounded-sm hover:border-primary'>
-              {i !== 0 ? (
-                <>
-                  {filter.label} <IoStar className='w-4 h-4 text-secondary' />{" "}
-                </>
-              ) : (
-                filter.label
-              )}
-            </button>
-          </li>
+          // TODO: options using client
+          <ProductReviewFilterTag
+            key={filter.label}
+            index={i}
+            label={filter.label}
+          />
         ))}
       </ul>
-      <ProductReviewDetails />
+      <ul className='mt-12'>
+        <li>
+          <ProductReviewDetails
+            name='Phat'
+            review="Review Text so good oh now i can' help eating eat"
+          />
+        </li>
+      </ul>
     </div>
   );
 };
 
 export default ProductReviews;
 
-function ProductReviewDetails() {
+function ProductReviewFilterTag({
+  label,
+  index,
+}: {
+  label: string;
+  index: number;
+}) {
   return (
-    <div className='flex gap-4 mt-12'>
-      <Avatar>
-        <AvatarImage src='https://github.com/shadcn.png' />
-        <AvatarFallback>PT</AvatarFallback>
-      </Avatar>
-      <div className='pb-2'>
-        <div className='mb-4'>
-          <p className='font-bold'>Name</p>
-          <ReviewRating ratingAverage={5} />
-        </div>
-        <p className='max-h-[200px] line-clamp-6 overflow-y-hidden text-ellipsis'>
-          Review Text so good oh now i can&apos; help eating eat
-        </p>
-        {/* div imgs  max width max height 180*/}
-      </div>
-    </div>
+    <li className='flex-1'>
+      <button className='whitespace-nowrap w-full text-sm px-2 py-1.5 flex-center gap-1.5 border rounded-sm hover:border-primary'>
+        {index !== 0 ? (
+          <>
+            {label} <IoStar className='w-4 h-4 text-secondary' />{" "}
+          </>
+        ) : (
+          label
+        )}
+      </button>
+    </li>
   );
 }

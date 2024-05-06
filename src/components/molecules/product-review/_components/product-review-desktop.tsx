@@ -12,6 +12,8 @@ import { IoCloseOutline } from "react-icons/io5";
 import { IReviewSchema } from "../actions/review.action";
 interface ProductReviewDesktopProps extends PropsWithChildren {
   createReviewAction:(payload:FormData)=>void
+  isOpen:boolean,
+  onToggleModalState:()=>void
 }
 const ProductReviewDesktop = ({ children ,createReviewAction}: ProductReviewDesktopProps) => {
   return (

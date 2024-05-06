@@ -93,7 +93,6 @@ export interface Product {
  */
 export interface Media {
   id: string;
-  file?: string | Media | null;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -270,12 +269,12 @@ export interface Review {
   product: string | Product;
   user:
     | {
-        relationTo: 'customers';
-        value: string | Customer;
-      }
-    | {
         relationTo: 'customer-phone-number';
         value: string | CustomerPhoneNumber;
+      }
+    | {
+        relationTo: 'customers';
+        value: string | Customer;
       };
   updatedAt: string;
   createdAt: string;

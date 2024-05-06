@@ -4,11 +4,11 @@ import { isAdminAndCustomer } from "../access/adminsOrLoggedIn";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
-  access:{
-    delete:isAdmins,
-    update:isAdmins,
-    read:isAdmins,
-    create:isAdminAndCustomer
+  access: {
+    delete: isAdmins,
+    update: isAdmins,
+    read: isAdmins,
+    create: isAdmins
   },
   fields: [
     {
@@ -28,9 +28,9 @@ export const Reviews: CollectionConfig = {
       name: "reviewImgs",
       label: "Review's Images",
       type: "relationship",
-      relationTo: "media",
       hasMany: true,
       maxRows: 3,
+      relationTo: "media",
     },
     {
       name: "product",
@@ -38,14 +38,14 @@ export const Reviews: CollectionConfig = {
       type: "relationship",
       relationTo: "products",
       required: true,
-      hasMany:false
+      hasMany: false,
     },
     {
       name: "user",
       label: "Review's of User",
       type: "relationship",
-      relationTo: ["customers", "customer-phone-number"],
-      hasMany:false,
+      relationTo: ["customer-phone-number", "customers"],
+      hasMany: false,
       required: true,
     },
   ],

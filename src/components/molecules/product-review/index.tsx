@@ -1,17 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/api-messages.constant";
-import { ALLOW_UPLOAD_IMG_LENGTH } from "@/constants/configs.constant";
-import { cn } from "@/lib/utils";
-import { Customer, CustomerPhoneNumber, Product, Review } from "@/payload/payload-types";
-import { getImgUrlMedia, stringify } from "@/utils/util.utls";
-import { imageSchema } from "@/validations/img.validation";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useActionState, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useFormState } from "react-dom";
 import {
   IoCameraOutline,
   IoCloseOutline,
@@ -24,36 +16,45 @@ import { z } from "zod";
 import ProductInspectReviewImg from "./_components/inspect-img";
 import ProductReviewDesktop from "./_components/product-review-desktop";
 import ProductReviewMobile from "./_components/product-review-mobile";
-import createNewReview from "./actions/review.action";
 import SubmitProductReviewBtn from "./_components/submit-product-review-btn";
-import { useFormState } from "react-dom";
+import createNewReview from "./actions/review.action";
+
 import ErrorMsg from "@/components/atoms/error-msg";
-interface ProductReviewProps {
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { GENERAL_ERROR_MESSAGE } from "@/constants/api-messages.constant";
+import { ALLOW_UPLOAD_IMG_LENGTH } from "@/constants/configs.constant";
+import { cn } from "@/lib/utils";
+import { Product, Review } from "@/payload/payload-types";
+import { IUser } from "@/types/common-types";
+import { getImgUrlMedia, isEmailUser } from "@/utils/util.utls";
+import { imageSchema } from "@/validations/img.validation";
+
+interface ProductReviewProps extends IUser {
   title: string;
   imgSrc: Product["thumbnailImg"];
   productId: string;
-  userId?: Customer['id']|CustomerPhoneNumber['id'];
 }
 
 const ratings = Array.from({ length: 5 }).map((_, i) => i + 1);
 
 const ProductReview = ({
-  userId,
+  user,
   title,
   imgSrc,
   productId,
 }: ProductReviewProps) => {
+  const router = useRouter();
+  const [openAddProductReviewModal,setOpenAddProductReviewModal]=useState(false)
   const imgSource = getImgUrlMedia(imgSrc);
-  const [reviewResult, setReviewResult] = useState<null | Review>(null);
   const [selectedRating, setSelectedRating] = useState(0);
+  const selectImgsFormDataRef = useRef(new FormData());
   const [selectedImgs, setSelectedImgs] = useState<{ id: string; img: File }[]>(
     []
   );
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [review, setReview] = useState("");
 
-  const router = useRouter();
-  // const { createNewReview, isCreatingNewReview } = useCreateNewProductReview();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const handleSetRating = (rating: number) => setSelectedRating(rating);
@@ -79,13 +80,14 @@ const ProductReview = ({
         // get imgs url
         try {
           const file = files[i];
-          imageSchema.parse({ img: file });
+
+          // imageSchema.parse({ img: file });
 
           setSelectedImgs((prev) => [
             ...prev,
             { id: crypto.randomUUID(), img: file },
           ]);
-
+          selectImgsFormDataRef.current.append(`img-${i + 1}`, file);
           // const fileReader = new FileReader();
           // fileReader.onload = () => {
           //   const imgUrl = fileReader.result;
@@ -109,14 +111,21 @@ const ProductReview = ({
   const handleRemoveSelectedImg = (id: string) => {
     setSelectedImgs((prev) => prev.filter((img) => img.id !== id));
   };
-  const handleSubmitReview = () => {
-    const reviewProductImgs = selectedImgs.map((img) => ({ img: img.img }));
-  };
-  const selectedImgFiles=selectedImgs.map(img=>stringify(img.img))
-const createNewReviewAction=createNewReview.bind(null)
-const [formState,formAction]=useFormState(createNewReviewAction,null)
-console.log('---- form state')
-console.log(formState)
+
+  const createNewReviewAction = createNewReview.bind(null, {
+    user: {
+      relationTo: isEmailUser(user!) ? "customers" : "customer-phone-number",
+      value: user!.id,
+    },
+    reviewText: review,
+    product: productId,
+    rating: selectedRating,
+    reviewImgsFormData: selectImgsFormDataRef.current,
+  });
+  const [formState, formAction] = useFormState(createNewReviewAction, null);
+  console.log("form state");
+  console.log(formState);
+
   const ReviewContent = (
     <div className='space-y-6'>
       <div className='flex justify-center relative'>
@@ -128,30 +137,30 @@ console.log(formState)
         />
       </div>
       <div>
-
-      <ul className='flex gap-2 justify-center'>
-        {ratings.map((_, index) => (
-          <li className='cursor-pointer' key={index}>
-            {index + 1 <= selectedRating ? (
-              <IoStar
-                onClick={() => handleSetRating(index + 1)}
-                className='text-secondary'
-                size={30}
-              />
-            ) : (
-              <IoStarOutline
-                onClick={() => handleSetRating(index + 1)}
-                className='text-secondary'
-                size={30}
-              />
-            )}
-          </li>
-        ))}
-
-      </ul>
-      {formState?.rating && !selectedRating && <div className="flex justify-center mt-2">
-        <ErrorMsg msg={formState.rating[0]}/>
-        </div>}
+        <ul className='flex gap-2 justify-center'>
+          {ratings.map((_, index) => (
+            <li className='cursor-pointer' key={index}>
+              {index + 1 <= selectedRating ? (
+                <IoStar
+                  onClick={() => handleSetRating(index + 1)}
+                  className='text-secondary'
+                  size={30}
+                />
+              ) : (
+                <IoStarOutline
+                  onClick={() => handleSetRating(index + 1)}
+                  className='text-secondary'
+                  size={30}
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+        {formState?.rating && !selectedRating && (
+          <div className='flex justify-center mt-2'>
+            <ErrorMsg msg={formState.rating[0]} />
+          </div>
+        )}
       </div>
 
       <div>
@@ -176,17 +185,9 @@ console.log(formState)
           id='product-review-img'
           className='hidden'
         />
-         <Input
-         name="userId"
-         className="hidden"
-         onChange={()=>{}}
-         value={userId}
-        />
-        <Input  name="productId" className="hidden" onChange={()=>{}} value={productId}/>
-        <Input name="rating" className="hidden" onChange={()=>{}} value={selectedRating}/>
-        <Input className="hidden" name='reviewImgs'    onChange={()=>{}}
-          value={JSON.stringify(selectedImgFiles)}/>
+
         <button
+          type='button'
           onClick={handleOpenImgPicker}
           className='flex text-primary items-center gap-2'
         >
@@ -220,16 +221,44 @@ console.log(formState)
           </div>
         ))}
       </div>
-     <SubmitProductReviewBtn selectedRating={selectedRating} />
+      {formState?.img && selectedImgs.length > 0 && (
+        <div className='mt'>
+          <ErrorMsg msg={formState.img[0]} />
+        </div>
+      )}
+      <SubmitProductReviewBtn selectedRating={selectedRating} />
     </div>
   );
-  if(isDesktop){
-    return <ProductReviewDesktop createReviewAction={formAction}>{ReviewContent}</ProductReviewDesktop>;
+const toggleOpenModalProductAddReviewState=()=>setOpenAddProductReviewModal(prev=>!prev)
+  useEffect(() => {
+    if (formState?.user) {
+      toast.error(formState.user[0] );
+    }
+  }, [formState?.user]);
+  useEffect(()=>{
+    if(formState?.success && formState.success[0]==='true'){
+      router.refresh()
+      toast.success("Cảm ơn bạn đã đánh giá")
+      toggleOpenModalProductAddReviewState()
+    }
+  },[formState?.success,router])
+  if (isDesktop) {
+    return (
+      <ProductReviewDesktop createReviewAction={formAction} isOpen={openAddProductReviewModal} onToggleModalState={toggleOpenModalProductAddReviewState}>
+        {ReviewContent}
+      </ProductReviewDesktop>
+    );
   }
 
-    return   <ProductReviewMobile createReviewAction={formAction} selectedImgLength={selectedImgs.length}>
-        {ReviewContent}
-      </ProductReviewMobile>
- 
-}
+  return (
+    <ProductReviewMobile
+    onToggleModalState={toggleOpenModalProductAddReviewState}
+    isOpen={openAddProductReviewModal}
+      createReviewAction={formAction}
+      selectedImgLength={selectedImgs.length}
+    >
+      {ReviewContent}
+    </ProductReviewMobile>
+  );
+};
 export default ProductReview;
