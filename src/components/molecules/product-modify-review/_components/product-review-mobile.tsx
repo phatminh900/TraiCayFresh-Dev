@@ -21,21 +21,22 @@ interface ProductReviewMobileProps
   createReviewAction: (payload: FormData) => void;
   isOpen: boolean;
   onToggleModalState: () => void;
+  onSetIsSubmittingTheForm:()=>void
+    isSubmitting:boolean,
   selectedRating: number;
 }
 const ProductReviewMobile = ({
   selectedImgLength,
   children,
   type,
+  isSubmitting,
   isOpen,
   onToggleModalState,
+  onSetIsSubmittingTheForm,
   selectedRating,
   createReviewAction,
 }: ProductReviewMobileProps) => {
-  const [isSubmittingTheForm, setIsSubmittingTheForm] = useState(false);
-  const handleSetIsSubmittingTheForm = () => setIsSubmittingTheForm(true);
-  console.log("submiting-----");
-  console.log(isSubmittingTheForm);
+
 
   return (
     <Drawer open={isOpen}>
@@ -68,7 +69,7 @@ const ProductReviewMobile = ({
           <form action={createReviewAction}>
             {children}
             <SubmitProductReviewBtn
-              onSetIsSubmittingTheForm={handleSetIsSubmittingTheForm}
+              onSetIsSubmittingTheForm={onSetIsSubmittingTheForm}
               selectedRating={selectedRating}
             />
           </form>
@@ -77,9 +78,9 @@ const ProductReviewMobile = ({
             <button
               onClick={onToggleModalState}
               className={cn("absolute top-[2%] right-[4%] cursor-pointer", {
-                "text-destructive": isSubmittingTheForm,
+                "text-destructive": isSubmitting,
               })}
-              disabled={isSubmittingTheForm}
+              disabled={isSubmitting}
             >
               <IoCloseOutline size={30}/>
             </button>

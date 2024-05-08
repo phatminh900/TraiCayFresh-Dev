@@ -42,6 +42,7 @@ const createNewReview = async (
 ): Promise<
   { [key in keyof Partial<IReviewSchema>]: (string[]) | undefined } | undefined
 > => {
+
   try {
     const userServer = await getUserServer();
     if (!userServer) {
@@ -60,8 +61,8 @@ const createNewReview = async (
     const payload = await getPayloadClient();
     const reviewImgs: File[] = [];
     for (let i = 0; i < MAX_ALLOW_UPLOADED_IMG_LENGTH; i++) {
-      const reviewImgFile = reviewImgsFormData.get(`img-${i + 1}`);
-     
+      const imgNameFile=`img-${i + 1}`
+      const reviewImgFile = reviewImgsFormData.get(imgNameFile);
       if (reviewImgFile) {
         const isValidImg = imageSchema.safeParse({ img: reviewImgFile });
         if (!isValidImg.success) {
@@ -88,6 +89,8 @@ const createNewReview = async (
         });
         mediaUrl.push(media);
       }
+      console.log('----media url')
+      console.log(mediaUrl)
       await payload.create({
         collection: "reviews",
         data: {
@@ -98,7 +101,7 @@ const createNewReview = async (
           },
           rating,
           reviewText,
-          // reviewImgs:[{}]
+          reviewImgs:mediaUrl
           // reviewImgs: mediaUrl,
         },
       });

@@ -37,9 +37,11 @@ export function ProductInspectReviewImg({children}:ProductInspectReviewImgProps)
             {children}
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent  className="h-1/2 w-screen bg-white/90 backdrop-blur-sm flex items-center">
         
-        <p>Hello</p>
+        <div className="w-full mx-auto aspect-square relative">
+            {children}
+        </div>
         </DialogContent>
       </Dialog>
     )

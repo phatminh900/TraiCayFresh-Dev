@@ -24,11 +24,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/api-messages.constant";
 import { ALLOW_UPLOAD_IMG_LENGTH } from "@/constants/configs.constant";
 import { cn } from "@/lib/utils";
-import { Product } from "@/payload/payload-types";
+import { Product, Review } from "@/payload/payload-types";
 import { IUser } from "@/types/common-types";
 import { getImgUrlMedia, isEmailUser } from "@/utils/util.utls";
+import { IUserReview } from "@/app/products/[id]/_components/product-reviewed-of-user";
 
-interface ProductModifyReview extends IUser {
+interface ProductModifyReview extends IUser, Partial<IUserReview> {
   title: string;
   imgSrc: Product["thumbnailImg"];
   productId: string;
@@ -40,21 +41,30 @@ const ratings = Array.from({ length: 5 }).map((_, i) => i + 1);
 const ProductModifyReview = ({
   user,
   title,
+  userRating,
+  userReviewImgs,
+  userReviewText,
   type = "add",
   imgSrc,
   productId,
 }: ProductModifyReview) => {
+  const parsedUserReviewImgs = userReviewImgs?.map((img) => ({
+    id: img.id!,
+    img: img.url!,
+  }));
   const router = useRouter();
   const [openAddProductReviewModal, setOpenAddProductReviewModal] =
     useState(false);
+  const [isSubmittingTheForm, setIsSubmittingTheForm] = useState(false);
+  const handleSetSubmitFormState = () => setIsSubmittingTheForm(true);
   const imgSource = getImgUrlMedia(imgSrc);
-  const [selectedRating, setSelectedRating] = useState(0);
+  const [selectedRating, setSelectedRating] = useState(userRating || 0);
   const selectImgsFormDataRef = useRef(new FormData());
-  const [selectedImgs, setSelectedImgs] = useState<{ id: string; img: File }[]>(
-    []
-  );
+  const [selectedImgs, setSelectedImgs] = useState<
+    { id: string; img: File | string }[]
+  >(parsedUserReviewImgs || []);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
-  const [review, setReview] = useState("");
+  const [review, setReview] = useState(userReviewText || "");
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -128,7 +138,7 @@ const ProductModifyReview = ({
   const ReviewContent = (
     <div className='space-y-6'>
       <div className='flex flex-col items-center gap-3 relative'>
-      <h2 >{title}</h2>
+        <h2>{title} </h2>
 
         <Image
           src={imgSource || ""}
@@ -201,7 +211,11 @@ const ProductModifyReview = ({
           <div key={index} className='w-20 h-20 relative'>
             <ProductInspectReviewImg>
               <Image
-                src={URL.createObjectURL(img.img)}
+                src={
+                  typeof img.img === "string"
+                    ? img.img
+                    : URL.createObjectURL(img.img)
+                }
                 fill
                 className='object-fit object-cover'
                 alt='review img'
@@ -251,6 +265,8 @@ const ProductModifyReview = ({
         createReviewAction={formAction}
         isOpen={openAddProductReviewModal}
         onToggleModalState={toggleOpenModalProductAddReviewState}
+        isSubmitting={isSubmittingTheForm}
+        onSetIsSubmittingTheForm={handleSetSubmitFormState}
       >
         {ReviewContent}
       </ProductReviewDesktop>
@@ -259,8 +275,10 @@ const ProductModifyReview = ({
 
   return (
     <ProductReviewMobile
-    selectedRating={selectedRating}
+      selectedRating={selectedRating}
       type={type}
+      isSubmitting={isSubmittingTheForm}
+      onSetIsSubmittingTheForm={handleSetSubmitFormState}
       onToggleModalState={toggleOpenModalProductAddReviewState}
       isOpen={openAddProductReviewModal}
       createReviewAction={formAction}

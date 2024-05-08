@@ -11,6 +11,7 @@ import { PropsWithChildren } from "react";
 import { IoCloseOutline, IoCreateOutline } from "react-icons/io5";
 import ProductModifyReview from "..";
 import { cn } from "@/lib/utils";
+import SubmitProductReviewBtn from "./submit-product-review-btn";
 interface ProductReviewDesktopProps
   extends PropsWithChildren,
     Pick<ProductModifyReview, "type"> {
@@ -18,11 +19,15 @@ interface ProductReviewDesktopProps
   isOpen: boolean;
   onToggleModalState: () => void;
   selectedRating: number;
+  onSetIsSubmittingTheForm: () => void;
+  isSubmitting: boolean;
 }
 const ProductReviewDesktop = ({
   children,
   selectedRating,
   createReviewAction,
+  onSetIsSubmittingTheForm,
+  isSubmitting,
   onToggleModalState,
   type,
 }: ProductReviewDesktopProps) => {
@@ -51,7 +56,7 @@ const ProductReviewDesktop = ({
       <DialogContent className='sm:max-w-[550px]'>
         <DialogHeader>
           <DialogTitle className='text-center'>
-            {type === "add" ? "Đánh giá sản phẩm" : "Adjust"}
+          Đánh giá sản phẩm
           </DialogTitle>
           {/* <DialogDescription>
           Make changes to your profile here. Click save when you're done.
@@ -59,10 +64,10 @@ const ProductReviewDesktop = ({
         </DialogHeader>
         <form action={createReviewAction}>
           {children}
-          {/* <SubmitProductReviewBtn
+          <SubmitProductReviewBtn
+            onSetIsSubmittingTheForm={onSetIsSubmittingTheForm}
             selectedRating={selectedRating}
-            isPending={pending}
-          /> */}
+          />
         </form>
         {/* <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
@@ -84,9 +89,15 @@ const ProductReviewDesktop = ({
         <DialogClose
           className='absolute top-[2%] right-[4%] cursor-pointer'
           asChild
-          onClick={onToggleModalState}
         >
+          <button 
+          onClick={onToggleModalState}
+          disabled={isSubmitting}
+
+          >
+
           <IoCloseOutline />
+          </button>
         </DialogClose>
       </DialogContent>
     </Dialog>

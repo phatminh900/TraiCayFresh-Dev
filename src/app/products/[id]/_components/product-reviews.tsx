@@ -92,8 +92,9 @@ const ProductReviews = async ({
           title={productTitle}
           reviewId={userReview!.id}
           userName={user?.name || `User ${user?.id.slice(-6)}`}
-          reviewText={userReview!.reviewText || ""}
-          reviewImgs={userReview!.reviewImgs}
+          userReviewText={userReview!.reviewText || ""}
+          userReviewImgs={userReview!.reviewImgs}
+          userRating={userReview!.rating}
         />
       )}
       {/* filter */}

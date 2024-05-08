@@ -266,7 +266,12 @@ export interface Review {
   id: string;
   reviewText?: string | null;
   rating: number;
-  reviewImgs?: (string | Media)[] | null;
+  reviewImgs?:
+    | {
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   product: string | Product;
   user:
     | {

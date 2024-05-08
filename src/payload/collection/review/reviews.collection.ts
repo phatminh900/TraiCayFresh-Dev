@@ -28,13 +28,20 @@ export const Reviews: CollectionConfig = {
       min: 1,
       max: 5,
     },
+    // {
+    //   name: "reviewImgs",
+    //   label: "Review's Images",
+    //   type: "relationship",
+    //   hasMany: true,
+    //   maxRows: 3,
+    //   relationTo: "media",
+    // },
     {
       name: "reviewImgs",
       label: "Review's Images",
-      type: "relationship",
-      hasMany: true,
+      type: "array",
+      fields:[{label:"url",name:'url',type:'text'}],
       maxRows: 3,
-      relationTo: "media",
     },
     {
       name: "product",

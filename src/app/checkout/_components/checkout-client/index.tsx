@@ -127,8 +127,6 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
   const handleSetAddress = (shippingAddress: IShippingAddress) => {
     setShippingAddress(shippingAddress);
   };
-  console.log('shipping address')
-  console.log(shippingAddress)
   const handleSetPaymentMethod = (type: PAYMENT_METHOD) =>
     setPaymentMethod(type);
   const handleSetCheckoutNotes = (notes: string) => setCheckoutNote(notes);
