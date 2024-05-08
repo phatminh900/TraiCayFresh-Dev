@@ -63,6 +63,7 @@ const OrderStatusInfo = ({
             <CancelOrderRequest
               orderId={orderId}
               isOpen={isOpenCancelRequest}
+              btnClassName="!p-0 !h-auto"
               btnVariant={{variant:'text-destructive'}}
               onToggleOpenCancelRequest={toggleOpenCancelRequest}
             />
@@ -113,9 +114,7 @@ const OrderStatusInfo = ({
             </span>
           </p>
         </div>
-        {orderStatus === "confirmed" ||
-          (orderStatus === "pending" && (
-            <div>
+        <div>
               <p data-cy='delivery-status-order'>
                 Tình trạng đơn hàng:{" "}
                 <span
@@ -134,7 +133,6 @@ const OrderStatusInfo = ({
                 </span>
               </p>
             </div>
-          ))}
         {orderNotes && (
           <div>
             <p data-cy='notes-order'>

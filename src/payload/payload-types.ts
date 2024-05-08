@@ -82,7 +82,8 @@ export interface Product {
   productImgs: (string | Media)[];
   benefitImg: string | Media;
   reviewQuantity?: number | null;
-  ratingAvarage?: number | null;
+  totalRating?: number | null;
+  ratingAverage?: number | null;
   relativeProducts?: (string | Product)[] | null;
   updatedAt: string;
   createdAt: string;

@@ -15,11 +15,13 @@ import { toast } from "sonner";
 import ErrorMsg from "../_component/error-msg";
 import { useEffect, useState } from "react";
 import { handleTrpcErrors } from "@/utils/error.util";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 const TIMER_SEND_REQUEST_AGAIN = 5;
 const EmailValidationSchema = AuthCredentialSchema.pick({ email: true });
 
 const ForgotPasswordForm = () => {
+  const {handleSetMutatingState}=useDisableClicking()
   const [isRequestSendAgain, setIsRequestSendAgain] = useState(false);
   const [timerSendRequestAgain, setTimerSendRequestAgain] = useState(
     TIMER_SEND_REQUEST_AGAIN
@@ -91,6 +93,20 @@ const ForgotPasswordForm = () => {
   useEffect(() => {
     setFocus("email");
   }, [setFocus]);
+  const isMutating=  isPending ||
+  isSuccess ||
+  isCheckingEmailExists ||
+  isRequestSendAgain ||
+  isCheckingEmailExistsSuccess
+  useEffect(()=>{
+    if(isMutating){
+      handleSetMutatingState(true)
+    }
+    if(!isMutating){
+      handleSetMutatingState(false)
+
+    }
+  },[isMutating,handleSetMutatingState])
   return (
     <>
       <form
@@ -113,11 +129,7 @@ const ForgotPasswordForm = () => {
 
         <Button
           disabled={
-            isPending ||
-            isSuccess ||
-            isCheckingEmailExists ||
-            isRequestSendAgain ||
-            isCheckingEmailExistsSuccess
+          isMutating
           }
           variant='secondary'
         >

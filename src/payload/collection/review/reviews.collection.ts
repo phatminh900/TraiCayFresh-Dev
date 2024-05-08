@@ -1,6 +1,6 @@
 import { CollectionConfig } from "payload/types";
-import { isAdmins } from "../access/isAdmin";
-import { isAdminAndCustomer } from "../access/adminsOrLoggedIn";
+import { isAdmins } from "../../access/isAdmin"
+import { updateProductReviewRatingQuantityAfterChange,updateProductReviewRatingQuantityAfterDelete } from "./hooks/update-product-review-rating-quantity";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
@@ -9,6 +9,10 @@ export const Reviews: CollectionConfig = {
     update: isAdmins,
     read: isAdmins,
     create: isAdmins
+  },
+  hooks: {
+    afterChange: [updateProductReviewRatingQuantityAfterChange],
+    afterDelete:[updateProductReviewRatingQuantityAfterDelete]
   },
   fields: [
     {

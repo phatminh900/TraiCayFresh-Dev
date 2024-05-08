@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useCheckPasswordAndPasswordConfirm from "../hooks/useCheckPasswordAndPasswordConfirm";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 const useSignUp = () => {
   const {
@@ -28,6 +29,7 @@ const useSignUp = () => {
   } = useForm<ISignUpCredential>({
     resolver: zodResolver(SignUpCredentialSchema),
   });
+  const {handleSetMutatingState}=useDisableClicking()
   const { mutate, isPending } = trpc.auth.signUp.useMutation({
     onError(error) {
       handleTrpcErrors(error);
@@ -47,7 +49,15 @@ const useSignUp = () => {
   useEffect(() => {
     setFocus("name");
   }, [setFocus]);
+  useEffect(()=>{
+    if(isPending){
+      handleSetMutatingState(true)
+    }
+    if(!isPending){
+      handleSetMutatingState(false)
 
+    }
+  },[isPending,handleSetMutatingState])
   return {
     watch,
     comparePasswordAndPasswordConfirm,

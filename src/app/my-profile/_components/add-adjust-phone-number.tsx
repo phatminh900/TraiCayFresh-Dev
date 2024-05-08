@@ -21,7 +21,7 @@ import { IUser } from "@/types/common-types";
 import { INVALID_PHONE_NUMBER_TYPE } from "@/constants/validation-message.constant";
 
 import ButtonAdjust from "@/components/atoms/button-adjust";
-
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 interface AddNewPhoneNumberProps<Type extends "add-new" | "adjust">
   extends IUser {
@@ -51,7 +51,7 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
     formState: { errors },
   } = useForm<IPhoneNumberValidation>();
   const [phoneNumber, setPhoneNumber] = useState(phoneAdjust || "");
-
+  const { handleSetMutatingState } = useDisableClicking();
   const router = useRouter();
   const { mutate: addNewPhoneNumber, isPending: isAddingNewPhoneNumber } =
     trpc.user.addNewPhoneNumber.useMutation({
@@ -126,6 +126,19 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
       setValue("phoneNumber", "");
     }
   }, [isExpanded, setValue, type]);
+  const isMutating =
+    isAddingNewPhoneNumber ||
+    isAdjustingPhoneNumber ||
+    isAddingNewPhoneNumberUserPhoneNumber ||
+    isAdjustingPhoneNumberUserPhoneNumber;
+  useEffect(() => {
+    if (isMutating) {
+      handleSetMutatingState(true);
+    }
+    if (!isMutating) {
+      handleSetMutatingState(false);
+    }
+  }, [isMutating, handleSetMutatingState]);
   if (!isExpanded)
     return (
       <>
@@ -158,8 +171,6 @@ const AddAdjustPhoneNumber = <Type extends "add-new" | "adjust">({
         )}
       </>
     );
-console.log('-type---')
-console.log(type)
   return (
     <>
       <form
@@ -172,7 +183,7 @@ console.log(type)
           value={phoneNumber}
           error={errors.phoneNumber}
           className={cn({
-            'bg-slate-200':type==='adjust'
+            "bg-slate-200": type === "adjust",
           })}
           pattern='^[0-9]*$'
           {...register("phoneNumber", {

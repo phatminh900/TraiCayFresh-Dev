@@ -18,7 +18,6 @@ const LoadOrderBtn = ({ currentOrders, onSetOrder }: LoaderOderBtnProps) => {
     isLoading,
     refetch,
   } = trpc.order.getOrders.useQuery({ page }, { enabled: false });
-  console.log(isLoading);
   useEffect(() => {
     if (result?.orders) {
       onSetOrder(result.orders);
@@ -30,7 +29,6 @@ const LoadOrderBtn = ({ currentOrders, onSetOrder }: LoaderOderBtnProps) => {
     }
   }, [page, refetch]);
   if (!currentOrders.length) return null;
-  console.log("here");
   if (isLoading && !result)
     return (
       <span className='text-primary flex items-center gap-2'>

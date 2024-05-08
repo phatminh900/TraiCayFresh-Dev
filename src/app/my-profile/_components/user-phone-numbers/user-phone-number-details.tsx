@@ -7,6 +7,8 @@ import AddAdjustPhoneNumber from "../add-adjust-phone-number";
 import ButtonDelete from "@/components/atoms/button-delete";
 import { IUser } from "@/types/common-types";
 import { isEmailUser } from "@/utils/util.utls";
+import useDisableClicking from "@/hooks/use-disable-clicking";
+import { useEffect } from "react";
 
 interface UserPhoneNumberDetails extends IUser {
   expandedIndex: number;
@@ -26,6 +28,7 @@ const UserPhoneNumberDetails = ({
   user,
   expandedIndex,
 }: UserPhoneNumberDetails) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
   const {
     isPending: isUpdatingDefaultPhoneNumber,
@@ -67,7 +70,16 @@ const UserPhoneNumberDetails = ({
     }
     deletePhoneNumberUserNumber({ id });
   };
+const isMutating=isDeletingPhoneNumber||isDeletingPhoneNumberUserNumber||isUpdatingDefaultPhoneNumber
+useEffect(()=>{
+  if(isMutating){
+    handleSetMutatingState(true)
+  }
+  if(!isMutating){
+    handleSetMutatingState(false)
 
+  }
+},[isMutating,handleSetMutatingState])
   return (
     <li
       data-cy='user-phone-number-item'
@@ -98,7 +110,7 @@ const UserPhoneNumberDetails = ({
                 })
               }
               data-cy='set-default-phone-number-btn'
-              disabled={isUpdatingDefaultPhoneNumber}
+              disabled={isMutating}
               className={cn("text-xs text-primary", {
                 "text-primary/80": isUpdatingDefaultPhoneNumber,
               })}
@@ -127,7 +139,7 @@ const UserPhoneNumberDetails = ({
           <ButtonDelete
             onClick={handleDeleteUserPhoneNumber}
             className='ml-4'
-            disabled={isDeletingPhoneNumber || isDeletingPhoneNumberUserNumber}
+            disabled={isMutating}
           />
         </>
       )}

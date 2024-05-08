@@ -48,8 +48,6 @@ const useAddToCart = ({product,user}: {product: CartProductItem,user?: Customer|
     const productInTheCart = cartItemsLocal.find(
       (item) => item.id === product.id
     );
-    console.log('----product')
-    console.log(product)
 
 
     // if already in the cart and buy excess 15kg

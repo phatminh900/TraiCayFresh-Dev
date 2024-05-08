@@ -11,6 +11,7 @@ import { IUser } from "@/types/common-types";
 import EmptyCart from "../empty-cart";
 import CartItem from "./cart-item";
 import { useRouter } from "next/navigation";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 interface CartListProps extends IUser {
   userCart: UserCart;
@@ -18,6 +19,7 @@ interface CartListProps extends IUser {
 
 let init = true;
 const CartList = ({ user, userCart }: CartListProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router=useRouter()
   const cartItemLocal = useCart((store) => store.items);
   const cartItems = cartItemLocal;
@@ -138,8 +140,18 @@ const CartList = ({ user, userCart }: CartListProps) => {
     userCart.length,
   ]);
 
+const isMutating=isSettingUserCart||
+isSettingUserPhoneNumberCart
 
+useEffect(()=>{
+  if(isMutating){
+    handleSetMutatingState(true)
+  }
+  if(!isMutating){
+    handleSetMutatingState(false)
 
+  }
+},[isMutating,handleSetMutatingState])
   if (!cartItems.length) return <EmptyCart />;
   return (
     <ul data-cy='cart-list' className='mt-6 space-y-6'>

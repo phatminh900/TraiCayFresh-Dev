@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,8 +9,10 @@ import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { Feedback } from "@/payload/payload-types";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 const FeedbackBox = () => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
 
   const { mutate: sendFeedback,isPending:isSendingRequest, isSuccess } =
@@ -60,7 +62,6 @@ const FeedbackBox = () => {
               <Checkbox
               disabled={isSendingRequest}
                 onCheckedChange={(checked) => {
-                  console.log("checked", checked);
                   // setFeedbackOptions('')
                   checked
                     ? setFeedbackOptions((prev) => [
@@ -82,7 +83,6 @@ const FeedbackBox = () => {
               <Checkbox
               disabled={isSendingRequest}
                 onCheckedChange={(checked) => {
-                  console.log("checked", checked);
 
                   checked
                     ? setFeedbackOptions((prev) => [
@@ -126,6 +126,17 @@ const FeedbackBox = () => {
       )}
     </>
   );
+  const isMutating=isSendingRequest
+  useEffect(()=>{
+    if(isMutating){
+      handleSetMutatingState(true)
+    }
+    if(!isMutating){
+      handleSetMutatingState(false)
+  
+    }
+  },[isMutating,handleSetMutatingState])
+
   if (isSuccess) {
     content = (
       <p data-cy='thank-for-feedback' className='font-bold'>

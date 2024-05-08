@@ -2,12 +2,14 @@ import { CheckoutAddressProps } from "@/app/checkout/_components/checkout-addres
 import DeliveryAddress from "@/components/molecules/delivery-address";
 import { Button } from "@/components/ui/button";
 import useAddress from "@/hooks/use-address";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { formUserAddress, isEmailUser } from "@/utils/util.utls";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface UserAddressFormAddProps
   extends IUser,
@@ -39,7 +41,7 @@ const UserAddressFormAdd = ({
     street: "",
     ward: "",
   });
-
+  const { handleSetMutatingState } = useDisableClicking();
   const router = useRouter();
   // user
   const {
@@ -78,7 +80,6 @@ const UserAddressFormAdd = ({
         })
         .catch((err) => handleTrpcErrors(err));
       onExpand(false);
-      return;
     }
     if (user && !isEmailUser(user)) {
       await addNewAddressPhoneNumber({ ...data })
@@ -107,6 +108,16 @@ const UserAddressFormAdd = ({
       onSetShippingAddress(shippingAddress);
     }
   });
+  const isMutating =
+    isAddingNewAddressPhoneNumber || isAddingNewAddressUserEmail;
+  useEffect(() => {
+    if (isMutating) {
+      handleSetMutatingState(true);
+    }
+    if (!isMutating) {
+      handleSetMutatingState(false);
+    }
+  }, [isMutating, handleSetMutatingState]);
   return (
     <form
       data-cy='user-address-form-my-profile'

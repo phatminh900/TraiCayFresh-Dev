@@ -51,14 +51,11 @@ const ProductItem = ({
     },
     user,
   });
-  console.log('p---')
-  console.log(priceAfterDiscount)
-  console.log(originalPrice)
   let content = (
     <Link
       data-cy='product-item-home'
       href={href}
-      className='flex w-full h-[240px] shadow bg-white border rounded-lg'
+      className='flex w-full h-[265px] shadow bg-white border rounded-lg'
     >
       <div className='min-w-[40%] w-[150px] rounded-tl-lg rounded-bl-lg aspect-[2/3] h-full overflow-hidden relative'>
         <Image

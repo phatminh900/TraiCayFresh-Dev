@@ -6,7 +6,10 @@ export const Orders: CollectionConfig = {
   hooks: {
     afterChange: [clearUserCart],
   },
-  fields: [
+    admin:{
+      defaultColumns:['status','deliveryStatus','total','paymentMethod']
+    },
+    fields: [
     {
       name: "orderBy",
       label: "Order By User",

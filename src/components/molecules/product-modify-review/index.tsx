@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import {
   IoCameraOutline,
   IoCloseOutline,
@@ -16,7 +16,6 @@ import { z } from "zod";
 import ProductInspectReviewImg from "./_components/inspect-img";
 import ProductReviewDesktop from "./_components/product-review-desktop";
 import ProductReviewMobile from "./_components/product-review-mobile";
-import SubmitProductReviewBtn from "./_components/submit-product-review-btn";
 import createNewReview from "./actions/review.action";
 
 import ErrorMsg from "@/components/atoms/error-msg";
@@ -25,27 +24,29 @@ import { Textarea } from "@/components/ui/textarea";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/api-messages.constant";
 import { ALLOW_UPLOAD_IMG_LENGTH } from "@/constants/configs.constant";
 import { cn } from "@/lib/utils";
-import { Product, Review } from "@/payload/payload-types";
+import { Product } from "@/payload/payload-types";
 import { IUser } from "@/types/common-types";
 import { getImgUrlMedia, isEmailUser } from "@/utils/util.utls";
-import { imageSchema } from "@/validations/img.validation";
 
-interface ProductReviewProps extends IUser {
+interface ProductModifyReview extends IUser {
   title: string;
   imgSrc: Product["thumbnailImg"];
   productId: string;
+  type?: "add" | "adjust";
 }
 
 const ratings = Array.from({ length: 5 }).map((_, i) => i + 1);
 
-const ProductReview = ({
+const ProductModifyReview = ({
   user,
   title,
+  type = "add",
   imgSrc,
   productId,
-}: ProductReviewProps) => {
+}: ProductModifyReview) => {
   const router = useRouter();
-  const [openAddProductReviewModal,setOpenAddProductReviewModal]=useState(false)
+  const [openAddProductReviewModal, setOpenAddProductReviewModal] =
+    useState(false);
   const imgSource = getImgUrlMedia(imgSrc);
   const [selectedRating, setSelectedRating] = useState(0);
   const selectImgsFormDataRef = useRef(new FormData());
@@ -123,12 +124,12 @@ const ProductReview = ({
     reviewImgsFormData: selectImgsFormDataRef.current,
   });
   const [formState, formAction] = useFormState(createNewReviewAction, null);
-  console.log("form state");
-  console.log(formState);
 
   const ReviewContent = (
     <div className='space-y-6'>
-      <div className='flex justify-center relative'>
+      <div className='flex flex-col items-center gap-3 relative'>
+      <h2 >{title}</h2>
+
         <Image
           src={imgSource || ""}
           alt='Product img'
@@ -226,25 +227,31 @@ const ProductReview = ({
           <ErrorMsg msg={formState.img[0]} />
         </div>
       )}
-      <SubmitProductReviewBtn selectedRating={selectedRating} />
     </div>
   );
-const toggleOpenModalProductAddReviewState=()=>setOpenAddProductReviewModal(prev=>!prev)
+  const toggleOpenModalProductAddReviewState = () =>
+    setOpenAddProductReviewModal((prev) => !prev);
   useEffect(() => {
     if (formState?.user) {
-      toast.error(formState.user[0] );
+      toast.error(formState.user[0]);
     }
   }, [formState?.user]);
-  useEffect(()=>{
-    if(formState?.success && formState.success[0]==='true'){
-      router.refresh()
-      toast.success("Cảm ơn bạn đã đánh giá")
-      toggleOpenModalProductAddReviewState()
+  useEffect(() => {
+    if (formState?.success && formState.success[0] === "true") {
+      router.refresh();
+      toast.success("Cảm ơn bạn đã đánh giá");
+      toggleOpenModalProductAddReviewState();
     }
-  },[formState?.success,router])
+  }, [formState?.success, router]);
   if (isDesktop) {
     return (
-      <ProductReviewDesktop createReviewAction={formAction} isOpen={openAddProductReviewModal} onToggleModalState={toggleOpenModalProductAddReviewState}>
+      <ProductReviewDesktop
+        type={type}
+        selectedRating={selectedRating}
+        createReviewAction={formAction}
+        isOpen={openAddProductReviewModal}
+        onToggleModalState={toggleOpenModalProductAddReviewState}
+      >
         {ReviewContent}
       </ProductReviewDesktop>
     );
@@ -252,8 +259,10 @@ const toggleOpenModalProductAddReviewState=()=>setOpenAddProductReviewModal(prev
 
   return (
     <ProductReviewMobile
-    onToggleModalState={toggleOpenModalProductAddReviewState}
-    isOpen={openAddProductReviewModal}
+    selectedRating={selectedRating}
+      type={type}
+      onToggleModalState={toggleOpenModalProductAddReviewState}
+      isOpen={openAddProductReviewModal}
       createReviewAction={formAction}
       selectedImgLength={selectedImgs.length}
     >
@@ -261,4 +270,4 @@ const toggleOpenModalProductAddReviewState=()=>setOpenAddProductReviewModal(prev
     </ProductReviewMobile>
   );
 };
-export default ProductReview;
+export default ProductModifyReview;

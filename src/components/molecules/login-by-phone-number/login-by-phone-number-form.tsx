@@ -15,6 +15,7 @@ import {
   PhoneValidationSchema,
 } from "@/validations/user-infor.valiator";
 import { handleTrpcSuccess } from "@/utils/success.util";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 interface LoginByPhoneNumberProps {
   onSetIsShowOtp: (state: boolean) => void;
@@ -26,6 +27,7 @@ const LoginByPhoneNumber = ({
   onSetIsShowOtp,
   title,
 }: LoginByPhoneNumberProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
 
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -59,6 +61,17 @@ const LoginByPhoneNumber = ({
   useEffect(() => {
     setFocus("phoneNumber");
   }, [setFocus]);
+  const isMutating=isSendingOtp
+  
+  useEffect(()=>{
+    if(isMutating){
+      handleSetMutatingState(true)
+    }
+    if(!isMutating){
+      handleSetMutatingState(false)
+  
+    }
+  },[isMutating,handleSetMutatingState])
   return (
     <form
       data-cy='login-by-phone-number-form'

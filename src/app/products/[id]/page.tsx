@@ -16,7 +16,7 @@ import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
 import { getUserServer } from "@/services/server/payload/users.service";
-import ProductReview from "@/components/molecules/product-review";
+import ProductReview from "@/components/molecules/product-modify-review";
 
 const ProductPage = async ({
   searchParams,

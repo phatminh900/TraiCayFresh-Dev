@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import DeliveryAddress from "@/components/molecules/delivery-address";
 import { Button } from "@/components/ui/button";
 import useAddress from "@/hooks/use-address";
@@ -10,6 +12,7 @@ import ButtonDelete from "@/components/atoms/button-delete";
 import ButtonSetDefault from "@/app/my-profile/_components/atoms/button-set-default";
 import { formUserAddress, isEmailUser } from "@/utils/util.utls";
 import ButtonAdjust from "@/components/atoms/button-adjust";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 export interface UserAddressDetailsProps extends IUser {
   id: string;
@@ -36,6 +39,8 @@ const UserAddressDetails = ({
   street,
   district,
 }: UserAddressDetailsProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
+
   const router = useRouter();
   const {
     errors,
@@ -47,7 +52,7 @@ const UserAddressDetails = ({
     setPhoneNumberValue,
   } = useAddress({ ward, district, street, phoneNumber, name });
   // find districtId for auto completion delivering address
-  const address =formUserAddress({street,ward,district})
+  const address = formUserAddress({ street, ward, district });
 
   // user
 
@@ -130,20 +135,42 @@ const UserAddressDetails = ({
     }).catch((err) => handleTrpcErrors(err));
     onExpand(-1);
   });
+  const isMutating =
+    isSettingDefaultAddress ||
+    isDeletingUserAddress ||
+    isAdjustingUserAddress ||
+    isSettingDefaultAddressUserPhoneNumber ||
+    isAdjustingUserAddressCustomerPhoneNumber ||
+    isDeletingUserPhoneNumberAddress;
+  useEffect(() => {
+    if (isMutating) {
+      handleSetMutatingState(true);
+    }
+    if (!isMutating) {
+      handleSetMutatingState(false);
+    }
+  }, [isMutating, handleSetMutatingState]);
   return (
-    <li id={`address-item-${id}`} key={id} data-cy='user-address-detail-my-profile'>
+    <li
+      id={`address-item-${id}`}
+      key={id}
+      data-cy='user-address-detail-my-profile'
+    >
       {isDefault ? (
         <div>
           <div
             data-cy='user-address-detail'
             className='flex flex-col gap-1 mb-2'
           >
-            <p data-cy='user-address-detail-info' className='font-bold flex items-center line-clamp-2'>
+            <p
+              data-cy='user-address-detail-info'
+              className='font-bold flex items-center line-clamp-2'
+            >
               {name}
-              <span className="line-clamp-2"> - </span>
+              <span className='line-clamp-2'> - </span>
               {phoneNumber}
             </p>
-            <p data-cy='user-address-detail-address'  className="line-clamp-3" > 
+            <p data-cy='user-address-detail-address' className='line-clamp-3'>
               {address}
               <span className='text-sm ml-2 text-primary'>( Mặc định )</span>
             </p>
@@ -170,7 +197,9 @@ const UserAddressDetails = ({
               <span> - </span>
               {phoneNumber}
             </p>
-            <p data-cy='user-address-detail-address'   className="line-clamp-3" >{address}</p>
+            <p data-cy='user-address-detail-address' className='line-clamp-3'>
+              {address}
+            </p>
           </div>
           <div className='flex gap-3 items-center mt-1'>
             <ButtonAdjust
@@ -210,7 +239,9 @@ const UserAddressDetails = ({
             <DeliveryAddress
               errors={errors}
               defaultUserName={name}
-              phoneNumberList={"email" in user! ? user.phoneNumbers : user?.phoneNumbers}
+              phoneNumberList={
+                "email" in user! ? user.phoneNumbers : user?.phoneNumbers
+              }
               onSetName={setNameValue}
               onSetPhoneNumber={setPhoneNumberValue}
               defaultUserPhoneNumber={phoneNumber}
@@ -221,7 +252,6 @@ const UserAddressDetails = ({
               register={register}
             />
             <div className='mt-4 flex items-center w-full gap-4'>
-            
               <Button
                 data-cy='user-address-cancel-btn-my-profile'
                 onClick={() => {

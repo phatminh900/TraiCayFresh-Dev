@@ -12,7 +12,6 @@ interface OrderSpecificProductsProps {
   items: Order["items"];
 }
 const OrderSpecificProducts = ({ items }: OrderSpecificProductsProps) => {
-  console.log(items)
   return (
     <OrderSpecificSectionWrapper>
       <IoBagHandleOutline size={35} />

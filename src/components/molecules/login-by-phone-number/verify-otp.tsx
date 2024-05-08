@@ -15,6 +15,7 @@ import { trpc } from "@/trpc/trpc-client";
 import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import {  validateNumericInput } from "@/utils/util.utls";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 
 interface VerifyOtpProps {
@@ -25,6 +26,7 @@ interface VerifyOtpProps {
 function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: VerifyOtpProps) {
   // FIXME: decouple cart added when login 
   const cartItems = useCart((store) => store.items);
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [disabled, setDisabled] = useState(false);
@@ -37,7 +39,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
 
   const {
     mutate: verifyOtp,
-    isPending,
+    isPending:isVerifyingOtp,
     isSuccess: isVerified,
   } = trpc.customerPhoneNumber.verifyOtp.useMutation({
     onError: (err) => {
@@ -122,6 +124,16 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
         setIsSendingOptSuccess(true)
     }, 3000);
   },[])
+  const isMutating=isSendingOtp||isVerifyingOtp
+  useEffect(()=>{
+    if(isMutating){
+      handleSetMutatingState(true)
+    }
+    if(!isMutating){
+      handleSetMutatingState(false)
+  
+    }
+  },[isMutating,handleSetMutatingState])
   return (
     <div data-cy='otp-verification-container' className='my-4 text-center '>
       <PageSubTitle>Nhập mã xác nhận</PageSubTitle>
@@ -139,7 +151,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
           )}
         />
         <div className='flex flex-col items-center mt-6'>
-          <Button  data-cy='otp-verification-submit-btn' disabled={otp.length !== 6 || isPending||isVerified}>Xác nhận</Button>
+          <Button  data-cy='otp-verification-submit-btn' disabled={otp.length !== 6 || isVerifyingOtp||isVerified}>Xác nhận</Button>
           <div data-cy='otp-verification-not-receive-code' className='mt-4 flex gap-2'>
             {isSendingOptSuccess&&<>
               <p>Chưa nhận được mã</p>
@@ -147,7 +159,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
             data-cy="otp-verification-send-again-btn"
               type='button'
               onClick={handleSendRequestAgain}
-              disabled={disabled || isPending || isSendingOtp || isVerified}
+              disabled={disabled || isVerifyingOtp || isSendingOtp || isVerified}
               className={cn("text-sm text-primary font-semibold", {
                 "text-primary-80 cursor-not-allowed": disabled,
               })}

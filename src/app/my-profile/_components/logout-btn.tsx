@@ -7,9 +7,12 @@ import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 import { GENERAL_ERROR_MESSAGE } from "@/constants/app-message.constant";
 import { isEmailUser } from "@/utils/util.utls";
+import useDisableClicking from "@/hooks/use-disable-clicking";
+import { useEffect } from "react";
 
 interface LogoutProps extends IUser {}
 const Logout = ({ user }: LogoutProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
   function notifyUserLogoutSuccessfully() {
     setTimeout(() => {
@@ -33,6 +36,14 @@ const Logout = ({ user }: LogoutProps) => {
       notifyUserLogoutSuccessfully();
     }
   };
+  useEffect(() => {
+    if (isPending) {
+      handleSetMutatingState(true);
+    }
+    if (!isPending) {
+      handleSetMutatingState(false);
+    }
+  }, [isPending, handleSetMutatingState]);
   return (
     <Button disabled={isPending} onClick={logout} variant='ghost'>
       Đăng xuất

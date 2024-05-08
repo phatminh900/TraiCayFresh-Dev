@@ -20,9 +20,11 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 
 const LoginByEmail = () => {
+  const {handleSetMutatingState}=useDisableClicking()
     const router = useRouter(); 
     const searchParams = useSearchParams();
     const cartItems = useCart((store) => store.items);
@@ -67,7 +69,15 @@ const LoginByEmail = () => {
     useEffect(() => {
       setFocus("email");
     }, [setFocus]);
-  
+  useEffect(()=>{
+    if(isPending){
+      handleSetMutatingState(true)
+    }
+    if(!isPending){
+      handleSetMutatingState(false)
+
+    }
+  },[isPending,handleSetMutatingState])
   return (
     <form onSubmit={login} className='mt-8 grid gap-y-4'>
         <div>

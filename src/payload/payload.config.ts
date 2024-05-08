@@ -14,7 +14,7 @@ import { Admins } from "./collection/admins.collection";
 import { Customers } from "./collection/customers/customers.collection";
 import { Products } from "./collection/products.collection";
 import { Media } from "./collection/media.collection";
-import { Reviews } from "./collection/reviews.collection";
+import { Reviews } from "./collection/review/reviews.collection";
 import { Orders } from "./collection/orders.collection";
 import { Otp } from "./collection/otp.collection";
 import { CustomerPhoneNumber } from "./collection/customer-phone-number.collection";

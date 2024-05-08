@@ -1,10 +1,11 @@
 import { CollectionConfig } from "payload/types";
-import { isAdmins } from "../access/isAdmin";
-import { anyone } from "../access/anyone";
+import { isAdmins } from "../../access/isAdmin";
+import { anyone } from "../../access/anyone";
 
 export const Products: CollectionConfig = {
   slug: "products",
   access: {
+    // TODO: change later
     read: anyone,
     update: isAdmins,
     create: isAdmins,

@@ -14,6 +14,7 @@ import CheckoutDiscount from "../checkout-discount";
 import CheckoutNote from "../checkout-note";
 import CheckoutPaymentMethods from "../checkout-payment-methods";
 import EmptyCart from "@/components/molecules/empty-cart";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 interface CheckoutClientProps extends IUser, PropsWithChildren {}
 
 export enum PAYMENT_METHOD {
@@ -31,6 +32,7 @@ export type IShippingAddress = {
   id: string
 };
 const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
   const clearCart = useCart((store) => store.clearCart);
   const cartItems=useCart(store=>store.items)
@@ -125,6 +127,8 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
   const handleSetAddress = (shippingAddress: IShippingAddress) => {
     setShippingAddress(shippingAddress);
   };
+  console.log('shipping address')
+  console.log(shippingAddress)
   const handleSetPaymentMethod = (type: PAYMENT_METHOD) =>
     setPaymentMethod(type);
   const handleSetCheckoutNotes = (notes: string) => setCheckoutNote(notes);
@@ -210,20 +214,15 @@ const CheckoutClient = ({ user, children }: CheckoutClientProps) => {
   const isSuccessCheckout =
     isSuccessCheckoutCash || isSuccessCheckoutMomo || isSuccessCheckoutVnPay;
   // when checking not allowing any actions
-  useEffect(() => {
-    if (isCheckingOut) {
-      document.body.style.pointerEvents = "none";
-      document
-        .querySelectorAll(".checkout-page button")
-        .forEach((button) => ((button as HTMLButtonElement).disabled = true));
+  useEffect(()=>{
+    if(isCheckingOut){
+      handleSetMutatingState(true)
     }
-    return () => {
-      document.body.style.pointerEvents = "auto";
-      document
-        .querySelectorAll(".checkout-page button")
-        .forEach((button) => ((button as HTMLButtonElement).disabled = false));
-    };
-  }, [isCheckingOut]);
+    if(!isCheckingOut){
+      handleSetMutatingState(false)
+
+    }
+  },[isCheckingOut,handleSetMutatingState])
 
   // if successfully checkout clear the cart
   useEffect(() => {

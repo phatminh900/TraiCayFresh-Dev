@@ -21,8 +21,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import ErrorMsg from "../_component/error-msg";
 import useCheckPasswordAndPasswordConfirm from "../hooks/useCheckPasswordAndPasswordConfirm";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 const ResetPassword = () => {
+  const {handleSetMutatingState}=useDisableClicking()
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token") || "";
@@ -75,6 +77,16 @@ const ResetPassword = () => {
       comparePasswordAndPasswordConfirm({ password, passwordConfirm });
     }
   }, [isValid, password, comparePasswordAndPasswordConfirm, passwordConfirm]);
+
+  useEffect(()=>{
+    if(isPending){
+      handleSetMutatingState(true)
+    }
+    if(!isPending){
+      handleSetMutatingState(false)
+
+    }
+  },[isPending,handleSetMutatingState])
   return (
     <div>
       <BreadCrumbLinks

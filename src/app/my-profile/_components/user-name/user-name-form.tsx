@@ -15,11 +15,14 @@ import { cn } from "@/lib/utils";
 import { IUser } from "@/types/common-types";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { isEmailUser } from "@/utils/util.utls";
+import { useEffect } from "react";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 interface UserNameFormProps extends IUser {
   onExpand: (state: boolean) => void;
   type?:'adjust'|'add-new'
 }
 const UserNameForm = ({type='add-new', user, onExpand }: UserNameFormProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
   const {
     register,
@@ -68,6 +71,15 @@ const UserNameForm = ({type='add-new', user, onExpand }: UserNameFormProps) => {
     onExpand(false);
     router.refresh();
   });
+  const isMutating=isChangingUserName||isAddingUserName
+  useEffect(() => {
+    if (isMutating) {
+      handleSetMutatingState(true);
+    }
+    if (!isMutating) {
+      handleSetMutatingState(false);
+    }
+  }, [isMutating, handleSetMutatingState]);
   return (
     <form
       data-cy='user-name-form-my-profile'

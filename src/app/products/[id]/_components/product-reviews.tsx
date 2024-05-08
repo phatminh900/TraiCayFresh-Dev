@@ -1,4 +1,4 @@
-import ProductReview from "@/components/molecules/product-review";
+import ProductModifyReview from "@/components/molecules/product-modify-review";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import { Product, Review } from "@/payload/payload-types";
 import { getUserOrdersNoPopulate } from "@/services/server/payload/orders.service";
@@ -75,7 +75,7 @@ const ProductReviews = async ({
           </div>
 
           <div className='flex justify-center mb-6'>
-            <ProductReview
+            <ProductModifyReview
               user={user}
               productId={productId}
               title={productTitle}
@@ -86,9 +86,14 @@ const ProductReviews = async ({
       )}
       {hasReviewedProduct && (
         <ProductReviewOfUser
+          productId={productId}
+          user={user}
+          productThumbnailImg={productImgSrc}
+          title={productTitle}
           reviewId={userReview!.id}
           userName={user?.name || `User ${user?.id.slice(-6)}`}
           reviewText={userReview!.reviewText || ""}
+          reviewImgs={userReview!.reviewImgs}
         />
       )}
       {/* filter */}
@@ -102,7 +107,7 @@ const ProductReviews = async ({
           />
         ))}
       </ul>
-      <ul className='mt-12'>
+      <ul className='mt-8'>
         <li>
           <ProductReviewDetails
             name='Phat'

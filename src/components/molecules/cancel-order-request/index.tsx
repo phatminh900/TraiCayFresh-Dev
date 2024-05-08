@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,6 +18,7 @@ import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 type ICancelReason = Order["cancelReason"];
 const CANCEL_REQUEST_REASONS: {
@@ -61,6 +62,7 @@ const CancelOrderRequest = ({
   btnVariant,
   onToggleOpenCancelRequest,
 }: CancelOrderRequestProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const router = useRouter();
   const { mutate: cancelOrder, isPending: isCancelingOrder } =
     trpc.order.cancelOrder.useMutation({
@@ -77,6 +79,15 @@ const CancelOrderRequest = ({
     cancelOrder({ cancelReason: cancelReason!, orderId });
   };
   const isMutating = isCancelingOrder;
+  useEffect(()=>{
+    if(isMutating){
+      handleSetMutatingState(true)
+    }
+    if(!isMutating){
+      handleSetMutatingState(false)
+  
+    }
+  },[isMutating,handleSetMutatingState])
   return (
     <Dialog open={isOpen}>
       <DialogTrigger asChild>

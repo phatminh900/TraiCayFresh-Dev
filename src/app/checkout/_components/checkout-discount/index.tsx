@@ -9,9 +9,11 @@ import { handleTrpcErrors } from "@/utils/error.util";
 import { handleTrpcSuccess } from "@/utils/success.util";
 import { CartProductItem, useCart } from "@/store/cart.store";
 import { IUser } from "@/types/common-types";
+import useDisableClicking from "@/hooks/use-disable-clicking";
 
 interface CheckoutDiscountProps extends IUser {}
 const CheckoutDiscount = ({ user }: CheckoutDiscountProps) => {
+  const {handleSetMutatingState}=useDisableClicking()
   const setCart = useCart((store) => store.setItem);
   const cartItems = useCart((store) => store.items);
   const appliedCoupon = user!.cart!.items?.find((item) => item?.coupon);
@@ -85,6 +87,15 @@ const CheckoutDiscount = ({ user }: CheckoutDiscountProps) => {
       return () => clearTimeout(timer);
     }
   }, [isNewlyAddedItems, applyCoupon, setCart, router, couponCode, cartItems]);
+  useEffect(()=>{
+    if(isPending){
+      handleSetMutatingState(true)
+    }
+    if(!isPending){
+      handleSetMutatingState(false)
+
+    }
+  },[isPending,handleSetMutatingState])
   return (
     <div data-cy='discount-box'>
       {couponCode && (
