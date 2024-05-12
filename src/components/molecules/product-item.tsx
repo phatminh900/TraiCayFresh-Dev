@@ -7,6 +7,8 @@ import Link from "next/link";
 import { IoBagAddOutline } from "react-icons/io5";
 import { Button } from "../ui/button";
 import ReviewRating from "../ui/review-rating/review-rating";
+import { useRouter } from "next/navigation";
+import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
 
 interface ProductItemProps extends IUser {
   type?: "horizontal" | "vertical";
@@ -34,6 +36,7 @@ const ProductItem = ({
   reviewQuantity = 1,
   reviewRating = 5,
 }: ProductItemProps) => {
+  const router = useRouter();
   const {
     handleAddItemToCart,
     isAddingError,
@@ -51,6 +54,11 @@ const ProductItem = ({
     },
     user,
   });
+  const handleBuyNow = () => {
+    router.push(
+      `${APP_URL.checkout}?${APP_PARAMS.checkoutFlow}=buy-now&${APP_PARAMS.productId}=${id}`
+    );
+  };
   let content = (
     <Link
       data-cy='product-item-home'
@@ -72,12 +80,13 @@ const ProductItem = ({
           <p className='text-muted-foreground text-sm'>{subTitle}</p>
         )}
         <p className='text-destructive text-xl font-bold mt-2'>
-          {formatPriceToVND(priceAfterDiscount||originalPrice)}
+          {formatPriceToVND(priceAfterDiscount || originalPrice)}
         </p>
-        {priceAfterDiscount && <p className='text-destructive text-sm line-through mt-2'>
-        {formatPriceToVND(originalPrice)}
-        
-      </p>}
+        {priceAfterDiscount && (
+          <p className='text-destructive text-sm line-through mt-2'>
+            {formatPriceToVND(originalPrice)}
+          </p>
+        )}
         <div className='mt-2 mb-2'>
           <ReviewRating
             ratingAverage={reviewRating}
@@ -85,7 +94,12 @@ const ProductItem = ({
           />
         </div>
         <div className='flex flex-col gap-2 mt-auto sm:flex-row'>
-          <Button className='flex-1'>Mua ngay</Button>
+          <Button onClick={(e)=>{
+            e.preventDefault()
+            handleBuyNow()
+          }} className='flex-1'>
+            Mua ngay
+          </Button>
           <Button
             data-cy='product-item-add-to-cart-home'
             onClick={(e) => {
@@ -135,12 +149,12 @@ const ProductItem = ({
       </div>
       <p className='text-destructive text-xl font-bold mt-2'>
         {formatPriceToVND(priceAfterDiscount || originalPrice)}
-
       </p>
-      {priceAfterDiscount && <p className='text-destructive line-through mt-2'>
-        {formatPriceToVND(originalPrice)}
-        
-      </p>}
+      {priceAfterDiscount && (
+        <p className='text-destructive line-through mt-2'>
+          {formatPriceToVND(originalPrice)}
+        </p>
+      )}
     </Link>;
   }
   return content;

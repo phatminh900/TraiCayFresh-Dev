@@ -10,7 +10,6 @@ import {
 import { PropsWithChildren, useState } from "react";
 import { IoCloseOutline, IoCreateOutline } from "react-icons/io5";
 import ProductModifyReview from "..";
-import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import SubmitProductReviewBtn from "./submit-product-review-btn";
 
@@ -21,8 +20,8 @@ interface ProductReviewMobileProps
   createReviewAction: (payload: FormData) => void;
   isOpen: boolean;
   onToggleModalState: () => void;
-  onSetIsSubmittingTheForm:()=>void
-    isSubmitting:boolean,
+  onSetIsSubmittingTheForm: () => void;
+  isSubmitting: boolean;
   selectedRating: number;
 }
 const ProductReviewMobile = ({
@@ -36,8 +35,6 @@ const ProductReviewMobile = ({
   selectedRating,
   createReviewAction,
 }: ProductReviewMobileProps) => {
-
-
   return (
     <Drawer open={isOpen}>
       <DrawerTrigger asChild>
@@ -73,16 +70,20 @@ const ProductReviewMobile = ({
               selectedRating={selectedRating}
             />
           </form>
-
-          <DrawerClose>
+          <DrawerClose >
             <button
-              onClick={onToggleModalState}
-              className={cn("absolute top-[2%] right-[4%] cursor-pointer", {
-                "text-destructive": isSubmitting,
-              })}
+              onClick={()=>{
+                onToggleModalState()
+              }}
+              className={cn(
+                "absolute top-[2%] right-[4%] cursor-pointer hover:text-destructive",
+                {
+                  "text-destructive": isSubmitting,
+                }
+              )}
               disabled={isSubmitting}
             >
-              <IoCloseOutline size={30}/>
+              <IoCloseOutline size={30} />
             </button>
           </DrawerClose>
         </div>

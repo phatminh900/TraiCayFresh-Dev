@@ -1,11 +1,10 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getPayloadClient } from "../../payload/get-client-payload";
 
-import { isEmailUser } from "../../utils/util.utls";
 import getUserProcedure from "../middlewares/get-user-procedure";
-import { router } from "../trpc";
+import { publicProcedure, router } from "../trpc";
 
+import { PRODUCT_REVIEWS_SHOW_LIMIT } from "../../constants/configs.constant";
 import { REVIEW_MESSAGE } from "../../constants/api-messages.constant";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 export const MAX_FILE_SIZE = 1024 * 1024 * 5;
@@ -16,75 +15,33 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/webp",
 ];
 const ReviewRouter = router({
-  createReview: getUserProcedure
-    .use(({ next, ctx }) => {
-      ctx.req.headers["content-type"] = "multipart/form-data";
-      return next();
-    })
-
-    .input(
-      z.object({
-        productId: z.string(),
-        rating: z.number().min(1).max(5),
-        reviewText: z.string().optional(),
-        img: z.any(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { user, req } = ctx;
-      const { rating, reviewText, productId, img } = input;
-      console.log("-----img");
-      console.log(img);
+  deleteReviewImg: getUserProcedure
+    .input(z.object({ imgId: z.string(), reviewId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { imgId, reviewId } = input;
       try {
         const payload = await getPayloadClient();
-        // check if user already bought the product
-        const { docs: userOrders } = await payload.find({
-          collection: "orders",
+        await payload.delete({ collection: "media", id: imgId });
+        const review = await payload.findByID({
+          collection: "reviews",
+          id: reviewId,
           depth: 0,
-          where: {
-            "orderBy.value": {
-              equals: user.id,
-            },
-          },
         });
-
-        if (
-          !userOrders.length ||
-          !userOrders?.some((order) => {
-            return (
-              order._isPaid &&
-              order.items.find((item) => item.product === productId)
-            );
-          })
-        ) {
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: REVIEW_MESSAGE.BAD_REQUEST,
+        if (review) {
+          const reviewImgs = review.reviewImgs;
+          const filterImgs = reviewImgs?.filter(
+            (img) => img.reviewImg !== imgId
+          );
+          await payload.update({
+            collection: "reviews",
+            id: reviewId,
+            data: { reviewImgs: filterImgs },
           });
         }
-
-        await payload.create({
-          collection: "reviews",
-          data: {
-            rating,
-            product: productId,
-            user: {
-              value: user.id,
-              relationTo: isEmailUser(user)
-                ? "customers"
-                : "customer-phone-number",
-            },
-
-            reviewText,
-            // reviewImgs: imgs,
-          },
-        });
-        return { success: true, message: REVIEW_MESSAGE.SUCCESS };
       } catch (error) {
-        throw error;
+        throwTrpcInternalServer(error);
       }
     }),
-
   deleteReview: getUserProcedure
     .input(z.object({ reviewId: z.string() }))
     .mutation(async ({ input }) => {
@@ -97,5 +54,47 @@ const ReviewRouter = router({
         throwTrpcInternalServer(error);
       }
     }),
+
+  getProductReviews: publicProcedure
+    .input(z.object({page:z.number(), productId: z.string() }))
+    .query(async ({ input }) => {
+      const { productId ,page} = input;
+      try {
+        const payload = await getPayloadClient();
+        const result = await payload.find({
+          collection: "reviews",
+          depth: 1,
+          page,
+          where: {
+            product: {
+              equals: productId,
+            },
+          },
+          limit: PRODUCT_REVIEWS_SHOW_LIMIT,
+        });
+        const {limit,docs:reviews,totalPages,totalDocs,hasNextPage,pagingCounter}=result
+
+        return { success: true, productReviews: reviews,totalPages,totalDocs,hasNextPage, pagingCounter };
+      } catch (error) {
+        throwTrpcInternalServer(error);
+      }
+    }),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 });
 export default ReviewRouter;

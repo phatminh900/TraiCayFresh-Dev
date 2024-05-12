@@ -1,87 +1,77 @@
 "use client";
 
-import Image from "next/image";
+import { IUserReview } from "@/app/products/[id]/_components/product-reviews/product-reviewed-of-user";
+import { GENERAL_ERROR_MESSAGE } from "@/constants/api-messages.constant";
+import { ALLOW_UPLOAD_IMG_LENGTH } from "@/constants/configs.constant";
+import { Media, Product } from "@/payload/payload-types";
+import { IUser } from "@/types/common-types";
+import { isEmailUser } from "@/utils/util.utls";
+import { isEqual } from "lodash";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
-import {
-  IoCameraOutline,
-  IoCloseOutline,
-  IoStar,
-  IoStarOutline,
-} from "react-icons/io5";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useFormState } from "react-dom";
 import { toast } from "sonner";
 import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
-import ProductInspectReviewImg from "./_components/inspect-img";
+import ProductReviewContent from "./_components/product-review-content";
 import ProductReviewDesktop from "./_components/product-review-desktop";
 import ProductReviewMobile from "./_components/product-review-mobile";
-import createNewReview from "./actions/review.action";
+import { createNewReview, updateReview } from "./actions/review.action";
 
-import ErrorMsg from "@/components/atoms/error-msg";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { GENERAL_ERROR_MESSAGE } from "@/constants/api-messages.constant";
-import { ALLOW_UPLOAD_IMG_LENGTH } from "@/constants/configs.constant";
-import { cn } from "@/lib/utils";
-import { Product, Review } from "@/payload/payload-types";
-import { IUser } from "@/types/common-types";
-import { getImgUrlMedia, isEmailUser } from "@/utils/util.utls";
-import { IUserReview } from "@/app/products/[id]/_components/product-reviewed-of-user";
-
-interface ProductModifyReview extends IUser, Partial<IUserReview> {
+export interface ProductModifyReview extends IUser, Partial<IUserReview> {
   title: string;
   imgSrc: Product["thumbnailImg"];
   productId: string;
   type?: "add" | "adjust";
+  onSetOpenState?: (key: string) => void;
 }
-
-const ratings = Array.from({ length: 5 }).map((_, i) => i + 1);
+export interface ISelectedImg {
+  id: string;
+  img: File | string;
+}
 
 const ProductModifyReview = ({
   user,
   title,
+  onSetOpenState,
   userRating,
+  reviewId,
   userReviewImgs,
   userReviewText,
   type = "add",
   imgSrc,
   productId,
 }: ProductModifyReview) => {
-  const parsedUserReviewImgs = userReviewImgs?.map((img) => ({
-    id: img.id!,
-    img: img.url!,
-  }));
+  const parsedUserReviewImgs = userReviewImgs?.map((img) => {
+    const reviewImgFile = img.reviewImg! as Media;
+    const reviewImgUrl = reviewImgFile.url!;
+    return { id: reviewImgFile.id!, img: reviewImgUrl };
+  });
+
   const router = useRouter();
   const [openAddProductReviewModal, setOpenAddProductReviewModal] =
     useState(false);
   const [isSubmittingTheForm, setIsSubmittingTheForm] = useState(false);
   const handleSetSubmitFormState = () => setIsSubmittingTheForm(true);
-  const imgSource = getImgUrlMedia(imgSrc);
   const [selectedRating, setSelectedRating] = useState(userRating || 0);
   const selectImgsFormDataRef = useRef(new FormData());
-  const [selectedImgs, setSelectedImgs] = useState<
-    { id: string; img: File | string }[]
-  >(parsedUserReviewImgs || []);
-  const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [selectedImgs, setSelectedImgs] = useState<ISelectedImg[]>(
+    parsedUserReviewImgs || []
+  );
   const [review, setReview] = useState(userReviewText || "");
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
-
+  const handleChangeReviewText = (reviewText: string) => setReview(reviewText);
   const handleSetRating = (rating: number) => setSelectedRating(rating);
-  const handleOpenImgPicker = () => {
-    if (setSelectedImgs.length === ALLOW_UPLOAD_IMG_LENGTH) {
-      alert("Đã upload số ảnh được quy định");
-      return;
-    }
-    inputFileRef.current?.click();
-  };
 
   const handlePickImgs = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
 
     if (files) {
-      if (files.length > 3) {
+      if (
+        files.length > ALLOW_UPLOAD_IMG_LENGTH ||
+        selectedImgs.length + files.length > ALLOW_UPLOAD_IMG_LENGTH
+      ) {
         alert(
           `Chỉ cho phép tối đa ${ALLOW_UPLOAD_IMG_LENGTH} ảnh. Quý khách vui lòng gửi lại`
         );
@@ -98,15 +88,21 @@ const ProductModifyReview = ({
             ...prev,
             { id: crypto.randomUUID(), img: file },
           ]);
-          selectImgsFormDataRef.current.append(`img-${i + 1}`, file);
-          // const fileReader = new FileReader();
-          // fileReader.onload = () => {
-          //   const imgUrl = fileReader.result;
-          //   if (imgUrl && typeof imgUrl === "string") {
-          //     setSelectedImgSrcs((prev) => [...prev, {src:imgUrl,id:crypto.randomUUID()}]);
-          //   }
-          // };
-          // fileReader.readAsDataURL(file);
+          if (files.length === 1) {
+            selectImgsFormDataRef.current.append(
+              `img-${selectedImgs.length + 1}`,
+              file
+            );
+          }
+          if (!selectedImgs.length && files.length > 1) {
+            selectImgsFormDataRef.current.append(`img-${i + 1}`, file);
+          }
+          if (selectedImgs.length && files.length > 1) {
+            selectImgsFormDataRef.current.append(
+              `img-${selectedImgs.length + i + 1}`,
+              file
+            );
+          }
         } catch (error) {
           if (error instanceof z.ZodError) {
             const errMsg = error.errors[0].message || GENERAL_ERROR_MESSAGE;
@@ -122,129 +118,70 @@ const ProductModifyReview = ({
   const handleRemoveSelectedImg = (id: string) => {
     setSelectedImgs((prev) => prev.filter((img) => img.id !== id));
   };
-
-  const createNewReviewAction = createNewReview.bind(null, {
-    user: {
-      relationTo: isEmailUser(user!) ? "customers" : "customer-phone-number",
-      value: user!.id,
-    },
-    reviewText: review,
-    product: productId,
-    rating: selectedRating,
-    reviewImgsFormData: selectImgsFormDataRef.current,
-  });
-  const [formState, formAction] = useFormState(createNewReviewAction, null);
-
+  const isNotModified =
+    isEqual(userReviewText, review) &&
+    isEqual(parsedUserReviewImgs, selectedImgs) &&
+    isEqual(selectedRating, userRating);
+  const reviewAction =
+    type === "add"
+      ? createNewReview.bind(null, {
+          user: {
+            relationTo: isEmailUser(user!)
+              ? "customers"
+              : "customer-phone-number",
+            value: user!.id,
+          },
+          reviewText: review,
+          product: productId,
+          rating: selectedRating,
+          reviewImgsFormData: selectImgsFormDataRef.current,
+        })
+      : updateReview.bind(null, {
+          user: {
+            relationTo: isEmailUser(user!)
+              ? "customers"
+              : "customer-phone-number",
+            value: user!.id,
+          },
+          product: productId,
+          reviewText: review,
+          isNotModified,
+          rating: selectedRating,
+          reviewImgsFormData: selectImgsFormDataRef.current,
+          reviewId: reviewId || "",
+        });
+  const [formState, formAction] = useFormState(reviewAction, null);
   const ReviewContent = (
-    <div className='space-y-6'>
-      <div className='flex flex-col items-center gap-3 relative'>
-        <h2>{title} </h2>
-
-        <Image
-          src={imgSource || ""}
-          alt='Product img'
-          height={isDesktop ? 100 : 60}
-          width={isDesktop ? 100 : 60}
-        />
-      </div>
-      <div>
-        <ul className='flex gap-2 justify-center'>
-          {ratings.map((_, index) => (
-            <li className='cursor-pointer' key={index}>
-              {index + 1 <= selectedRating ? (
-                <IoStar
-                  onClick={() => handleSetRating(index + 1)}
-                  className='text-secondary'
-                  size={30}
-                />
-              ) : (
-                <IoStarOutline
-                  onClick={() => handleSetRating(index + 1)}
-                  className='text-secondary'
-                  size={30}
-                />
-              )}
-            </li>
-          ))}
-        </ul>
-        {formState?.rating && !selectedRating && (
-          <div className='flex justify-center mt-2'>
-            <ErrorMsg msg={formState.rating[0]} />
-          </div>
-        )}
-      </div>
-
-      <div>
-        <Textarea
-          data-cy='feedback-text-area'
-          value={review}
-          name='reviewText'
-          onChange={(e) => setReview(e.target.value)}
-          rows={5}
-          className='placeholder:italic placeholder:text-muted-foreground'
-          placeholder='Mời bạn đánh giá.'
-        />
-      </div>
-      <div>
-        <label htmlFor='product-review-img'></label>
-        <Input
-          onChange={handlePickImgs}
-          ref={inputFileRef}
-          type='file'
-          accept='image/*'
-          multiple
-          id='product-review-img'
-          className='hidden'
-        />
-
-        <button
-          type='button'
-          onClick={handleOpenImgPicker}
-          className='flex text-primary items-center gap-2'
-        >
-          <IoCameraOutline /> Gửi ảnh đánh giá{" "}
-          <span className='text-muted-foreground'>(tối đa 3 ảnh)</span>
-        </button>
-      </div>
-      <div className='flex gap-2'>
-        {selectedImgs.map((img, index) => (
-          <div key={index} className='w-20 h-20 relative'>
-            <ProductInspectReviewImg>
-              <Image
-                src={
-                  typeof img.img === "string"
-                    ? img.img
-                    : URL.createObjectURL(img.img)
-                }
-                fill
-                className='object-fit object-cover'
-                alt='review img'
-              />
-            </ProductInspectReviewImg>
-            <button
-              onClick={() => handleRemoveSelectedImg(img.id)}
-              className={cn(
-                "absolute top-[5%]  right-[5%] flex-center rounded-full cursor-pointer bg-gray-300 hover:bg-gray-400",
-                {
-                  "w-5 h-5": !isDesktop,
-                  "w-6 h-6": isDesktop,
-                }
-              )}
-            >
-              <IoCloseOutline />
-            </button>
-          </div>
-        ))}
-      </div>
-      {formState?.img && selectedImgs.length > 0 && (
-        <div className='mt'>
-          <ErrorMsg msg={formState.img[0]} />
-        </div>
-      )}
-    </div>
+    <ProductReviewContent
+      key={String(openAddProductReviewModal)}
+      onPickImgs={handlePickImgs}
+      onRemoveSelectedImg={handleRemoveSelectedImg}
+      onSetRating={handleSetRating}
+      imgSrc={imgSrc}
+      userSelectedImgs={parsedUserReviewImgs}
+      type={type}
+      userRating={userRating}
+      userReviewImgs={userReviewImgs}
+      userReviewText={userReviewText}
+      reviewId={reviewId}
+      productId={productId}
+      onSetReviewText={handleChangeReviewText}
+      formStateImg={formState?.img}
+      formStateRating={formState?.rating}
+      selectedImgs={selectedImgs}
+      selectedRating={selectedRating}
+      reviewText={review}
+      title={title}
+    />
   );
-  const toggleOpenModalProductAddReviewState = () =>
+  const toggleOpenModalProductAddReviewState = useCallback(() => {
+    if (openAddProductReviewModal && onSetOpenState) {
+      onSetOpenState(crypto.randomUUID());
+    }
+
     setOpenAddProductReviewModal((prev) => !prev);
+  }, [onSetOpenState, openAddProductReviewModal]);
+
   useEffect(() => {
     if (formState?.user) {
       toast.error(formState.user[0]);
@@ -252,11 +189,16 @@ const ProductModifyReview = ({
   }, [formState?.user]);
   useEffect(() => {
     if (formState?.success && formState.success[0] === "true") {
+      setOpenAddProductReviewModal(false);
+
+      toast.success(
+        type === "add" ? "Cảm ơn bạn đã đánh giá" : "Sửa đánh giá thành công"
+      );
       router.refresh();
-      toast.success("Cảm ơn bạn đã đánh giá");
+
       toggleOpenModalProductAddReviewState();
     }
-  }, [formState?.success, router]);
+  }, [formState?.success, router, type, toggleOpenModalProductAddReviewState]);
   if (isDesktop) {
     return (
       <ProductReviewDesktop

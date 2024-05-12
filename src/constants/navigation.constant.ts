@@ -19,5 +19,7 @@ export const APP_PARAMS = {
   origin:'origin',
   currentQuantityOption: "currentQuantityOption",
   isOpenOtp:'isOpenOtp',
-  cartOrderId:'cartOrderId'
+  cartOrderId:'cartOrderId',
+  checkoutFlow:'checkoutFlow',
+  productId:'productId'
 } as const;

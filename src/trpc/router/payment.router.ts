@@ -3,28 +3,34 @@ import dotenv from "dotenv";
 import { z } from "zod";
 import moment from "moment";
 import querystring from "qs";
-import {  router, USER_TYPE } from "../trpc";
+import { router, USER_TYPE } from "../trpc";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { isEmailUser } from "../../utils/util.utls";
-import { Customer, CustomerPhoneNumber, Product } from "../../payload/payload-types";
+import {
+  Customer,
+  CustomerPhoneNumber,
+  Product,
+} from "../../payload/payload-types";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
 import { APP_PARAMS, APP_URL } from "../../constants/navigation.constant";
-import { CHECKOUT_MESSAGE } from "../../constants/api-messages.constant";
+import {
+  CHECKOUT_MESSAGE,
+  PRODUCT_MESSAGE,
+} from "../../constants/api-messages.constant";
 import getUserProcedure from "../middlewares/get-user-procedure";
+import { TRPCError } from "@trpc/server";
+import { DEFAULT_SHIPPING_FREE, FREESHIP_BY_CASH_FROM, FREESHIP_FROM } from "../../constants/configs.constant";
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
-
 
 // TODO: freeship for orders meet condition
 
-
-
-const calculateUserAmountAndCreateOrderItems=async(user:Customer|CustomerPhoneNumber)=>{
-  const payload=await getPayloadClient()
+const calculateUserAmountAndCreateOrderItems = async (
+  user: Customer | CustomerPhoneNumber
+) => {
+  const payload = await getPayloadClient();
   const userCart = (
     await payload.findByID({
-      collection: isEmailUser(user)
-        ? "customers"
-        : "customer-phone-number",
+      collection: isEmailUser(user) ? "customers" : "customer-phone-number",
       id: user.id,
       depth: 2,
     })!
@@ -32,13 +38,12 @@ const calculateUserAmountAndCreateOrderItems=async(user:Customer|CustomerPhoneNu
 
   // return total + item.quantity! * (item.priceAfterDiscount! || item.originalPrice!),
 
-  if (!userCart) return ;
+  if (!userCart) return;
   const cartTotalPrice = userCart.reduce((total, item) => {
     const product = item.product as Product;
     return (
       total +
-      item.quantity! *
-        (product.priceAfterDiscount! || product.originalPrice!)
+      item.quantity! * (product.priceAfterDiscount! || product.originalPrice!)
     );
   }, 0);
   // let price
@@ -79,12 +84,18 @@ const calculateUserAmountAndCreateOrderItems=async(user:Customer|CustomerPhoneNu
     return {
       product: product.id,
       price: product.priceAfterDiscount || product.originalPrice,
-      originalPrice:product.originalPrice,
+      originalPrice: product.originalPrice,
       quantity: item.quantity!,
     };
   });
-  return {amount,totalAfterCoupon,orderItems,userCart,provisional:cartTotalPrice}
-}
+  return {
+    amount,
+    totalAfterCoupon,
+    orderItems,
+    userCart,
+    provisional: cartTotalPrice,
+  };
+};
 
 const CheckoutInfoSchema = z.object({
   orderNotes: z.string().optional(),
@@ -110,46 +121,133 @@ const CheckoutInfoSchema = z.object({
 });
 
 const PaymentRouter = router({
-  payWithCash:getUserProcedure.input(CheckoutInfoSchema).mutation(async({ctx,input})=>{
-    const { orderNotes, shippingAddress } = input;
-    const { user } = ctx;
-    try {
-      const payload=await getPayloadClient()
-      // new order
-      const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
-      if(!resultCalculateAndOrderItems) return
-      const {amount,orderItems,totalAfterCoupon,userCart,provisional}=resultCalculateAndOrderItems
-      const shippingFee=50000
-      const newOrder = await payload.create({
-        collection: "orders",
-        data: {
-          deliveryStatus:'pending',
-          paymentMethod:'cash',
-          provisional,
-          orderBy: {
-            value: user.id,
-            relationTo:
-              isEmailUser(user)
+  payWithCash: getUserProcedure
+    .input(CheckoutInfoSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { orderNotes, shippingAddress } = input;
+      const { user } = ctx;
+      try {
+        const payload = await getPayloadClient();
+        // new order
+        const resultCalculateAndOrderItems =
+          await calculateUserAmountAndCreateOrderItems(user);
+        if (!resultCalculateAndOrderItems) return;
+        const { amount, orderItems, totalAfterCoupon, userCart, provisional } =
+          resultCalculateAndOrderItems;
+        const shippingFee = amount>=FREESHIP_BY_CASH_FROM?0:DEFAULT_SHIPPING_FREE;
+        const newOrder = await payload.create({
+          collection: "orders",
+          data: {
+            deliveryStatus: "pending",
+            paymentMethod: "cash",
+            provisional,
+            orderBy: {
+              value: user.id,
+              relationTo: isEmailUser(user)
                 ? "customers"
                 : "customer-phone-number",
-          },
-          total: amount+shippingFee,
-          
-          items: orderItems,
-          orderNotes,
-          _isPaid: false,
-          shippingFee,
-          totalAfterCoupon,
-          shippingAddress: shippingAddress,
-          status: "pending",
-        },
-      });
-      return {success:true,url:`${process.env.NEXT_PUBLIC_SERVER_URL}${APP_URL.orderStatus}?${APP_PARAMS.cartOrderId}=${newOrder.id}`}
+            },
+            total: amount + shippingFee,
 
-    } catch (error) {
-      throwTrpcInternalServer(error)
-    }
-  }),
+            items: orderItems,
+            orderNotes,
+            _isPaid: false,
+            shippingFee,
+            totalAfterCoupon,
+            shippingAddress: shippingAddress,
+            status: "pending",
+          },
+        });
+        return {
+          success: true,
+          url: `${process.env.NEXT_PUBLIC_SERVER_URL}${APP_URL.orderStatus}?${APP_PARAMS.cartOrderId}=${newOrder.id}`,
+        };
+      } catch (error) {
+        throwTrpcInternalServer(error);
+      }
+    }),
+  payWithCashBuyNow: getUserProcedure
+    .input(
+      z
+        .object({
+          productId: z.string(),
+          quantity: z.number(),
+          couponCode: z.string().optional(),
+        })
+        .merge(CheckoutInfoSchema)
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { orderNotes, shippingAddress, quantity, productId, couponCode } =
+        input;
+      const { user } = ctx;
+      try {
+        const payload = await getPayloadClient();
+        const product = await payload.findByID({
+          collection: "products",
+          id: productId,
+        });
+        if (!product)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: PRODUCT_MESSAGE.NOT_FOUND,
+          });
+        // new order
+        const provisional =
+          (product.priceAfterDiscount || product.originalPrice) * quantity;
+        let totalAfterCoupon = provisional;
+        if (couponCode) {
+          const { docs: coupons } = await payload.find({
+            collection: "coupons",
+            where: { coupon: { equals: couponCode } },
+          });
+          const couponInDb = coupons[0];
+          if (couponInDb) {
+            totalAfterCoupon =
+              provisional - (provisional * couponInDb.discount) / 100;
+          }
+        }
+        const amount = totalAfterCoupon;
+        const orderItems = [
+          {
+            product: productId,
+            price: product.priceAfterDiscount || product.originalPrice,
+            originalPrice: product.originalPrice,
+            quantity,
+          },
+        ];
+
+        const shippingFee = amount>=FREESHIP_BY_CASH_FROM?0:DEFAULT_SHIPPING_FREE;
+
+        const newOrder = await payload.create({
+          collection: "orders",
+          data: {
+            deliveryStatus: "pending",
+            paymentMethod: "cash",
+            provisional,
+            orderBy: {
+              value: user.id,
+              relationTo: isEmailUser(user)
+                ? "customers"
+                : "customer-phone-number",
+            },
+            total: amount + shippingFee,
+            items: orderItems,
+            orderNotes,
+            _isPaid: false,
+            shippingFee,
+            totalAfterCoupon,
+            shippingAddress: shippingAddress,
+            status: "pending",
+          },
+        });
+        return {
+          success: true,
+          url: `${process.env.NEXT_PUBLIC_SERVER_URL}${APP_URL.orderStatus}?${APP_PARAMS.cartOrderId}=${newOrder.id}`,
+        };
+      } catch (error) {
+        throwTrpcInternalServer(error);
+      }
+    }),
   payWithMomo: getUserProcedure
     .input(CheckoutInfoSchema)
     .mutation(async ({ ctx, input }) => {
@@ -159,11 +257,12 @@ const PaymentRouter = router({
         const { orderNotes, shippingAddress } = input;
         const { user } = ctx;
         // if no user already handle in the previous middleware
-        const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
-        if(!resultCalculateAndOrderItems) return
-        const {amount,orderItems,totalAfterCoupon,userCart,provisional}=resultCalculateAndOrderItems
-       
-       
+        const resultCalculateAndOrderItems =
+          await calculateUserAmountAndCreateOrderItems(user);
+        if (!resultCalculateAndOrderItems) return;
+        const { amount, orderItems, totalAfterCoupon, userCart, provisional } =
+          resultCalculateAndOrderItems;
+
         // create order
 
         //parameters
@@ -177,25 +276,25 @@ const PaymentRouter = router({
           return `${acc}${acc ? "," : ""} ${item.quantity}KG ${product.title}`;
         }, "");
         const orderInfo = `Thanh toán ${orderDetails}`;
-        const shippingFee=0
+        const shippingFee = amount>=FREESHIP_FROM?0:DEFAULT_SHIPPING_FREE;
+
         // create new order in db
         const newOrder = await payload.create({
           collection: "orders",
           data: {
-            deliveryStatus:'pending',
+            deliveryStatus: "pending",
             provisional,
-            paymentMethod:'momo',
+            paymentMethod: "momo",
             orderBy: {
               value: user.id,
-              relationTo:
-              isEmailUser(user)
-                  ? "customers"
-                  : "customer-phone-number",
+              relationTo: isEmailUser(user)
+                ? "customers"
+                : "customer-phone-number",
             },
-            total: amount+shippingFee,
+            total: amount + shippingFee,
             items: orderItems,
             orderNotes,
-            shippingFee:0,
+            shippingFee: 0,
             _isPaid: false,
             totalAfterCoupon,
             shippingAddress: shippingAddress,
@@ -314,7 +413,7 @@ const PaymentRouter = router({
           req.end();
         });
       } catch (error) {
-      throw new Error(CHECKOUT_MESSAGE.ERROR)
+        throw new Error(CHECKOUT_MESSAGE.ERROR);
       }
     }),
 
@@ -335,31 +434,32 @@ const PaymentRouter = router({
         const payload = await getPayloadClient();
         //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
         const { orderNotes, shippingAddress } = input;
-        const { user,  req } = ctx;
-        const resultCalculateAndOrderItems=await calculateUserAmountAndCreateOrderItems(user)
-        if(!resultCalculateAndOrderItems) return
-        const {amount,orderItems,totalAfterCoupon,userCart,provisional}=resultCalculateAndOrderItems
+        const { user, req } = ctx;
+        const resultCalculateAndOrderItems =
+          await calculateUserAmountAndCreateOrderItems(user);
+        if (!resultCalculateAndOrderItems) return;
+        const { amount, orderItems, totalAfterCoupon, userCart, provisional } =
+          resultCalculateAndOrderItems;
         // if no user already handle in the previous middleware
-       
 
         //parameters
         console.log("----amount");
         console.log(amount);
-        const shippingFee=0
+        const shippingFee = amount>=FREESHIP_FROM?0:DEFAULT_SHIPPING_FREE;
+
         // create new order in db
         const newOrder = await payload.create({
           collection: "orders",
           data: {
-            deliveryStatus:'pending',
-            paymentMethod:'vnpay',
+            deliveryStatus: "pending",
+            paymentMethod: "vnpay",
             orderBy: {
               value: user.id,
-              relationTo:
-             isEmailUser(user)
-                  ? "customers"
-                  : "customer-phone-number",
+              relationTo: isEmailUser(user)
+                ? "customers"
+                : "customer-phone-number",
             },
-            total: amount+shippingFee,
+            total: amount + shippingFee,
             provisional,
             items: orderItems,
             orderNotes,
@@ -384,7 +484,7 @@ const PaymentRouter = router({
         let tmnCode = process.env.VN_PAY_TMN_CODE;
         let secretKey = process.env.VN_PAY_SECRET_KEY;
         let vnpUrl = process.env.VN_PAY_URL;
-        let returnUrl =`${process.env.NEXT_PUBLIC_SERVER_URL}${APP_URL.orderStatus}?${APP_PARAMS.cartOrderId}=${newOrder.id}`;
+        let returnUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}${APP_URL.orderStatus}?${APP_PARAMS.cartOrderId}=${newOrder.id}`;
         let orderId = newOrder.id;
         const orderDetails = userCart.reduce((acc, item) => {
           const product = item.product as Product;
@@ -402,7 +502,7 @@ const PaymentRouter = router({
           locale = "vn";
         }
         let currCode = "VND";
-        let vnp_Params:any = {};
+        let vnp_Params: any = {};
         vnp_Params["vnp_Version"] = "2.1.0";
         vnp_Params["vnp_Command"] = "pay";
         vnp_Params["vnp_TmnCode"] = tmnCode;
@@ -430,15 +530,15 @@ const PaymentRouter = router({
         return { success: true, url: vnpUrl };
         // res.redirect(vnpUrl);
       } catch (error) {
-      throw new Error(CHECKOUT_MESSAGE.ERROR)
+        throw new Error(CHECKOUT_MESSAGE.ERROR);
       }
     }),
 });
 
 export default PaymentRouter;
 
-function sortObject(obj:any) {
-  let sorted:any = {};
+function sortObject(obj: any) {
+  let sorted: any = {};
   let str = [];
   let key;
   for (key in obj) {

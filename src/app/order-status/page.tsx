@@ -1,12 +1,9 @@
-import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import { buttonVariants } from "@/components/ui/button";
 import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
 import { getOrderStatus } from "@/services/server/payload/orders.service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import React from "react";
 import OrderStatusInfo from "./order-status-info";
-import PageTitle from "@/components/ui/page-title";
 
 const OrderStatus = async ({
   searchParams,
@@ -42,13 +39,10 @@ const OrderStatus = async ({
     );
   }
   return (
-    <section>
-      <BreadCrumbLinks
-        links={[{ label: "Trạng thái đơn hàng", href: APP_URL.orderStatus }]}
-      />
-      <PageTitle>Trạng thái đơn hàng</PageTitle>
+    <>
+      
       {content}
-    </section>
+    </>
   );
 };
 

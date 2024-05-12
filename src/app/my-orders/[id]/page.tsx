@@ -1,39 +1,24 @@
-import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
-import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
 import { getOrderStatus } from "@/services/server/payload/orders.service";
 import { notFound } from "next/navigation";
 
+import FeedbackBox from "@/components/molecules/feed-back-box";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import OrderSpecificCancelOrder from "./__components/order-specific-cancel-order";
 import OrderSpecificDetails from "./__components/order-specific-details";
+import OrderSpecificNotes from "./__components/order-specific-notes";
 import OrderSpecificPayment from "./__components/order-specific-payment";
 import OrderSpecificProducts from "./__components/order-specific-products";
 import OrderSpecificShippingAddress from "./__components/order-specific-shipping-address";
 import OrderSpecificSummary from "./__components/order-specific-sumary";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
-import OrderSpecificCancelOrder from "./__components/order-specific-cancel-order";
-import FeedbackBox from "@/components/molecules/feed-back-box";
-import OrderSpecificNotes from "./__components/order-specific-notes";
 const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
   const orderId = params.id;
-  if (!orderId) notFound();
   const { data: order } = await getOrderStatus({ orderId });
   if (!order) return notFound();
 
   return (
-    <section>
-      <BreadCrumbLinks
-        deep={2}
-        links={[
-          { href: APP_URL.myOrders, label: "Đơn hàng đã mua" },
-          {
-            href: `${APP_URL.myOrders}/${orderId}`,
-            label: "Chi tiết đơn hàng",
-          },
-        ]}
-      />
-      <PageTitle>Chi tiết đơn hàng</PageTitle>
-
+    <>
       <div className='space-y-4 divide-y'>
         <OrderSpecificDetails
           deliveryStatus={order.deliveryStatus}
@@ -71,7 +56,7 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
         </Link>
       </div>
       <FeedbackBox />
-    </section>
+    </>
   );
 };
 

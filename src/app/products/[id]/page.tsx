@@ -1,22 +1,23 @@
-import { notFound } from "next/navigation";
-import { cookies } from "next/headers";
-import { IoCardOutline, IoPricetagOutline, IoSync } from "react-icons/io5";
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
-import { Button } from "@/components/ui/button";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import PageTitle from "@/components/ui/page-title";
 import ReviewRating from "@/components/ui/review-rating/review-rating";
 import { APP_URL } from "@/constants/navigation.constant";
 import { getProduct } from "@/services/server/payload/products.service";
+import { getUserServer } from "@/services/server/payload/users.service";
 import { formatPriceToVND } from "@/utils/util.utls";
+import { notFound } from "next/navigation";
+import { IoCardOutline, IoPricetagOutline, IoSync } from "react-icons/io5";
 import ProductAddToCart from "./_components/product-add-to-cart";
 import ProductBuyNow from "./_components/product-buy-now";
 import QuantityOptions from "./_components/product-quantity-option";
 import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
-import { getUserServer } from "@/services/server/payload/users.service";
-import ProductReview from "@/components/molecules/product-modify-review";
+import ProductBenefits from "./_components/product-benefits";
+import ProductDescription from "./_components/product-description";
+import ProductPrice from "./_components/product-price";
+import ProductSkeleton from "./_components/product-skeleton";
 
 const ProductPage = async ({
   searchParams,
@@ -36,13 +37,10 @@ const ProductPage = async ({
     +currentQuantityOptionParams < 16
       ? Number(currentQuantityOptionParams)
       : 1;
+      // return <ProductSkeleton />
   return (
-    <section>
-      <BreadCrumbLinks
-        links={[
-          { label: product.title, href: `${APP_URL.products}/${product.id}` },
-        ]}
-      />
+    <>
+      
       <PageTitle data-cy='product-title' className='mb-2'>
         {product.title} ({currentQuantityOption}KG)
       </PageTitle>
@@ -56,73 +54,24 @@ const ProductPage = async ({
           currentOption={!currentQuantityOption ? 1 : currentQuantityOption}
           options={product.quantityOptions}
         />
-        <div className='mt-6'>
-          <p>Giá:</p>
-          <div className="mb-1 flex gap-2">
-
-          {Boolean(product.priceAfterDiscount) && (
-            <p className='text-sm text-destructive line-through'>
-              {formatPriceToVND(product.originalPrice)}
-            </p>
-          )}
-           <p className='text-sm text-destructive'>
-              {formatPriceToVND(product.priceAfterDiscount||product.originalPrice)}/kg
-            </p>
-          </div>
-
-          <p className='font-bold text-2xl text-destructive'>
-            {formatPriceToVND(
-              (product.priceAfterDiscount || product.originalPrice) *
-                currentQuantityOption
-            )}
-          </p>
-        </div>
-        <ProductBuyNow product={product} />
+        <ProductPrice
+          priceAfterDiscount={product.priceAfterDiscount}
+          originalPrice={product.originalPrice}
+          currentQuantityOption={currentQuantityOption}
+        />
+        <ProductBuyNow quantity={currentQuantityOption} productId={product.id} />
         <ProductAddToCart
           user={user}
           product={{ ...product, quantity: currentQuantityOption }}
         />
-        <h4 className='text-lg font-bold mt-6 mb-2'>Mô tả sản phẩm</h4>
-        <p className='mb-3'>
-          Măng cụt (nữ hoàng trái cây) là 1 loại trái cây với hương vị tươi ngon
-          , thanh mát , dịu nhẹ. Không những ngon măng cụt còn có những công
-          dụng tuyệt vời.
-        </p>
-        <div className='border border-gray-800 w-full h-[300px]'></div>
+        <ProductDescription />
       </div>
       <div className='mt-6'>
         <PageSubTitle>Sản phẩm liên quan</PageSubTitle>
         <ul className=''></ul>
       </div>
       <div>
-        <div className='space-y-4 w-full'>
-          <div className='flex gap-2 items-center'>
-            <div className='flex-center h-10 w-10 rounded-full bg-slate-200'>
-              <IoSync className='w-6 h-6 text-primary' />
-            </div>
-            <p className='text-xs'>
-              Đổi sản phẩm mới nếu trái cây bị lỗi (sượng , hư , ...)
-            </p>
-          </div>
-          <div className='flex gap-2 items-center'>
-            <div className='flex-center h-10 w-10 rounded-full bg-slate-200'>
-              <IoPricetagOutline className='w-6 h-6 text-primary' />
-            </div>
-            <p className='text-xs'>
-              Giá cả hợp lí thay đổi theo nhu cầu của thị trường
-            </p>
-          </div>
-          <div className='flex gap-2 items-center'>
-            <div className='flex-shrink-0 flex-center h-10 w-10 rounded-full bg-slate-200'>
-              <IoCardOutline className='w-6 h-6 text-primary' />
-            </div>
-            <p className='text-xs'>
-              Miễn phí ship với đơn hàng từ 300K trở lên đối với thanh toán momo
-              hoặc chuyển khoản và từ 600K trở lên đối với thanh toán bằng tiền
-              mặt
-            </p>
-          </div>
-        </div>
+        <ProductBenefits />
 
         {/* Reviews */}
         {/* TODO: load on request time */}
@@ -136,7 +85,7 @@ const ProductPage = async ({
         />
       </div>
       {/* <ProductPrice price={product.originalPrice} /> */}
-    </section>
+    </>
   );
 };
 

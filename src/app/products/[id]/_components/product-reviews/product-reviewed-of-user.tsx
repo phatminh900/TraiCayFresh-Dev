@@ -1,27 +1,26 @@
 "use client";
-import PageSubTitle from "@/components/ui/page-subTitle";
-import React, { useEffect } from "react";
-import ProductReviewDetails from "./product-review-details";
-import ButtonAdjust from "@/components/atoms/button-adjust";
 import ButtonDelete from "@/components/atoms/button-delete";
+import ProductModifyReview from "@/components/molecules/product-modify-review";
+import PageSubTitle from "@/components/ui/page-subTitle";
+import useDisableClicking from "@/hooks/use-disable-clicking";
+import { cn } from "@/lib/utils";
 import { Product, Review } from "@/payload/payload-types";
 import { trpc } from "@/trpc/trpc-client";
-import { handleTrpcErrors } from "@/utils/error.util";
-import { useRouter } from "next/navigation";
-import { handleTrpcSuccess } from "@/utils/success.util";
-import { cn } from "@/lib/utils";
-import ProductModifyReview from "@/components/molecules/product-modify-review";
 import { IUser } from "@/types/common-types";
-import useDisableClicking from "@/hooks/use-disable-clicking";
+import { handleTrpcErrors } from "@/utils/error.util";
+import { handleTrpcSuccess } from "@/utils/success.util";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import ProductReviewDetails from "./product-review-details";
 
-
-export interface IUserReview{
-  userRating:Review['rating'],
-  userReviewImgs:Review['reviewImgs'],
-  userReviewText:Review['reviewText']
+export interface IUserReview {
+  userRating: Review["rating"];
+  userReviewImgs: Review["reviewImgs"];
+  userReviewText: Review["reviewText"];
+  reviewId: Review["id"];
 }
 
-interface ProductReviewOfUserProps extends IUser,IUserReview {
+interface ProductReviewOfUserProps extends IUser, IUserReview {
   userName: string;
   reviewId: string;
   productThumbnailImg: Product["thumbnailImg"];
@@ -32,12 +31,18 @@ const ProductReviewOfUser = ({
   userName,
   productId,
   user,
-  userRating,userReviewImgs,userReviewText,
+  userRating,
+  userReviewImgs,
+  userReviewText,
   productThumbnailImg,
   title,
   reviewId,
 }: ProductReviewOfUserProps) => {
+  const [productModifyKey, setIsProductModifyOpenKey] = useState("0");
   const { handleSetMutatingState } = useDisableClicking();
+  const setProductModifyState = useCallback((key: string) => {
+    setIsProductModifyOpenKey(key);
+  }, []);
   const router = useRouter();
 
   const { isPending: isDeletingReview, mutate: deleteReview } =
@@ -59,7 +64,12 @@ const ProductReviewOfUser = ({
     <div className='mt-4 mb-6'>
       <PageSubTitle className='mb-2 text-sm'>Đánh giá của bạn:</PageSubTitle>
       <div className='mt-4'>
-        <ProductReviewDetails name={userName} review={userReviewText} />
+        <ProductReviewDetails
+          rating={userRating}
+          reviewImgs={userReviewImgs}
+          name={userName}
+          review={userReviewText}
+        />
         <div className='grid grid-cols-[40px_1fr] gap-4'>
           <div></div>
           <div
@@ -68,6 +78,9 @@ const ProductReviewOfUser = ({
             })}
           >
             <ProductModifyReview
+              key={productModifyKey}
+              onSetOpenState={setProductModifyState}
+              reviewId={reviewId}
               imgSrc={productThumbnailImg}
               productId={productId}
               userRating={userRating}
@@ -77,7 +90,6 @@ const ProductReviewOfUser = ({
               title={title}
               type={"adjust"}
             />
-            {/* <ButtonAdjust onClick={()=>{}} disabled={false} /> */}
             <ButtonDelete
               onClick={() => {
                 deleteReview({ reviewId });

@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
 import { IoAddOutline, IoRemoveOutline, IoTrashOutline } from "react-icons/io5";
 import { toast } from "sonner";
+import { EXCESS_QUANTITY_OPTION_MESSAGE } from "@/constants/app-message.constant";
 import {
-  EXCESS_QUANTITY_OPTION_MESSAGE,
-} from "@/constants/app-message.constant";
-import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB,AMOUNT_PER_ADJUST_QUANTITY } from "@/constants/configs.constant";
+  MAXIMUN_KG_CAN_BUY_THROUGH_WEB,
+  AMOUNT_PER_ADJUST_QUANTITY,
+} from "@/constants/configs.constant";
 import { APP_URL } from "@/constants/navigation.constant";
 import type { Product } from "@/payload/payload-types";
 import { CartProductItem, useCart } from "@/store/cart.store";
 import { formatPriceToVND, getImgUrlMedia } from "@/utils/util.utls";
-
 
 interface CartItemProps {
   src: Product["thumbnailImg"];
@@ -24,14 +24,18 @@ interface CartItemProps {
   quantity: number;
   priceAfterDiscount?: number | null;
   id: string;
+  type?: "buy-now" | "cart";
+  onSetQuantity?: (quantity: number) => void;
 }
 const CartItem = ({
   id,
   src,
   onSetUserCart,
   isMutatingUserCart,
+  type = "cart",
   title,
   priceAfterDiscount,
+  onSetQuantity,
   originalPrice,
   quantity,
 }: CartItemProps) => {
@@ -49,12 +53,17 @@ const CartItem = ({
     const updatedQuantity = curQuantity - AMOUNT_PER_ADJUST_QUANTITY;
     setCurQuantity(updatedQuantity);
     updateCartItem({ id, data: { quantity: updatedQuantity } });
-    const cartItemProducts = cartItems.map((item) => (item.id===id?{
-      product: item.id,
-      ...item,
-      quantity: updatedQuantity,
-    }:{product:item.id,...item}));
+    const cartItemProducts = cartItems.map((item) =>
+      item.id === id
+        ? {
+            product: item.id,
+            ...item,
+            quantity: updatedQuantity,
+          }
+        : { product: item.id, ...item }
+    );
     onSetUserCart(cartItemProducts);
+    onSetQuantity?.(updatedQuantity);
   };
   const handleIncreaseQuantity = (e: MouseEvent) => {
     e.preventDefault();
@@ -64,13 +73,17 @@ const CartItem = ({
     setCurQuantity(updatedQuantity);
     updateCartItem({ id, data: { quantity: updatedQuantity } });
 
-    const cartItemProducts = cartItems.map((item) => (item.id===id?{
-      product: item.id,
-      ...item,
-      quantity: updatedQuantity,
-    }:{product:item.id,...item}));
+    const cartItemProducts = cartItems.map((item) =>
+      item.id === id
+        ? {
+            product: item.id,
+            ...item,
+            quantity: updatedQuantity,
+          }
+        : { product: item.id, ...item }
+    );
     onSetUserCart(cartItemProducts);
-
+    onSetQuantity?.(updatedQuantity);
   };
   const handleRemoveCartItem = (e: MouseEvent) => {
     e.preventDefault();
@@ -123,14 +136,16 @@ const CartItem = ({
             </div>
           </div>
           <div className='flex flex-col items-end justify-between'>
-            <button
-              disabled={isMutatingUserCart}
-              data-cy='delete-btn-cart-item'
-              onClick={handleRemoveCartItem}
-              className='hover:scale-105 disabled:cursor-progress'
-            >
-              <IoTrashOutline size={30} className='text-destructive' />
-            </button>
+            {type === "cart" && (
+              <button
+                disabled={isMutatingUserCart}
+                data-cy='delete-btn-cart-item'
+                onClick={handleRemoveCartItem}
+                className='hover:scale-105 disabled:cursor-progress'
+              >
+                <IoTrashOutline size={30} className='text-destructive' />
+              </button>
+            )}
             <div className='rounded-md border border-gray-200 h-[35px] flex items-center'>
               <button
                 disabled={isMutatingUserCart}

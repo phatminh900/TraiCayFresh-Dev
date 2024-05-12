@@ -31,8 +31,6 @@ export const updateProductReviewRatingQuantityAfterChange: AfterChangeHook<
       });
     }
     if (operation === "update") {
-      console.log("previous doc");
-      console.log(previousDoc);
       const productReviewQuantity = product.reviewQuantity!;
 
       const previousRating = previousDoc.rating;

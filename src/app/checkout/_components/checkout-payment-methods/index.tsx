@@ -7,14 +7,17 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PAYMENT_METHOD } from "../checkout-client";
 import { ReactNode } from "react";
 import PaymentMethodDetails from "./payment-method-details";
+import { FREESHIP_BY_CASH_FROM, FREESHIP_FROM } from "@/constants/configs.constant";
 
 interface CheckoutPaymentMethodsProps {
   onSetPaymentMethod: (type: PAYMENT_METHOD) => void;
   method: PAYMENT_METHOD;
+  totalPrice:number
 }
 
 const CheckoutPaymentMethods = ({
   method,
+  totalPrice,
   onSetPaymentMethod,
 }: CheckoutPaymentMethodsProps) => {
   const PAYMENT_METHODS_LIST: {
@@ -33,7 +36,7 @@ const CheckoutPaymentMethods = ({
     },
     {
       label: "Ví MoMo",
-      freeShip: true,
+      freeShip:true,
       icon: (
         <Image
           src={"/payment-logos/MoMo.svg"}

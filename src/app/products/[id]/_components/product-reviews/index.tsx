@@ -7,18 +7,9 @@ import { IUser } from "@/types/common-types";
 import { IoStar } from "react-icons/io5";
 import ProductReviewDetails from "./product-review-details";
 import ProductReviewOfUser from "./product-reviewed-of-user";
+import ProductReviewList from "./product-review-list";
 
-const reviewFilter: { label: string; option: string }[] = [
-  { label: "Tất cả", option: "" },
-  { label: "5", option: "5" },
-  { label: "4", option: "4" },
 
-  { label: "3", option: "3" },
-
-  { label: "2", option: "2" },
-
-  { label: "1", option: "1" },
-];
 interface ProductReviewsProps extends IUser {
   productId: string;
   productTitle: string;
@@ -98,48 +89,11 @@ const ProductReviews = async ({
         />
       )}
       {/* filter */}
-      <ul className='flex flex-wrap gap-2'>
-        {reviewFilter.map((filter, i) => (
-          // TODO: options using client
-          <ProductReviewFilterTag
-            key={filter.label}
-            index={i}
-            label={filter.label}
-          />
-        ))}
-      </ul>
-      <ul className='mt-8'>
-        <li>
-          <ProductReviewDetails
-            name='Phat'
-            review="Review Text so good oh now i can' help eating eat"
-          />
-        </li>
-      </ul>
+     
+      <ProductReviewList user={user} productId={productId} />
     </div>
   );
 };
 
 export default ProductReviews;
 
-function ProductReviewFilterTag({
-  label,
-  index,
-}: {
-  label: string;
-  index: number;
-}) {
-  return (
-    <li className='flex-1'>
-      <button className='whitespace-nowrap w-full text-sm px-2 py-1.5 flex-center gap-1.5 border rounded-sm hover:border-primary'>
-        {index !== 0 ? (
-          <>
-            {label} <IoStar className='w-4 h-4 text-secondary' />{" "}
-          </>
-        ) : (
-          label
-        )}
-      </button>
-    </li>
-  );
-}

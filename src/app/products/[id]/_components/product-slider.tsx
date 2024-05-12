@@ -7,17 +7,18 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Media, Product } from "@/payload/payload-types";
 import { getImgUrlMedia } from "@/utils/util.utls";
+const settings = {
+  dots: false,
+  // dotsClass: 'slick-dots !&>li>button]:before:text-2xl',
+  // infinite: true,
+  arrows: false,
+  speed: 500,
+  slidesToShow: 1,
+  // appendDots:
+  slidesToScroll: 1,
+};
 const ProductSlider = ({ imgs }: { imgs: Product["productImgs"] }) => {
-  const settings = {
-    dots: false,
-    // dotsClass: 'slick-dots !&>li>button]:before:text-2xl',
-    // infinite: true,
-    arrows: false,
-    speed: 500,
-    slidesToShow: 1,
-    // appendDots:
-    slidesToScroll: 1,
-  };
+
   const [activeIndex, setActiveIndex] = useState(0);
 
   const sliderRef = useRef<Slider | null>(null);

@@ -33,6 +33,7 @@ export const checkUserHasReviewed = async ({
     const payload = await getPayloadClient();
     const { docs: userReview } = await payload.find({
       collection: "reviews",
+      depth:1,
       where: {
         and: [
           {

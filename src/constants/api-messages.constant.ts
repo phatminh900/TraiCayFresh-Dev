@@ -75,3 +75,8 @@ export const REVIEW_MESSAGE={
     BAD_REQUEST:"Không thể đánh giá khi bạn chưa mua hàng",
     DELETE_SUCCESSFULLY:"Xóa đánh giá thành công"
 }
+
+
+export const PRODUCT_MESSAGE={
+    NOT_FOUND:" Không thể tìm sản phẩm này vui lòng thử lại sau"
+}

@@ -1,6 +1,9 @@
 import { CollectionConfig } from "payload/types";
-import { isAdmins } from "../../access/isAdmin"
-import { updateProductReviewRatingQuantityAfterChange,updateProductReviewRatingQuantityAfterDelete } from "./hooks/update-product-review-rating-quantity";
+import { isAdmins } from "../../access/isAdmin";
+import {
+  updateProductReviewRatingQuantityAfterChange,
+  updateProductReviewRatingQuantityAfterDelete,
+} from "./hooks/update-product-review-rating-quantity";
 
 export const Reviews: CollectionConfig = {
   slug: "reviews",
@@ -8,11 +11,11 @@ export const Reviews: CollectionConfig = {
     delete: isAdmins,
     update: isAdmins,
     read: isAdmins,
-    create: isAdmins
+    create: isAdmins,
   },
   hooks: {
     afterChange: [updateProductReviewRatingQuantityAfterChange],
-    afterDelete:[updateProductReviewRatingQuantityAfterDelete]
+    afterDelete: [updateProductReviewRatingQuantityAfterDelete],
   },
   fields: [
     {
@@ -28,21 +31,20 @@ export const Reviews: CollectionConfig = {
       min: 1,
       max: 5,
     },
-    // {
-    //   name: "reviewImgs",
-    //   label: "Review's Images",
-    //   type: "relationship",
-    //   hasMany: true,
-    //   maxRows: 3,
-    //   relationTo: "media",
-    // },
     {
       name: "reviewImgs",
       label: "Review's Images",
       type: "array",
-      fields:[{label:"url",name:'url',type:'text'}],
+      fields: [
+        {
+          name: "reviewImg",
+          type: "relationship",
+          relationTo: "media",
+        },
+      ],
       maxRows: 3,
     },
+   
     {
       name: "product",
       label: "Review's of Product",

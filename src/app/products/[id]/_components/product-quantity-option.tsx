@@ -2,13 +2,14 @@
 import { toast } from "sonner";
 import { IoAddOutline, IoRemoveOutline } from "react-icons/io5";
 import { EXCESS_QUANTITY_OPTION_MESSAGE } from "@/constants/app-message.constant";
-import { MAXIMUN_KG_CAN_BUY_THROUGH_WEB,AMOUNT_PER_ADJUST_QUANTITY } from "@/constants/configs.constant";
+import {
+  MAXIMUN_KG_CAN_BUY_THROUGH_WEB,
+  AMOUNT_PER_ADJUST_QUANTITY,
+} from "@/constants/configs.constant";
 import { APP_PARAMS } from "@/constants/navigation.constant";
 import { cn } from "@/lib/utils";
 import { Product } from "@/payload/payload-types";
 import { useRouter } from "next/navigation";
-
-
 
 const QuantityOptions = ({
   options,
@@ -20,10 +21,13 @@ const QuantityOptions = ({
   const router = useRouter();
 
   const setQuantity = (quantity: number) => {
-    router.push(`?${APP_PARAMS.currentQuantityOption}=${quantity}`);
+    router.push(`?${APP_PARAMS.currentQuantityOption}=${quantity}`, {
+      scroll: false,
+    });
   };
   const handleIncreaseAmount = () => {
-    if (currentOption === MAXIMUN_KG_CAN_BUY_THROUGH_WEB) return toast.warning(EXCESS_QUANTITY_OPTION_MESSAGE);
+    if (currentOption === MAXIMUN_KG_CAN_BUY_THROUGH_WEB)
+      return toast.warning(EXCESS_QUANTITY_OPTION_MESSAGE);
     const quantity = currentOption + AMOUNT_PER_ADJUST_QUANTITY;
     setQuantity(quantity);
   };
@@ -34,7 +38,7 @@ const QuantityOptions = ({
   };
   return (
     <div className='mt-8'>
-      <ul  data-cy='product-quantity-options' className='grid grid-cols-3 gap-3'>
+      <ul data-cy='product-quantity-options' className='grid grid-cols-3 gap-3'>
         {options?.map((option) => (
           <li data-cy='product-quantity-option' key={option.id}>
             <button
@@ -55,17 +59,20 @@ const QuantityOptions = ({
         <p className='font-semibold'>Số lượng :</p>
         <div className='border border-gray-700 h-[50px] flex'>
           <button
-          data-cy='decrease-quantity-option-product'
+            data-cy='decrease-quantity-option-product'
             onClick={handleDecreaseAmount}
             className='bg-gray-200 hover:bg-gray-300 px-4'
           >
             <IoRemoveOutline className='w-7 h-7' />
           </button>
-          <p  data-cy='current-quantity-option' className='flex-1 flex-center text-2xl'>
+          <p
+            data-cy='current-quantity-option'
+            className='flex-1 flex-center text-2xl'
+          >
             {currentOption} KG
           </p>
           <button
-          data-cy='increase-quantity-option-product'
+            data-cy='increase-quantity-option-product'
             onClick={handleIncreaseAmount}
             className='bg-gray-200 hover:bg-gray-300 px-4'
           >

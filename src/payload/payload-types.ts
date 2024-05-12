@@ -268,7 +268,7 @@ export interface Review {
   rating: number;
   reviewImgs?:
     | {
-        url?: string | null;
+        reviewImg?: (string | null) | Media;
         id?: string | null;
       }[]
     | null;

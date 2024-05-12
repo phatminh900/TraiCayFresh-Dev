@@ -55,9 +55,7 @@ const ProductReviewDesktop = ({
       </DialogTrigger>
       <DialogContent className='sm:max-w-[550px]'>
         <DialogHeader>
-          <DialogTitle className='text-center'>
-          Đánh giá sản phẩm
-          </DialogTitle>
+          <DialogTitle className='text-center'>Đánh giá sản phẩm</DialogTitle>
           {/* <DialogDescription>
           Make changes to your profile here. Click save when you're done.
         </DialogDescription> */}
@@ -90,13 +88,12 @@ const ProductReviewDesktop = ({
           className='absolute top-[2%] right-[4%] cursor-pointer'
           asChild
         >
-          <button 
-          onClick={onToggleModalState}
-          disabled={isSubmitting}
-
+          <button
+            className='hover:text-destructive'
+            onClick={onToggleModalState}
+            disabled={isSubmitting}
           >
-
-          <IoCloseOutline />
+            <IoCloseOutline size={30} />
           </button>
         </DialogClose>
       </DialogContent>

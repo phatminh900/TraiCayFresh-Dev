@@ -11,9 +11,9 @@ interface SubmitProductReviewBtnProps{
 const SubmitProductReviewBtn = ({ onSetIsSubmittingTheForm,selectedRating}:SubmitProductReviewBtnProps) => {
   const {pending}=useFormStatus()
  
-  return <Button onClick={()=>{
+  return <Button  onClick={()=>{
     onSetIsSubmittingTheForm()
-  }} type='submit' disabled={pending||!selectedRating} className='w-full'>
+  }} type='submit' disabled={pending||!selectedRating} className='w-full mt-6'>
   {pending ? "Đang gửi đánh giá..." : "Gửi đánh giá"}
 </Button>
   

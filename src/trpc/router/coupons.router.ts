@@ -111,7 +111,39 @@ const CouponRouter = router({
           };
         }
       } catch (error) {
-        console.log(error);
+        throw error;
+      }
+    }),
+  applyCouponBuyNow: rateLimitMiddleware
+
+    .input(z.object({ coupon: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { coupon } = input;
+      try {
+        const payload = await getPayloadClient();
+        const { docs: coupons } = await payload.find({
+          collection: "coupons",
+          where: { coupon: { equals: coupon } },
+        });
+        if (!coupons.length)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: COUPON_MESSAGE.INVALID,
+          });
+        // check if the coupon still valid
+        const couponInDb = coupons[0];
+        if (new Date(couponInDb.expiryDate!).getTime() - Date.now() < 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: COUPON_MESSAGE.EXPIRED,
+          });
+        }
+        return {
+          success: true,
+          message: COUPON_MESSAGE.SUCCESS,
+          discount: couponInDb.discount,
+        };
+      } catch (error) {
         throw error;
       }
     }),
