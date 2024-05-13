@@ -4,10 +4,8 @@ import { Product, Review } from "@/payload/payload-types";
 import { getUserOrdersNoPopulate } from "@/services/server/payload/orders.service";
 import { checkUserHasReviewed } from "@/services/server/payload/reviews.service";
 import { IUser } from "@/types/common-types";
-import { IoStar } from "react-icons/io5";
-import ProductReviewDetails from "./product-review-details";
-import ProductReviewOfUser from "./product-reviewed-of-user";
 import ProductReviewList from "./product-review-list";
+import ProductReviewOfUser from "./product-reviewed-of-user";
 
 
 interface ProductReviewsProps extends IUser {
@@ -55,7 +53,7 @@ const ProductReviews = async ({
   }
   // TODO: is loading
   return (
-    <div id='reviews' className='mt-12'>
+    <div id='reviews' className='my-12 md:my-16'>
       <PageSubTitle className='mb-2'>Đánh giá sản phẩm:</PageSubTitle>
       {hasBoughtProduct && !hasReviewedProduct && (
         <>

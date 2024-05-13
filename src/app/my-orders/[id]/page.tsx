@@ -25,12 +25,14 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
           createdAt={order.createdAt}
           orderId={order.id}
         />
-        <OrderSpecificShippingAddress
+       <div className="md:grid md:grid-cols-2 md:gap-x-4">
+       <OrderSpecificShippingAddress
           address={order.shippingAddress.address}
           phoneNumber={order.shippingAddress.userPhoneNumber}
           userName={order.shippingAddress.userName}
         />
         <OrderSpecificPayment paymentMethod={order.paymentMethod} />
+       </div>
         {order.orderNotes && <OrderSpecificNotes notes={order.orderNotes} />}
         <OrderSpecificProducts items={order.items} />
         <OrderSpecificSummary
@@ -40,7 +42,7 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
           provisional={order.provisional}
         />
       </div>
-      <div className='mt-8'>
+      <div className='mt-8 md:flex md:justify-center'>
         {order.status === "pending" && order.deliveryStatus === "pending" && (
           <OrderSpecificCancelOrder orderId={orderId} />
         )}
@@ -49,7 +51,7 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
           data-cy='come-back-to-orders'
           className={buttonVariants({
             variant: "outline",
-            className: " w-full",
+            className: " w-full md:w-1/2 md:my-6",
           })}
         >
           Trở về danh sách đơn hàng

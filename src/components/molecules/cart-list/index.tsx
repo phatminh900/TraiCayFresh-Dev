@@ -57,41 +57,41 @@ const CartList = ({ user, userCart }: CartListProps) => {
     }
     setUserPhoneNumberCart(cartItems)
   }
-  useEffect(() => {
-    // logged user update to localStorage as well
-    if (userCart.length && !cartItemLocal.length && init) {
-      const cartItem: CartProductItem[] = userCart.map(
-        ({
-          product: {
-            id,
-            originalPrice,
-            thumbnailImg,
-            title,
-            priceAfterDiscount,
-          },
-          quantity,
-          discountAmount,
-          coupon,
-          isAppliedCoupon,
-          shippingCost,
-        }) => ({
-          id,
-          isAppliedCoupon,
-          coupon,
-          discountAmount,
-          shippingCost,
-          originalPrice,
-          quantity,
-          title,
-          thumbnailImg,
-          priceAfterDiscount,
-        })
-      );
-      console.log('set again in here huh...')
-      setCartItem(cartItem);
-      init = false;
-    }
-  }, [userCart.length, setCartItem, userCart, cartItemLocal.length]);
+  // useEffect(() => {
+  //   // logged user update to localStorage as well
+  //   if (userCart.length && !cartItemLocal.length && init) {
+  //     const cartItem: CartProductItem[] = userCart.map(
+  //       ({
+  //         product: {
+  //           id,
+  //           originalPrice,
+  //           thumbnailImg,
+  //           title,
+  //           priceAfterDiscount,
+  //         },
+  //         quantity,
+  //         discountAmount,
+  //         coupon,
+  //         isAppliedCoupon,
+  //         shippingCost,
+  //       }) => ({
+  //         id,
+  //         isAppliedCoupon,
+  //         coupon,
+  //         discountAmount,
+  //         shippingCost,
+  //         originalPrice,
+  //         quantity,
+  //         title,
+  //         thumbnailImg,
+  //         priceAfterDiscount,
+  //       })
+  //     );
+  //     console.log('set again in here huh...')
+  //     setCartItem(cartItem);
+  //     init = false;
+  //   }
+  // }, [userCart.length, setCartItem, userCart, cartItemLocal.length]);
 
   useEffect(() => {
     // if user is logged no need to send request

@@ -1,6 +1,6 @@
 "use client";
 
-const ProductReviewQuantity = () => {
+const ProductReviewQuantity = ({ quantity }: { quantity: number }) => {
   return (
     <button
       onClick={() => {
@@ -10,7 +10,7 @@ const ProductReviewQuantity = () => {
       }}
       className='text-primary font-bold'
     >
-      560 đánh giá
+      {quantity} đánh giá
     </button>
   );
 };

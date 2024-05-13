@@ -59,7 +59,7 @@ function ProductReviewDetails({
                   >
                     <div
                       className={cn(
-                        "relative w-[80px] h-[80px] cursor-pointer overflow-hidden rounded-md",
+                        "relative w-[80px] h-[80px] cursor-pointer overflow-hidden rounded-md md:w-[150px] md:h-[150px]",
                     
                       )}
                     >

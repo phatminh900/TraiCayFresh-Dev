@@ -29,8 +29,8 @@ const OrderSpecificSummary = ({
             data-cy='provisional-price'
             className='text-gray-700 font-semibold flex items-center justify-between'
           >
-            <p className='text-sm'>Tổng tiền sản phẩm</p>
-            <p className='text-xs font-medium'>
+            <p className='text-sm md:text-base'>Tổng tiền sản phẩm</p>
+            <p className='text-xs font-medium md:text-sm'>
               {formatPriceToVND(provisional)}
             </p>
           </div>
@@ -39,9 +39,9 @@ const OrderSpecificSummary = ({
               data-cy='price-after-coupon'
               className='text-gray-700 font-semibold flex items-center justify-between'
             >
-              <p className='text-sm'>Giảm giá</p>
+              <p className='text-sm md:text-base'>Giảm giá</p>
               <p
-                className={cn("text-xs font-medium", {
+                className={cn("text-xs font-medium md:text-sm", {
                   "text-primary": provisional - totalAfterCoupon,
                 })}
               >
@@ -54,17 +54,17 @@ const OrderSpecificSummary = ({
             data-cy='shipping-free'
             className='text-gray-700 font-semibold flex items-center justify-between'
           >
-            <p className='text-sm'>Phí vận chuyển</p>
-            <p className='text-xs font-medium'>
+            <p className='text-sm md:text-base'>Phí vận chuyển</p>
+            <p className='text-xs font-medium md:text-sm'>
               {formatPriceToVND(shippingCost)}
             </p>
           </div>
           <div
             data-cy='final-price'
-            className='font-bold flex items-center text-lg justify-between mt-2'
+            className='font-bold flex items-center text-lg justify-between mt-2 md:text-xl'
           >
             <p>Tổng cộng</p>
-            <p className='text-lg text-destructive'>
+            <p className='text-lg text-destructive md:text-xl'>
               {formatPriceToVND(total)}
             </p>
           </div>

@@ -58,9 +58,9 @@ function OrderSpecificProduct({
   originalPrice,
 }: OrderSpecificProductProps) {
   return (
-    <li data-cy="product-item-info" className='h-20 shadow-sm'>
+    <li data-cy="product-item-info" className='h-20 shadow-sm md:h-52'>
       <Link href={`${APP_URL.products}/${productId}`} className="h-full w-full flex">
-      <div className='flex-1 flex gap-2'>
+      <div className='flex-1 flex gap-2 md:gap-6'>
         <div className='relative w-[40%] min-w-[40%] aspect-square overflow-hidden'>
           <Image
             fill
@@ -69,19 +69,19 @@ function OrderSpecificProduct({
             alt='Product Img'
           />
         </div>
-        <p data-cy='product-title' className="font-bold">{title}</p>
+        <p data-cy='product-title' className="font-bold md:text-xl">{title}</p>
       </div>
       <div className='flex flex-col justify-between items-end text-end'>
         <div>
-          <p data-cy='product-price' className='text-destructive font-semibold'>{formatPriceToVND(price)}/kg</p>
+          <p data-cy='product-price' className='text-destructive font-semibold md:text-lg'>{formatPriceToVND(price)}/kg</p>
           {/* if has original price but different that means the price has been reduced */}
           {originalPrice && originalPrice!==price && (
-            <p data-cy='product-original-price' className='text-sm line-through'>
+            <p data-cy='product-original-price' className='text-sm line-through md:text-base'>
               {formatPriceToVND(originalPrice)}/kg
             </p>
           )}
         </div>
-        <p data-cy='product-quantity' className="text-sm">
+        <p data-cy='product-quantity' className="text-sm md:text-base">
           Số lương: <span>{quantity}Kg</span>
         </p>
       </div>

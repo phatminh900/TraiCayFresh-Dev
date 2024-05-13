@@ -22,7 +22,6 @@ const UserPhoneNumber = ({ user }: UserPhoneNumberProps) => {
       <div>
         <div className='flex gap'>
           <p className='min-w-[50px]'>SĐT</p>
-          <p>FUCKING</p>
           <div data-cy='user-phone-number-detail' className='flex flex-col gap'>
             {userPhoneNumber}
             <span className='font-bold text-xs'>(Mặc định)</span>

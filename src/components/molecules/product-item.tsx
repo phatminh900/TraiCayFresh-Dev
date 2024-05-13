@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import ReviewRating from "../ui/review-rating/review-rating";
 import { useRouter } from "next/navigation";
 import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
+import { cn } from "@/lib/utils";
 
 interface ProductItemProps extends IUser {
   type?: "horizontal" | "vertical";
@@ -18,10 +19,10 @@ interface ProductItemProps extends IUser {
   id: string;
   href: string;
   originalPrice: number;
-
   reviewQuantity?: number;
   priceAfterDiscount?: number | null;
   reviewRating?: number;
+  productType?: "product" | "relativeProduct";
 }
 const ProductItem = ({
   title,
@@ -29,6 +30,7 @@ const ProductItem = ({
   id,
   subTitle,
   originalPrice,
+  productType = "product",
   user,
   href,
   priceAfterDiscount,
@@ -63,7 +65,9 @@ const ProductItem = ({
     <Link
       data-cy='product-item-home'
       href={href}
-      className='flex w-full h-[265px] shadow bg-white border rounded-lg'
+      className={cn("flex w-full h-[265px] shadow bg-white border rounded-lg", {
+        "h-[160px]": productType === "relativeProduct",
+      })}
     >
       <div className='min-w-[40%] w-[150px] rounded-tl-lg rounded-bl-lg aspect-[2/3] h-full overflow-hidden relative'>
         <Image
@@ -93,11 +97,18 @@ const ProductItem = ({
             reviewQuantity={reviewQuantity}
           />
         </div>
-        <div className='flex flex-col gap-2 mt-auto sm:flex-row'>
-          <Button onClick={(e)=>{
-            e.preventDefault()
-            handleBuyNow()
-          }} className='flex-1'>
+        <div
+          className={cn("flex flex-col gap-2 mt-auto sm:flex-row", {
+            hidden: productType === "relativeProduct",
+          })}
+        >
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              handleBuyNow();
+            }}
+            className='flex-1'
+          >
             Mua ngay
           </Button>
           <Button

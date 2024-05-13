@@ -16,7 +16,7 @@ const ProductBuyNow = ({quantity, productId }: ProductBuyNowProps) => {
     );
   };
   return (
-    <Button onClick={handleBuyNow} className='mt-6 w-full'>
+    <Button onClick={handleBuyNow} className='mt-6 w-full md:m-0'>
       Mua ngay
     </Button>
   );

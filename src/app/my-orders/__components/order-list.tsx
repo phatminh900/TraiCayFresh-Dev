@@ -10,7 +10,6 @@ interface OrderListProps{
 }
 const OrderList = ({hasNextPage,initialOrders}:OrderListProps) => {
   const [userOrders, setUserOrders] = useState<Order[]>(initialOrders);
-  console.log(initialOrders)
   const handleLoadOrder = useCallback((orders: Order[]) => {
     setUserOrders((prev) => [...prev, ...orders]);
   }, []);

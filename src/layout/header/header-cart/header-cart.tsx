@@ -7,14 +7,13 @@ import Link from "next/link";
 import HeaderCartItem from "./header-cart-item";
 
 
-export const dynamic = "force-dynamic";
 
 const HeaderCart = async () => {
   const user=await getUserServer()
   const {data:userCart} = await getCartOfUser(user && 'email' in user?'email':'phoneNumber',user?.id)||[];
   return (
     <Link data-cy='header-cart-link' href={APP_URL.cart} className='relative'>
-      <HeaderCartItem cartLength={userCart!.length} />
+      <HeaderCartItem userCart={userCart||[]} />
     </Link>
   );
 };

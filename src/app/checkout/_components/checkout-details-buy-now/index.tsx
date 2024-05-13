@@ -24,7 +24,6 @@ const CheckoutDetailsBuyNow = ({
   quantity,
 }: CheckoutDetailsBuyNowProps) => {
   const tempPrice = price * quantity;
-  console.log(tempPrice)
   const totalPrice = discount
     ? tempPrice - (tempPrice * discount) / 100
     : tempPrice;
@@ -43,7 +42,6 @@ const CheckoutDetailsBuyNow = ({
   ) {
     shippingFee = 0;
   }
-  console.log(shippingFee)
 
 
   return (

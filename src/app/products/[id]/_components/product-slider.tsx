@@ -31,7 +31,7 @@ const ProductSlider = ({ imgs }: { imgs: Product["productImgs"] }) => {
     setActiveIndex(index);
   };
   return (
-    <div className='relative w-full h-[250px] border'>
+    <div className='relative cursor-pointer w-full h-[250px] border md:w-[340px] md:h-[300px] md:border-none lg:w-[500px]'>
       <Slider
         beforeChange={(_, next) => {
           handleUpdateActiveSlide(next);
@@ -42,7 +42,7 @@ const ProductSlider = ({ imgs }: { imgs: Product["productImgs"] }) => {
         {imgs.map((img) => {
           const imgUrl = getImgUrlMedia(img);
           return (
-            <div key={imgUrl} className='relative h-[250px]'>
+            <div key={imgUrl} className='relative h-[250px] md:h-[300px]'>
               <Image
                 fill
                 className='object-cover object-center'

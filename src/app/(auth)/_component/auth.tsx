@@ -14,7 +14,8 @@ interface AuthProp extends PropsWithChildren {
 }
 const Auth = ({  children, type }: AuthProp) => {
   return (
-    <div>
+    <div className="container">
+
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -39,8 +40,8 @@ const Auth = ({  children, type }: AuthProp) => {
       </PageTitle>
    
         {children}
+        </div>
    
-    </div>
   );
 };
 

@@ -12,11 +12,7 @@ const MyOrderLayout = async ({ children }: { children: ReactNode }) => {
   await getUserOrders({ userId: user!.id });
   return (
     <section>
-      <BreadCrumbLinks
-        deep={1}
-        links={[{ href: APP_URL.myOrders, label: "Đơn hàng đã mua" }]}
-      />
-      <PageTitle>Đơn hàng đã mua</PageTitle>
+     
       {children}
     </section>
   );

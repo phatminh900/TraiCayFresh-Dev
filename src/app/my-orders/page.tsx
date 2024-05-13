@@ -13,7 +13,11 @@ const MyOrderPage = async () => {
 const orders = data?.orders;
   return (
     <>
-     
+      <BreadCrumbLinks
+        deep={1}
+        links={[{ href: APP_URL.myOrders, label: "Đơn hàng đã mua" }]}
+      />
+      <PageTitle>Đơn hàng đã mua</PageTitle>
       {!orders?.length ? (
         <EmptyCart message='Bạn chưa mua đơn hàng nào' />
       ) : (

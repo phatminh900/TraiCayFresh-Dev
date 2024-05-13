@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html className='scroll-smooth' lang='en'>
-      <body className={cn(inter.className, "antialiased")}>
+      <body className={cn("antialiased font-sans h-full", inter.className)}>
         <Provider>
           <Header />
           <main className='pt-4 pb-14 sm:px-4  md:py-6 md:px-0 min-h-[50vh]'>
@@ -34,7 +34,7 @@ export default function RootLayout({
           position='top-center'
           richColors
           toastOptions={{
-            duration:2500,
+            duration: 2500,
             classNames: {
               title: "text-center",
             },

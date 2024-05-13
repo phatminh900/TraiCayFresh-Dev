@@ -18,8 +18,10 @@ const MyProfilePage = async () => {
       {/* General information */}
       <div className='space-y-2 mb-4'>
         <PageSubTitle>Thông tin cá nhân</PageSubTitle>
-        <UserEmail user={user} />
+       <div className="md:grid md:grid-cols-2">
+       <UserEmail user={user} />
         <UserName user={user} />
+       </div>
         <UserPhoneNumbers user={user} />
       </div>
       {/* Address */}

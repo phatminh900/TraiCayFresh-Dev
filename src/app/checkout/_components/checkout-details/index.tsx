@@ -47,7 +47,7 @@ const CheckoutDetails = ({
           </p>
           <p data-cy='payment-detail-value'>{formatPriceToVND(totalAmount)}</p>
         </div>
-        {Boolean(saleAmount) && (
+        
           <div
             data-cy='payment-detail'
             className='flex items-center justify-between'
@@ -64,7 +64,7 @@ const CheckoutDetails = ({
               {saleAmount ? `-${formatPriceToVND(saleAmount)}` : 0}
             </p>
           </div>
-        )}
+     
         <div
           data-cy='payment-detail'
           className='flex items-center justify-between'

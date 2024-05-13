@@ -4,23 +4,31 @@ import Link from "next/link";
 import { IoPersonOutline } from "react-icons/io5";
 import HeaderCart from "./header-cart/header-cart";
 import HeaderNavMobile from "./header-nav-mobile";
+import MaxWidthWrapper from "@/components/molecules/max-width-wrapper";
+import HeaderNavDesktop from "./header-nav-desktop";
 
 const Header = async () => {
   const user = await getUserServer();
+
   return (
-    <header className='h-20 px-6 flex justify-between items-center shadow border-b border-b-zinc-100'>
-      {/* Logo */}
-      <Link data-cy='header-logo' href={APP_URL.home}>
-        <h2>Logo</h2>
-      </Link>
-      <div className='flex gap-4 h-full items-center'>
-        <HeaderCart />
-        <Link href={APP_URL.myProfile}>
-          <IoPersonOutline className='w-7 h-7 text-gray-800 hover:text-gray-800' />
+    <header className='shadow bg-primary/60 md:shadow-md'>
+        <MaxWidthWrapper className="h-20 px-6 flex justify-between items-center md:px-12">
+        {/* Logo */}
+        <Link data-cy='header-logo' href={APP_URL.home}>
+          <h2>Logo</h2>
         </Link>
-        <HeaderNavMobile user={user} />
-      </div>
-    </header>
+          <HeaderNavDesktop user={user} />
+
+        <div className='flex gap-4 h-full items-center'>
+        
+         <Link href={APP_URL.myProfile}>
+            <IoPersonOutline className='w-7 h-7 text-gray-800 hover:text-gray-800' />
+          </Link>
+          <HeaderCart />
+          <HeaderNavMobile user={user} />
+        </div>
+    </MaxWidthWrapper>
+      </header>
   );
 };
 

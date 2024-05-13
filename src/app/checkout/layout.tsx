@@ -20,8 +20,6 @@ const CheckoutLayout = ({
 
   const checkoutFlow = searchParams.get(APP_PARAMS.checkoutFlow);
   const productId = searchParams.get(APP_PARAMS.productId);
-  console.log(productId);
-  console.log(checkoutFlow);
   const content =
     checkoutFlow && checkoutFlow === "buy-now" && productId
       ? checkoutBuyNow

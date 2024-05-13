@@ -2,7 +2,7 @@ import { IoCardOutline, IoPricetagOutline, IoSync } from "react-icons/io5";
 
 const ProductBenefits = () => {
   return (
-    <div className='space-y-4 w-full'>
+    <div className='space-y-4 w-full mt-12 md:grid md:grid-cols-3 md:gap-x-4'>
     <div className='flex gap-2 items-center'>
       <div className='flex-center h-10 w-10 rounded-full bg-slate-200'>
         <IoSync className='w-6 h-6 text-primary' />

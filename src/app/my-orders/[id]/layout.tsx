@@ -3,7 +3,7 @@ import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
 import { getOrderStatus } from "@/services/server/payload/orders.service";
 import { notFound } from "next/navigation";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 const MyOrdersLayout = async ({
   children,

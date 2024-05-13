@@ -6,37 +6,17 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { IUser } from "@/types/common-types";
+import { HEADER_LINKS,ILink } from "./constants/header-link";
 
-export interface ILink {
-  label: string;
-  href: string;
-}
 
-const LINKS: ILink[] = [
-  {
-    label: "Trang chủ",
-    href: APP_URL.home,
-  },
-  {
-    label: "Combo hot",
-    href: APP_URL.home + "#hot-combos",
-  },
-  {
-    label: "Sản phẩm",
-    href: APP_URL.home + "#products",
-  },
-  {
-    label: "Về chúng tôi",
-    href: APP_URL.home + "#about-us",
-  },
-];
+
 interface HeaderNavMobileProps extends IUser {}
 
 const HeaderNavMobile = ({ user }: HeaderNavMobileProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen((prev) => !prev);
   return (
-    <div>
+    <div className="md:hidden">
       <button
         disabled={isOpen}
         data-cy='nav-mobile-open-btn'
@@ -64,7 +44,7 @@ const HeaderNavMobile = ({ user }: HeaderNavMobileProps) => {
           <IoCloseOutline className='absolute w-7 h-7 top-3 right-6 hover:text-red-600 ' />
         </button>
         <ul className='flex flex-col gap-5 mt-20'>
-          {LINKS.map((link) => (
+          {HEADER_LINKS.map((link) => (
             <NavItem onClose={toggleOpenState} key={link.label} {...link} />
           ))}
           {!user ? (

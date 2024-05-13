@@ -33,7 +33,7 @@ const UserPhoneNumberAddress = ({
 }: UserPhoneNumberAddressProps) => {
   const [isOpenPhoneNumberList, setIsOpenPhoneNumberList] = useState(false);
   const [isShowListOfNumber, setIsShowListOfNumber] = useState(true);
-  const [phoneNumber, setPhoneNumber] = useState(defaultValue || "");
+  const [phoneNumber, setPhoneNumber] = useState(defaultValue ?? "");
 
   useEffect(() => {
     if (defaultValue && init) {
@@ -50,11 +50,10 @@ const UserPhoneNumberAddress = ({
 
     return (
       <Popover
-
         open={isOpenPhoneNumberList}
         onOpenChange={() => setIsOpenPhoneNumberList(true)}
       >
-        <PopoverTrigger  asChild>
+        <PopoverTrigger asChild>
           {!isOpenPhoneNumberList ? (
             <Button
               data-cy='open-phone-number-address-btn'

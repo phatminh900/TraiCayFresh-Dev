@@ -18,7 +18,7 @@ const ProductAddToCart = ({user, product }: ProductAddToCartProps) => {
       disabled={isAddingError || isAddingToCart||isAddingUserCartNumberError||isAddingToUserPhoneNumberCart}
       onClick={handleAddItemToCart}
       size='lg'
-      className='mt-2 w-full'
+      className='mt-2 w-full md:m-0'
       variant='outline'
     >
     {isAddingToCart?"Đang thêm vào giỏ":"Thêm vào giỏ hàng"}

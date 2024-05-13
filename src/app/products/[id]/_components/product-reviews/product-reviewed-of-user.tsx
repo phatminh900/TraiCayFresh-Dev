@@ -61,11 +61,12 @@ const ProductReviewOfUser = ({
     }
   }, [isMutating, handleSetMutatingState]);
   return (
-    <div className='mt-4 mb-6'>
-      <PageSubTitle className='mb-2 text-sm'>Đánh giá của bạn:</PageSubTitle>
+    <div className='mt-4 mb-6 md:mt-8 md:mb-10'>
+      <PageSubTitle className='mb-2 text-sm md:text-base'>Đánh giá của bạn:</PageSubTitle>
       <div className='mt-4'>
         <ProductReviewDetails
           rating={userRating}
+          user={user}
           reviewImgs={userReviewImgs}
           name={userName}
           review={userReviewText}

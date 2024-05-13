@@ -8,7 +8,7 @@ interface PageSubTitleProps
 }
 const PageSubTitle = ({ children, className, ...rest }: PageSubTitleProps) => {
   return (
-    <h4 {...rest} className={cn("text-lg font-bold mt-6 mb-4", className)}>
+    <h4 {...rest} className={cn("text-lg font-bold mt-6 mb-4 md:text-xl", className)}>
       {children}
     </h4>
   );

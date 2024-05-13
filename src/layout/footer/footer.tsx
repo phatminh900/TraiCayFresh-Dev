@@ -12,8 +12,8 @@ import { HOST_ADDRESS, HOST_EMAIL, HOST_PHONE_NUMBER, ZALO_NUMBER } from "@/cons
 
 const Footer = () => {
   return (
-    <footer className="py-8 border border-t-gray-200">
      <MaxWidthWrapper >
+    <footer className="py-8 border border-transparent border-t-gray-200">
      <h2>Logo</h2>
       <p className='mt-6'>
         Cam kết cung cấp trái cây sạch chất lương hương vị tươi ngon đến người
@@ -71,8 +71,8 @@ const Footer = () => {
       <p className="mt-6 font-semibold text-lg">
         &copy; 2024 traicayfresh.com
       </p>
-     </MaxWidthWrapper>
     </footer>
+     </MaxWidthWrapper>
   );
 };
 

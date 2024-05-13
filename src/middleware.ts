@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_USER_PHONE_NUMBER_TOKEN } from "./constants/configs.constant";
-import { APP_URL } from "./constants/navigation.constant";
+import { APP_PARAMS, APP_URL } from "./constants/navigation.constant";
 import { ERROR_JWT_CODE, verifyToken } from "./utils/auth.util";
 import { refreshUserToken } from "./libs/refresh-token.lib";
 import { cookies } from "next/headers";
@@ -62,7 +62,8 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   // If user is not authenticated and trying to access a non-public route, redirect to login
   // console.log(publicRoutes.includes(req.nextUrl.pah))
   if (!isAuthenticated && !isPublicRoute) {
-    return NextResponse.redirect(new URL(APP_URL.login, req.url));
+    const origin=path.slice(1)
+    return NextResponse.redirect(new URL(`${APP_URL.login}?${APP_PARAMS.origin}=${origin}`, req.url));
   }
   return NextResponse.next();
 }

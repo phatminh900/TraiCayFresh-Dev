@@ -1,5 +1,6 @@
 "use client";
 import { toast } from "sonner";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { IoAddOutline, IoRemoveOutline } from "react-icons/io5";
 import { EXCESS_QUANTITY_OPTION_MESSAGE } from "@/constants/app-message.constant";
 import {
@@ -37,8 +38,11 @@ const QuantityOptions = ({
     setQuantity(quantity);
   };
   return (
-    <div className='mt-8'>
-      <ul data-cy='product-quantity-options' className='grid grid-cols-3 gap-3'>
+    <div className='mt-8 md:m-0'>
+      <ul
+        data-cy='product-quantity-options'
+        className='grid grid-cols-3 gap-3 md:flex md:flex-wrap'
+      >
         {options?.map((option) => (
           <li data-cy='product-quantity-option' key={option.id}>
             <button
@@ -57,27 +61,33 @@ const QuantityOptions = ({
       </ul>
       <div className='mt-4 flex flex-col gap-2'>
         <p className='font-semibold'>Số lượng :</p>
-        <div className='border border-gray-700 h-[50px] flex'>
-          <button
-            data-cy='decrease-quantity-option-product'
-            onClick={handleDecreaseAmount}
-            className='bg-gray-200 hover:bg-gray-300 px-4'
-          >
-            <IoRemoveOutline className='w-7 h-7' />
-          </button>
-          <p
-            data-cy='current-quantity-option'
-            className='flex-1 flex-center text-2xl'
-          >
-            {currentOption} KG
-          </p>
-          <button
-            data-cy='increase-quantity-option-product'
-            onClick={handleIncreaseAmount}
-            className='bg-gray-200 hover:bg-gray-300 px-4'
-          >
-            <IoAddOutline className='w-7 h-7' />
-          </button>
+        <div className="xl:flex gap-4">
+          <div className='border border-gray-700 h-[50px] flex xl:flex-1'>
+            <button
+              data-cy='decrease-quantity-option-product'
+              onClick={handleDecreaseAmount}
+              className='bg-gray-200 hover:bg-gray-300 px-4'
+            >
+              <IoRemoveOutline className='w-7 h-7' />
+            </button>
+            <p
+              data-cy='current-quantity-option'
+              className='flex-1 flex-center text-2xl'
+            >
+              {currentOption} KG
+            </p>
+            <button
+              data-cy='increase-quantity-option-product'
+              onClick={handleIncreaseAmount}
+              className='bg-gray-200 hover:bg-gray-300 px-4'
+            >
+              <IoAddOutline className='w-7 h-7' />
+            </button>
+          </div>
+          <div className='flex mt-4 gap-2 font-bold items-center md:text-lg xl:mt-0 xl:flex-1'>
+            <IoShieldCheckmarkOutline className='text-primary' size={30} />
+            <p>Hoàn tiền nếu trái cây bị lỗi </p>
+          </div>
         </div>
       </div>
     </div>

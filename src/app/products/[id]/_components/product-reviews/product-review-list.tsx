@@ -89,7 +89,7 @@ const ProductReviewList = ({ productId, user }: ProductReviewListProps) => {
           />
         ))}
       </ul>
-      <ul className='mt-8 space-y-8'>
+      <ul className='mt-8 space-y-8 md:space-y-12'>
         {productReviews?.map((review) => {
           const userName =
             typeof review.user.value === "object"

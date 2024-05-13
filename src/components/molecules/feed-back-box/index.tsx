@@ -117,7 +117,7 @@ const FeedbackBox = () => {
               onClick={handleSendFeedback}
               data-cy='submit-feedback-btn'
               variant='secondary'
-              className='mt-4 block w-full'
+              className='mt-4 block w-full md:w-auto'
             >
               {isSendingRequest ?"Đang góp ý...":"Góp ý"}
             </Button>

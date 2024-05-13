@@ -16,23 +16,28 @@ const ProductPrice = ({
 }: ProductPriceProps) => {
   return (
     <div className='mt-6'>
-      <p>Giá:</p>
+      <div className="md:flex gap-2">
+      <p className="md:font-bold">Giá:</p>
       <div className='mb-1 flex gap-2'>
         {Boolean(priceAfterDiscount) && (
-          <p className='text-sm text-destructive line-through'>
+          <p className='text-sm text-destructive line-through md:text-base'>
             {formatPriceToVND(originalPrice)}
           </p>
         )}
-        <p className='text-sm text-destructive'>
+        <p className='text-sm text-destructive md:text-base'>
           {formatPriceToVND(priceAfterDiscount || originalPrice)}/kg
         </p>
       </div>
 
-      <p className='font-bold text-2xl text-destructive'>
+      </div>
+      <div className="md:flex gap-2 items-center">
+        <p className="md:font-bold">Tạm tính:</p>
+      <p className='font-bold text-2xl text-destructive md:text-xl'>
         {formatPriceToVND(
           (priceAfterDiscount || originalPrice) * currentQuantityOption
         )}
       </p>
+      </div>
     </div>
   );
 };

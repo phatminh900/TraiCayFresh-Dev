@@ -52,7 +52,7 @@ export function LoginByPhoneNumberAlternative({
               className='absolute top-[5%] right-[4%]'
               asChild
             >
-              <IoCloseOutline className='hover:text-destructive' size={30} />
+              <IoCloseOutline className='cursor-pointer hover:text-destructive' size={30} />
             </DialogClose>
           </DialogContent>
         </Dialog>
