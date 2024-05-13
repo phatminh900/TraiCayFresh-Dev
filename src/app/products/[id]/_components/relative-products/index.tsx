@@ -9,7 +9,7 @@ interface RelativeProductsProps extends IUser {
 }
 const RelativeProducts = ({ products, user }: RelativeProductsProps) => {
   return (
-    <ul className='space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-6 xl:grid-cols-3 xl:gap-x-4'>
+    <ul className='space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-6 xl:grid-cols-3 xl:gap-x-4 md:gap-y-6'>
       {products?.map((productItem) => {
         const product = productItem as Product;
         const productImg = getImgUrlMedia(product.thumbnailImg);

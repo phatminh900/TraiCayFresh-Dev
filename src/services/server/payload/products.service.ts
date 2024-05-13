@@ -2,13 +2,13 @@ import "server-only";
 
 import { getPayloadClient } from "@/payload/get-client-payload";
 
-export const getProducts = async () => {
+export const getProducts = async (limit?: number) => {
   try {
     const payload = await getPayloadClient();
     const { docs: products } = await payload.find({
       collection: "products",
       // Only get 3 products to shows
-      limit: 3,
+      limit: limit,
       where: {
         priority: {
           equals: true,

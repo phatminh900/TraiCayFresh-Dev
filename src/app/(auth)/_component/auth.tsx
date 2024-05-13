@@ -14,7 +14,7 @@ interface AuthProp extends PropsWithChildren {
 }
 const Auth = ({  children, type }: AuthProp) => {
   return (
-    <div className="container">
+    <div >
 
       <Breadcrumb>
         <BreadcrumbList>

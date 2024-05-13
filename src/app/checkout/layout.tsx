@@ -3,8 +3,7 @@ import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 
 import PageTitle from "@/components/ui/page-title";
 import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
-import { getUserServer } from "@/services/server/payload/users.service";
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ReactNode } from "react";
 
 const CheckoutLayout = ({

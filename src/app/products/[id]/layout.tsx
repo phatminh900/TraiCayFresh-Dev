@@ -2,8 +2,22 @@ import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
 import { getProduct } from "@/services/server/payload/products.service";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React from "react";
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> => {
+  const { id } = params;
+  const { data: product } = await getProduct({ id });
+  if (!product) notFound();
+  return {
+    title: `${product.title} | TraiCayFresh`,
+  };
+};
 
 const ProductDetailLayoutPage = async ({
   children,
@@ -22,7 +36,7 @@ const ProductDetailLayoutPage = async ({
           { label: product.title, href: `${APP_URL.products}/${product.id}` },
         ]}
       />
-     
+
       {children}
     </section>
   );

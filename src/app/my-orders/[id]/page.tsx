@@ -42,10 +42,13 @@ const SpecificOrderPage = async ({ params }: { params: { id: string } }) => {
           provisional={order.provisional}
         />
       </div>
-      <div className='mt-8 md:flex md:justify-center'>
-        {order.status === "pending" && order.deliveryStatus === "pending" && (
+      <div className="mt-8 md:flex md:justify-center">
+      {order.status === "pending" && order.deliveryStatus === "pending" && (
           <OrderSpecificCancelOrder orderId={orderId} />
         )}
+      </div>
+      <div className='mt-8 md:flex md:justify-center'>
+       
         <Link
           href={APP_URL.myOrders}
           data-cy='come-back-to-orders'

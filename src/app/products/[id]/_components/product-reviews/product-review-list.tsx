@@ -69,8 +69,8 @@ const ProductReviewList = ({ productId, user }: ProductReviewListProps) => {
   useEffect(() => {}, [currentSelectedFilter]);
   if (!isLoading && !productReviews?.length)
     return (
-      <div>
-        <p className='text-center font-bold mt-12'>
+      <div >
+        <p className='text-center font-bold mt-12 md:text-start' >
           Chưa có đánh giá nào cho sản phẩm này
         </p>
       </div>

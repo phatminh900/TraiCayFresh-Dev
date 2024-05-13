@@ -58,12 +58,12 @@ const ProductReviews = async ({
       {hasBoughtProduct && !hasReviewedProduct && (
         <>
           <div className='mt-6'>
-            <p className='font-semibold text-center mb-4'>
+            <p className='font-semibold text-center mb-4 md:text-start'>
               Cảm ơn bạn đã mua hàng gửi đánh giá giúp bọn mình nhé
             </p>
           </div>
 
-          <div className='flex justify-center mb-6'>
+          <div className='flex justify-center mb-6 md:justify-start'>
             <ProductModifyReview
               user={user}
               productId={productId}

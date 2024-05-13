@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import ErrorMsg from "../_component/error-msg";
+import ErrorMsg from "@/components/atoms/error-msg";
 import { useEffect, useState } from "react";
 import { handleTrpcErrors } from "@/utils/error.util";
 import useDisableClicking from "@/hooks/use-disable-clicking";

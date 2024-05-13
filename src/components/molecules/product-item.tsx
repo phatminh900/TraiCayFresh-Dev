@@ -79,7 +79,7 @@ const ProductItem = ({
         />
       </div>
       <div className='py-2 px-3 flex flex-col flex-1'>
-        <p className='text-gray-900 text-xl font-bold'>{title}</p>
+        <p className='text-gray-900 text-lg font-bold whitespace-nowrap lg:text-xl'>{title}</p>
         {subTitle && (
           <p className='text-muted-foreground text-sm'>{subTitle}</p>
         )}

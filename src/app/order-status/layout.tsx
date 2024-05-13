@@ -1,8 +1,12 @@
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
+import { Metadata } from "next";
 import { ReactNode } from "react";
 
+export const metadata:Metadata={
+  title:'Trạng thái đơn hàng | TraiCayFresh'
+}
 const OrderStatusLayout = ({ children }: { children: ReactNode }) => {
   return (
     <section>

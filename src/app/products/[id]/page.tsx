@@ -4,6 +4,7 @@ import ReviewRating from "@/components/ui/review-rating/review-rating";
 import { getProduct } from "@/services/server/payload/products.service";
 import { getUserServer } from "@/services/server/payload/users.service";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import ProductAddToCart from "./_components/product-add-to-cart";
 import ProductBenefits from "./_components/product-benefits";
 import ProductBuyNow from "./_components/product-buy-now";
@@ -14,7 +15,6 @@ import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
 import RelativeProducts from "./_components/relative-products";
-import { Suspense } from "react";
 
 const ProductPage = async ({
   searchParams,
@@ -47,7 +47,7 @@ const ProductPage = async ({
       <div className='mt-6'>
         <div className='md:flex gap-6'>
           <ProductSlider imgs={product.productImgs} />
-          <div>
+          <div className='w-full'>
             <QuantityOptions
               currentOption={!currentQuantityOption ? 1 : currentQuantityOption}
               options={product.quantityOptions}
@@ -88,7 +88,7 @@ const ProductPage = async ({
             product={{ ...product, quantity: currentQuantityOption }}
           />
         </div>
-        <ProductDescription />
+        <ProductDescription description={product.description} />
       </div>
 
       <ProductBenefits />
@@ -98,12 +98,12 @@ const ProductPage = async ({
       {/* use <Suspend />> */}
       {/* <ProductReview productId={product.id} title={product.title} imgSrc={product.thumbnailImg}/> */}
       <Suspense fallback={<p>Loading...</p>}>
-      <ProductReviews
-        productImgSrc={product.thumbnailImg}
-        productTitle={product.title}
-        productId={product.id}
-        user={user}
-      />
+        <ProductReviews
+          productImgSrc={product.thumbnailImg}
+          productTitle={product.title}
+          productId={product.id}
+          user={user}
+        />
       </Suspense>
       <div className='mt-6'>
         <PageSubTitle>Sản phẩm liên quan</PageSubTitle>
