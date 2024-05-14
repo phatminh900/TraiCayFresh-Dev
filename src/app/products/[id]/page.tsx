@@ -94,7 +94,6 @@ const ProductPage = async ({
       <ProductBenefits />
 
       {/* Reviews */}
-      {/* TODO: load on request time */}
       {/* use <Suspend />> */}
       {/* <ProductReview productId={product.id} title={product.title} imgSrc={product.thumbnailImg}/> */}
       <Suspense fallback={<p>Loading...</p>}>
@@ -105,10 +104,7 @@ const ProductPage = async ({
           user={user}
         />
       </Suspense>
-      <div className='mt-6'>
-        <PageSubTitle>Sản phẩm liên quan</PageSubTitle>
         <RelativeProducts products={product.relativeProducts} user={user} />
-      </div>
     </>
   );
 };

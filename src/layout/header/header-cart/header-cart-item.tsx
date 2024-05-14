@@ -50,7 +50,6 @@ const HeaderCartItem = ({ userCart }: HeaderCartItemProps) => {
           priceAfterDiscount,
         })
       );
-      console.log("set again in here huh...");
       setCartItem(cartItem);
       init = false;
     }

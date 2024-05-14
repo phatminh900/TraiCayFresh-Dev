@@ -152,9 +152,12 @@ useEffect(()=>{
 
   }
 },[isMutating,handleSetMutatingState])
+
+
   if (!cartItems.length) return <EmptyCart />;
+
   return (
-    <ul data-cy='cart-list' className='mt-6 space-y-6'>
+    <ul data-cy='cart-list' className='mt-6 space-y-6 md:m-0 md:flex-1'>
       {cartItems.map((item) => (
         <CartItem
           key={item.id}

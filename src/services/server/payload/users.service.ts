@@ -15,7 +15,6 @@ import { callApi } from "@/utils/service.util";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 
-// TODO: check the data fetching
 export const getUserPhoneNumberProfile = async (token: string) => {
   try {
     const payload = await getPayloadClient();

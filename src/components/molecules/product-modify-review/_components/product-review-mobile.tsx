@@ -7,15 +7,15 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { PropsWithChildren, useState } from "react";
-import { IoCloseOutline, IoCreateOutline } from "react-icons/io5";
-import ProductModifyReview from "..";
 import { cn } from "@/lib/utils";
+import { PropsWithChildren } from "react";
+import { IoCloseOutline, IoCreateOutline } from "react-icons/io5";
+import { IProductModifyReview } from "..";
 import SubmitProductReviewBtn from "./submit-product-review-btn";
 
 interface ProductReviewMobileProps
   extends PropsWithChildren,
-    Pick<ProductModifyReview, "type"> {
+    Pick<IProductModifyReview, "type"> {
   selectedImgLength: number;
   createReviewAction: (payload: FormData) => void;
   isOpen: boolean;
@@ -58,7 +58,7 @@ const ProductReviewMobile = ({
         </Button>
       </DrawerTrigger>
 
-      <DrawerContent style={{ height: !selectedImgLength ? "75vh" : "90vh" }}>
+      <DrawerContent style={{ height: !selectedImgLength ? "80vh" : "90vh" }}>
         <DrawerHeader>
           <DrawerTitle className='text-center'>Đánh giá sản phẩm</DrawerTitle>
         </DrawerHeader>

@@ -8,7 +8,6 @@ router.post("/refresh-token", async (req, res) => {
   try {
     const payload = await getPayloadClient();
     const { userId } = req.body;
-    console.log('user id in the server',userId)
     const refreshToken = (
       await payload.findByID({
         collection: "customer-phone-number",

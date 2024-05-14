@@ -19,7 +19,7 @@ const CartSummary = ({ user }: CartSummaryProps) => {
   const [isOpenLoginRequest, setIsOpenLoginRequest] = useState(false);
   if(!totalPrice) return null
   return (
-    <div className='mt-10'>
+    <div className='mt-10 md:m-0 md:py-3 md:px-6 md:border md:border-gray-200 rounded-md'>
       <div className='flex gap-2 flex-col'>
         <p className='font-semibold'>Tạm tính</p>
         <p
@@ -39,6 +39,9 @@ const CartSummary = ({ user }: CartSummaryProps) => {
           handleOpen={() => setIsOpenLoginRequest(true)}
         />
       )}
+      </div>
+      <div className="mt-4">
+        <p className="text-muted-foreground text-sm">Tổng đơn hàng (2) sản phẩm</p>
       </div>
     </div>
   );

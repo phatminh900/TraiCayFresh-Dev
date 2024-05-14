@@ -9,6 +9,21 @@ export const getProducts = async (limit?: number) => {
       collection: "products",
       // Only get 3 products to shows
       limit: limit,
+      
+    });
+    return { data: products, ok: true };
+  } catch (error) {
+    console.error(error);
+    return { ok: false, data: null };
+  }
+};
+export const getPriorityProducts = async () => {
+  try {
+    const payload = await getPayloadClient();
+    const { docs: products } = await payload.find({
+      collection: "products",
+      
+      // Only get 3 products to shows
       where: {
         priority: {
           equals: true,

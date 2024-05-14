@@ -7,14 +7,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import { PropsWithChildren } from "react";
 import { IoCloseOutline, IoCreateOutline } from "react-icons/io5";
-import ProductModifyReview from "..";
-import { cn } from "@/lib/utils";
+import { IProductModifyReview } from "..";
 import SubmitProductReviewBtn from "./submit-product-review-btn";
 interface ProductReviewDesktopProps
   extends PropsWithChildren,
-    Pick<ProductModifyReview, "type"> {
+    Pick<IProductModifyReview, "type"> {
   createReviewAction: (payload: FormData) => void;
   isOpen: boolean;
   onToggleModalState: () => void;

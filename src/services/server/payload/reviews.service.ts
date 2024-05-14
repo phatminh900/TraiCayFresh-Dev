@@ -2,13 +2,16 @@ import { getPayloadClient } from "@/payload/get-client-payload";
 
 export const getProductReviews = async ({
   productId,
+  limit
 }: {
   productId: string;
+  limit?:number
 }) => {
   try {
     const payload = await getPayloadClient();
-    const { docs: reviews } = await payload.find({
+    const { docs: reviews,totalPages } = await payload.find({
       collection: "reviews",
+      limit,
       where: {
         product: {
           equals: productId,
@@ -16,7 +19,7 @@ export const getProductReviews = async ({
       },
     });
 
-    return { success: true, data: reviews };
+    return { success: true, data: {reviews,totalPages} };
   } catch (error) {
     return { ok: false, data: null };
   }

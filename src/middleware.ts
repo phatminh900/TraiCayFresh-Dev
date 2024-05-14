@@ -62,8 +62,14 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   // If user is not authenticated and trying to access a non-public route, redirect to login
   // console.log(publicRoutes.includes(req.nextUrl.pah))
   if (!isAuthenticated && !isPublicRoute) {
-    const origin=path.slice(1)
-    return NextResponse.redirect(new URL(`${APP_URL.login}?${APP_PARAMS.origin}=${origin}`, req.url));
+    const origin = path.slice(1);
+    const search=(req.nextUrl.search.slice(1))
+    return NextResponse.redirect(
+      new URL(
+        `${APP_URL.login}?${APP_PARAMS.origin}=${origin}&${search}`,
+        req.url
+      )
+    );
   }
   return NextResponse.next();
 }

@@ -61,9 +61,7 @@ const InspectProductReviewMobile = ({
                   }
                 )}
               >
-                {userReviewText} if it was a long text. this feeling is so good
-                isn&apos;t it i know its gonna be hard but i will try my best to
-                accomplish what i defied i will complete it no matter what
+                {userReviewText} 
               </p>
               {!isExpandedText && (
                 <button

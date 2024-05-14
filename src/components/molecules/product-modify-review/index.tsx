@@ -18,7 +18,7 @@ import ProductReviewDesktop from "./_components/product-review-desktop";
 import ProductReviewMobile from "./_components/product-review-mobile";
 import { createNewReview, updateReview } from "./actions/review.action";
 
-export interface ProductModifyReview extends IUser, Partial<IUserReview> {
+export interface IProductModifyReview extends IUser, Partial<IUserReview> {
   title: string;
   imgSrc: Product["thumbnailImg"];
   productId: string;
@@ -41,7 +41,7 @@ const ProductModifyReview = ({
   type = "add",
   imgSrc,
   productId,
-}: ProductModifyReview) => {
+}: IProductModifyReview) => {
   const parsedUserReviewImgs = userReviewImgs?.map((img) => {
     const reviewImgFile = img.reviewImg! as Media;
     const reviewImgUrl = reviewImgFile.url!;

@@ -1,12 +1,9 @@
 "use client";
-import Link from "next/link";
-import { IoMenuOutline, IoCloseOutline } from "react-icons/io5";
-import { APP_URL } from "@/constants/navigation.constant";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 import { IUser } from "@/types/common-types";
-import { ILink, HEADER_LINKS_DESKTOP } from "./constants/header-link";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { HEADER_LINKS_DESKTOP, ILink } from "./constants/header-link";
 
 interface HeaderNavDesktopProps extends IUser {}
 

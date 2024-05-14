@@ -1,7 +1,7 @@
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
 
 import { APP_URL } from "@/constants/navigation.constant";
-import ForgotPasswordForm from "./forgot-password-form";
+import ForgotPasswordForm from "./__component/forgot-password-form.tsx";
 import PageTitle from "@/components/ui/page-title";
 // TODO: put in types
 const ForgotPassword = ({

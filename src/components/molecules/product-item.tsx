@@ -69,7 +69,7 @@ const ProductItem = ({
         "h-[160px]": productType === "relativeProduct",
       })}
     >
-      <div className='min-w-[40%] w-[150px] rounded-tl-lg rounded-bl-lg aspect-[2/3] h-full overflow-hidden relative'>
+      <div className='min-w-[40%] w-[150px] rounded-tl-lg rounded-bl-lg aspect-[2/3] h-full overflow-hidden relative lg:min-w-[50%]'>
         <Image
           fill
           src={src}
@@ -79,7 +79,7 @@ const ProductItem = ({
         />
       </div>
       <div className='py-2 px-3 flex flex-col flex-1'>
-        <p className='text-gray-900 text-lg font-bold whitespace-nowrap lg:text-xl'>{title}</p>
+        <p className='text-gray-900 text-lg font-bold whitespace-nowrap'>{title}</p>
         {subTitle && (
           <p className='text-muted-foreground text-sm'>{subTitle}</p>
         )}

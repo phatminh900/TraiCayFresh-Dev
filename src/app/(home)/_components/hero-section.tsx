@@ -4,7 +4,7 @@ import BenefitsSection from './benefits-section'
 
 const HeroSection = () => {
   return (
-    <div className='flex flex-col h-[calc(100vh-80px-16px)] w-full mx-auto py-8 md:py-16'>
+    <div className='flex flex-col min-h-[calc(100vh-80px-16px)] w-full mx-auto pb-8 md:py-16'>
     <div className="grid md:grid-cols-[4fr_6fr] gap-x-8 md:py-14">
     <div className='flex flex-col'>
        <h1 className='text-3xl text-center tracking-tighter mb-8 md:text-start md:text-4xl md:'>

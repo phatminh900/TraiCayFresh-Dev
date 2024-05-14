@@ -2,11 +2,13 @@ import ProductModifyReview from "@/components/molecules/product-modify-review";
 import PageSubTitle from "@/components/ui/page-subTitle";
 import { Product, Review } from "@/payload/payload-types";
 import { getUserOrdersNoPopulate } from "@/services/server/payload/orders.service";
-import { checkUserHasReviewed } from "@/services/server/payload/reviews.service";
+import {
+  checkUserHasReviewed,
+  getProductReviews,
+} from "@/services/server/payload/reviews.service";
 import { IUser } from "@/types/common-types";
 import ProductReviewList from "./product-review-list";
 import ProductReviewOfUser from "./product-reviewed-of-user";
-
 
 interface ProductReviewsProps extends IUser {
   productId: string;
@@ -33,7 +35,8 @@ const ProductReviews = async ({
     if (
       userOrders?.some((order) => {
         return (
-          order._isPaid &&
+          // TODO: production later
+          // order._isPaid &&
           order.items.find((item) => item.product === productId)
         );
       })
@@ -51,10 +54,21 @@ const ProductReviews = async ({
       userReview = userReviewData[0];
     }
   }
+  // get first 5 reviews in server
+  const {data:reviewsResult} = await getProductReviews({ productId, limit: 5 });
+  const first5Reviews=reviewsResult?.reviews
+  const totalPages=reviewsResult?.totalPages
   // TODO: is loading
   return (
     <div id='reviews' className='my-12 md:my-16'>
       <PageSubTitle className='mb-2'>Đánh giá sản phẩm:</PageSubTitle>
+      {!hasBoughtProduct && (
+        <div className='mt-6'>
+          <p className='font-semibold text-center mb-4 md:text-start'>
+            Mua hàng để đánh giá sản phẩm
+          </p>
+        </div>
+      )}
       {hasBoughtProduct && !hasReviewedProduct && (
         <>
           <div className='mt-6'>
@@ -87,11 +101,10 @@ const ProductReviews = async ({
         />
       )}
       {/* filter */}
-     
-      <ProductReviewList user={user} productId={productId} />
+
+      <ProductReviewList user={user} totalPages={totalPages} initialReviews={first5Reviews||[]} productId={productId} />
     </div>
   );
 };
 
 export default ProductReviews;
-

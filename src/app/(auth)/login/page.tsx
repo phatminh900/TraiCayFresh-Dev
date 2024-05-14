@@ -20,6 +20,7 @@ const LoginPage = () => {
   
     }
   const handleCloseLoginByPhoneNumber=()=>{
+    
     setIsOpenByPhoneNumber(false)
     router.push(!origin?`?${APP_PARAMS.isOpenOtp}=false`:`?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.isOpenOtp}=false`)
   }

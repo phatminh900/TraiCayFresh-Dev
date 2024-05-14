@@ -10,6 +10,8 @@ export const APP_URL = {
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
   orderStatus:'/order-status',
+  contact:'/contact',
+  aboutUs:'/about-us'
 } as const;
 
 export const APP_PARAMS = {

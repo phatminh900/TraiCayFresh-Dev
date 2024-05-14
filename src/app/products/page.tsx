@@ -1,14 +1,9 @@
-// 'use client'
-import { trpc } from '@/trpc/trpc-client'
-import React from 'react'
+import { getProducts } from "@/services/server/payload/products.service";
+import ProductList from "../(home)/_components/product-list";
 
-const Products = async() => {
-  // TODO: using local payload
-  // const {data:products}=trpc.products.getProducts.useQuery()
-  // console.log(products)
-  return (
-    <div>Products</div>
-  )
-}
+const Products = async () => {
+  const { data: products } = await getProducts();
+  return <ProductList products={products!} />;
+};
 
-export default Products
+export default Products;

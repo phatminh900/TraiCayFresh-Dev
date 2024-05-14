@@ -10,7 +10,6 @@ import HeroSection from "./_components/hero-section";
 export default async function Home() {
   const { data :products} = await getProducts(4);
   if(!products) notFound()
-    console.log(products.length)
   return (
     <section>
       {/* hero */}

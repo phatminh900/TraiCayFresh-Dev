@@ -3,7 +3,7 @@ import { ORDER_MESSAGE } from "../../constants/api-messages.constant";
 import { getPayloadClient } from "../../payload/get-client-payload";
 import { Order } from "../../payload/payload-types";
 import { throwTrpcInternalServer } from "../../utils/server/error-server.util";
-import {  router } from "../trpc";
+import { router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { USER_ORDERS_SHOW_LIMIT } from "../../constants/configs.constant";
 import getUserProcedure from "../middlewares/get-user-procedure";
@@ -38,26 +38,26 @@ const OrderRouter = router({
       try {
         const payload = await getPayloadClient();
 
-      const order = await payload.findByID({
-        collection: "orders",
-        id: orderId,
-      });
-      if (!order)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: ORDER_MESSAGE.NOT_FOUND,
+        const order = await payload.findByID({
+          collection: "orders",
+          id: orderId,
         });
-      let orderUserId = order.orderBy.value;
-      if (typeof order.orderBy.value === "object") {
-        // orderUserId=
-        orderUserId = order.orderBy.value.id;
-      }
-      if (orderUserId!== user.id || (order.deliveryStatus!=='pending'  ))
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: ORDER_MESSAGE.BAD_REQUEST,
-        });
-     
+        if (!order)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: ORDER_MESSAGE.NOT_FOUND,
+          });
+        let orderUserId = order.orderBy.value;
+        if (typeof order.orderBy.value === "object") {
+          // orderUserId=
+          orderUserId = order.orderBy.value.id;
+        }
+        if (orderUserId !== user.id || order.deliveryStatus !== "pending")
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: ORDER_MESSAGE.BAD_REQUEST,
+          });
+
         await payload.update({
           collection: "orders",
           id: orderId,
@@ -69,36 +69,50 @@ const OrderRouter = router({
         });
         return { success: true, message: ORDER_MESSAGE.SUCCESS_CANCEL_ORDER };
       } catch (error) {
-       throw error
+        throw error;
       }
     }),
 
-  getOrders:getUserProcedure.input(z.object({page:z.number()})).query(async({ctx,input})=>{
-    const {user}=ctx
-    const {page}=input
-    const payload=await getPayloadClient()
-    try {
-      const result = await payload.find({
-        collection: "orders",
-        
-        where: {
-          "orderBy.value": {
-            equals: user.id,
+  getOrders: getUserProcedure
+    .input(z.object({ page: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { page } = input;
+      const payload = await getPayloadClient();
+      try {
+        const result = await payload.find({
+          collection: "orders",
+
+          where: {
+            "orderBy.value": {
+              equals: user.id,
+            },
           },
-          
-        },
-        page,
-        limit:USER_ORDERS_SHOW_LIMIT,
-        // get all the imgs nested as well
-        depth:2,
-        
-      });
-      const {limit,docs:orders,totalPages,totalDocs,hasNextPage,pagingCounter}=result
-      // TODO: limit
-      return { success: true,  orders,totalPages,totalDocs,hasNextPage, pagingCounter};
-    } catch (error) {
-      throw error
-    }
-  })
+          page,
+          limit: USER_ORDERS_SHOW_LIMIT,
+          // get all the imgs nested as well
+          depth: 2,
+        });
+        const {
+          limit,
+          docs: orders,
+          totalPages,
+          totalDocs,
+          hasNextPage,
+          pagingCounter,
+        } = result;
+        // TODO: limit
+        return {
+          success: true,
+          orders,
+          totalPages,
+          totalDocs,
+          hasNextPage,
+          pagingCounter,
+        };
+      } catch (error) {
+        throw error;
+      }
+    }),
 });
 export default OrderRouter;

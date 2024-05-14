@@ -48,7 +48,6 @@ const CheckoutAddress = ({
       {!isHasAddresses && (
         <form>
           {addNewAddressTitle}
-          {/* TODO: */}
           <DeliveryAddress {...deliveryAddressProps} />
         </form>
       )}

@@ -135,7 +135,6 @@ useEffect(()=>{
 
       {!isDefault && expandedIndex !== index && (
         <>
-          {/* TODO: atoms */}
           <ButtonDelete
             onClick={handleDeleteUserPhoneNumber}
             className='ml-4'
