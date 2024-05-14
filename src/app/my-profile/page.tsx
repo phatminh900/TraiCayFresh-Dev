@@ -9,9 +9,11 @@ import UserAddress from "./_components/user-address";
 import UserEmail from "./_components/user-email";
 import UserName from "./_components/user-name";
 import UserPhoneNumbers from "./_components/user-phone-numbers";
+import { cookies } from "next/headers";
 
 const MyProfilePage = async () => {
-  const user = await getUserServer()!;
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
 
   return (
     <>

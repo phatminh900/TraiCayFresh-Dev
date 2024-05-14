@@ -4,9 +4,11 @@ import CheckoutClient from "../_components/checkout-client";
 import CheckoutListCart from "../_components/checkout-list-cart";
 import { redirect } from "next/navigation";
 import { APP_URL } from "@/constants/navigation.constant";
+import { cookies } from "next/headers";
 
 const CheckoutCartPage = async () => {
-  const user = await getUserServer()!;
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
   if (!user) redirect(APP_URL.login);
 
   return (

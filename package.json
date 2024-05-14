@@ -1,11 +1,12 @@
 {
   "name": "traicayfresh",
   "version": "0.1.0",
+  "type": "commonjs",
   "private": true,
   "scripts": {
     "dev:next": "next dev",
     "dev": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts nodemon",
-    "build:native:next": "next build",
+    "build:native:next": "cross-env PAYLOAD_CONFIG_PATH=dist/payload/payload.config.js NEXT_BUILD=true next build",
     "start": "next start",
     "build:payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload build",
     "build:server": "tsc --project tsconfig.server.json",

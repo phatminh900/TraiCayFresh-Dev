@@ -4,6 +4,7 @@ import { Media } from "@/payload/payload-types";
 import { getUserServer } from "@/services/server/payload/users.service";
 import { imageSchema } from "@/validations/img.validation";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import z, { ZodError } from "zod";
 const reviewSchema = z.object({
   reviewText: z.string().optional(),
@@ -44,7 +45,9 @@ export const createNewReview = async (
   { [key in keyof Partial<IReviewSchema>]: string[] | undefined } | undefined
 > => {
   try {
-    const userServer = await getUserServer();
+    const cookie = cookies();
+    const userServer = await getUserServer(cookie)!;
+
     if (!userServer) {
       return { user: ["Bạn cần đăng nhập để thực hiện hành động này"] };
     }
@@ -164,7 +167,8 @@ export const updateReview = async (
   try {
     if (isNotModified) return { success: ["true"] };
 
-    const userServer = await getUserServer();
+    const cookie = cookies();
+    const userServer = await getUserServer(cookie)!;
     if (!userServer) {
       return { user: ["Bạn cần đăng nhập để thực hiện hành động này"] };
     }

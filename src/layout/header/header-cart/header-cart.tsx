@@ -5,11 +5,13 @@ import { getCartOfUser } from "@/services/server/payload/carts.service";
 
 import Link from "next/link";
 import HeaderCartItem from "./header-cart-item";
+import { cookies } from "next/headers";
 
 
 
 const HeaderCart = async () => {
-  const user=await getUserServer()
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
   const {data:userCart} = await getCartOfUser(user && 'email' in user?'email':'phoneNumber',user?.id)||[];
   return (
     <Link data-cy='header-cart-link' href={APP_URL.cart} className='relative'>

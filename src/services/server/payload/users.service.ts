@@ -1,6 +1,4 @@
 import "server-only";
-import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
 
 import { API_ROUTES } from "@/constants/api-routes.constant";
 
@@ -50,10 +48,10 @@ export const getMeServer = async (token?: string) => {
   }
 };
 
-export const getUserServer = async (
+export const getUserServer = async (nextCookies:ReadonlyRequestCookies
 ) => {
   try {
-    const nextCookies=cookies()
+    // const nextCookies=cookies()
     const payloadToken = nextCookies.get(COOKIE_PAYLOAD_TOKEN)?.value;
     if (payloadToken) {
       const { data: user } = await getMeServer(payloadToken);

@@ -3,10 +3,12 @@ import { getCartOfUser } from "@/services/server/payload/carts.service";
 import { getUserServer } from "@/services/server/payload/users.service";
 // import CartList from "./_components/cart-list";
 import CartSummary from "./_components/cart-summary";
+import { cookies } from "next/headers";
 
 
 const CartPage = async () => {
-  const user = await getUserServer();
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
 
   const { data: userCart } = await getCartOfUser(
     user && "email" in user ? "email" : "phoneNumber",

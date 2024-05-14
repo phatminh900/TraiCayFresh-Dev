@@ -6,11 +6,13 @@ import { getUserServer } from "@/services/server/payload/users.service";
 
 import { getUserOrders } from "@/services/server/payload/orders.service";
 import OrderList from "./__components/order-list";
+import { cookies } from "next/headers";
 
 const MyOrderPage = async () => {
-  const user = await getUserServer()!;
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
   const { data } = await getUserOrders({ userId: user!.id });
-const orders = data?.orders;
+  const orders = data?.orders;
   return (
     <>
       <BreadCrumbLinks

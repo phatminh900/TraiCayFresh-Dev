@@ -4,10 +4,10 @@ import ProductReviewSelectRating from "./product-review-select-rating";
 import ProductReviewText from "./product-review-text";
 import ProductReviewPickImgs from "./product-review-pick-imgs";
 import ProductReviewSelectedImgs from "./prduct-review-selected-imgs";
-import { ISelectedImg, ProductModifyReview } from "..";
+import { ISelectedImg, IProductModifyReview } from "..";
 import { getImgUrlMedia } from "@/utils/util.utls";
 import { useMediaQuery } from "usehooks-ts";
-interface ProductReviewContent extends Omit<ProductModifyReview,'user'|'onSetOpenState'> {
+interface ProductReviewContent extends Omit<IProductModifyReview,'user'|'onSetOpenState'> {
   formStateRating: string[] | undefined;
   selectedRating: number;
   formStateImg: string[] | undefined;

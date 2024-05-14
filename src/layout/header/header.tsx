@@ -6,9 +6,11 @@ import HeaderCart from "./header-cart/header-cart";
 import HeaderNavMobile from "./header-nav-mobile";
 import MaxWidthWrapper from "@/components/molecules/max-width-wrapper";
 import HeaderNavDesktop from "./header-nav-desktop";
+import { cookies } from "next/headers";
 
 const Header = async () => {
-  const user = await getUserServer();
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
 
   return (
     <header className='shadow bg-primary/60 md:shadow-md'>

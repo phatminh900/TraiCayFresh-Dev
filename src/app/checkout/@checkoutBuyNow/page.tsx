@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
 import { getProduct } from "@/services/server/payload/products.service";
 import CheckoutClientBuyNow from "../_components/checkout-client-buy-now";
+import { cookies } from "next/headers";
 
 const CheckoutCartPage = async ({
   searchParams,
@@ -16,7 +17,9 @@ const CheckoutCartPage = async ({
   if (!productId) redirect(APP_URL.checkout);
   const { data: product } = await getProduct({ id: productId as string });
   if (!product) redirect(APP_URL.checkout);
-  const user = await getUserServer()!;
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
+
   if (!user) redirect(APP_URL.login);
 
   return (

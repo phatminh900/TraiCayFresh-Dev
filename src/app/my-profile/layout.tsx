@@ -6,13 +6,15 @@ import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
 import { getUserServer } from "@/services/server/payload/users.service";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 
 export const metadata:Metadata={
   title:"Thông tin tài khoản | TraiCayFresh",
 
 }
 const MyProfileLayout = async ({ children }: { children: ReactNode }) => {
-  const user = await getUserServer();
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
   if (!user) redirect(APP_URL.login);
   return (
     <section>

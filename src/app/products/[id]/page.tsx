@@ -15,6 +15,7 @@ import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
 import RelativeProducts from "./_components/relative-products";
+import { cookies } from "next/headers";
 
 const ProductPage = async ({
   searchParams,
@@ -23,7 +24,8 @@ const ProductPage = async ({
   params: { id: string };
   searchParams: { [key: string]: string };
 }) => {
-  const user = await getUserServer();
+  const cookie = cookies();
+  const user = await getUserServer(cookie)!;
   const { data: product } = await getProduct({ id });
   if (!product) notFound();
   const currentQuantityOptionParams = searchParams?.currentQuantityOption;
