@@ -11,7 +11,8 @@ export const APP_URL = {
   resetPassword: "/reset-password",
   orderStatus:'/order-status',
   contact:'/contact',
-  aboutUs:'/about-us'
+  aboutUs:'/about-us',
+  verifyEmail:'/verify-email'
 } as const;
 
 export const APP_PARAMS = {

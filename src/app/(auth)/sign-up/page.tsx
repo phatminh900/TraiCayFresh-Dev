@@ -106,7 +106,7 @@ const SignUpPage = () => {
           )}
         </div>
         <Button type='submit' disabled={isPending}>
-          {isPending ? "Đăng đăng kí" : "Đăng kí"}
+          {isPending ? "Đang đăng kí" : "Đăng kí"}
         </Button>
 
         <Link

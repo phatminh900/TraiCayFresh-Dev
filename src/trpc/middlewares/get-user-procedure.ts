@@ -14,8 +14,14 @@ import { Customer, CustomerPhoneNumber } from "../../payload/payload-types";
 
 const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const request = ctx.req as PayloadRequest;
+  console.log('goinhere')
+  console.log(request.user)
+  
+  console.log('--end-- user')
   if (request.user) {
     const user=request.user as Customer|CustomerPhoneNumber
+    console.log('user---customer')
+    console.log(user)
     return next({ ctx: { user } });
   }
   const headerCookie = ctx.req.headers.cookie;
@@ -26,6 +32,8 @@ const getUserProcedure = publicProcedure.use(async ({ ctx, next }) => {
       code: "UNAUTHORIZED",
       message: AUTH_MESSAGE.EXPIRED,
     });
+    console.log('---token')
+    console.log(token)
   const decodedToken = await verifyToken(token);
 
   if (decodedToken.code === ERROR_JWT_CODE.ERR_JWS_INVALID) {

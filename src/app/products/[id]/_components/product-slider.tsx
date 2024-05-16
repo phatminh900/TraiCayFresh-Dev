@@ -44,6 +44,7 @@ const ProductSlider = ({ imgs }: { imgs: Product["productImgs"] }) => {
           return (
             <div key={imgUrl} className='relative h-[250px] md:h-[300px]'>
               <Image
+              priority
                 fill
                 className='object-cover object-center'
                 alt='Image product'

@@ -16,6 +16,7 @@ export const logOutUser = async () => {
 };
 
 export const forgotPassword = async (email: string) => {
+
   const result = await callApi({
     method: "POST",
     headers: {
@@ -24,6 +25,7 @@ export const forgotPassword = async (email: string) => {
     data: { email },
     url: API_ROUTES.forgotPassword,
   });
+  
   return result;
 };
 // export const resetPassword = async (token: string,password) => {

@@ -30,23 +30,38 @@ export const Customers: CollectionConfig = {
         const resetPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/reset-password?token=${token}`;
 
         return `
-          <!doctype html>
-          <html>
-            <body>
-              <h1>Here is my custom email template!</h1>
-              <p>Hello, ${user.email}!</p>
-              <p>Click below to reset your password.</p>
-              <p>
-                <a href="${resetPasswordURL}">${resetPasswordURL}</a>
-              </p>
-            </body>
-          </html>
+        <!DOCTYPE html>
+        <html>
+          <body>
+            <h2>Xin chào ${user.email},</h2>
+            <p>Vui lòng nhấp vào link bên dưới để đổi lại mật khấu</p>
+            <a href="${resetPasswordURL}" style="background-color: #22C55E; color: black; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block;">Đặt lai mật khẩu</a>
+
+            <p>Xin Cảm ơn,</p>
+            <p>TraiCayFresh</p>
+          </body>
+        </html>
         `;
       },
     },
     verify: {
-      generateEmailHTML(token) {
-        return `<p>Hi please verify your email ${token}</p>`;
+      generateEmailHTML: ({ req, token, user }) => {
+        // Use the token provided to allow your user to verify their account
+        const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/verify?token=${token}`;
+
+        return `
+          <!DOCTYPE html>
+          <html>
+            <body>
+              <h2>Xin chào ${user.email},</h2>
+              <p>Cảm ơn bạn đã đăng kí tài khoản tại TraiCayFresh. Vui lòng xác thực tài khoản của bạn bằng cách nhấp vào link liên kết bên dưới.</p>
+              <a href="${url}" style="background-color: #22C55E; color: blalck; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block;">Xác thực Email</a>
+              <p>Nếu bạn không thực hiện hành động này, bạn có thể bỏ qua email này.</p>
+              <p>Xin cảm ơn,</p>
+              <p>TraiCayFresh</p>
+            </body>
+          </html>
+        `;
       },
     },
   },

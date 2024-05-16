@@ -133,7 +133,7 @@ const LoginByEmail = () => {
         Quên mật khẩu?
       </Link>
       <Button data-cy='btn-submit-login'>
-        {isPending ? "Đang Đăng nhập" : "Đăng nhập"}
+        {isPending ? "Đang đăng nhập" : "Đăng nhập"}
       </Button>
 
       <Link

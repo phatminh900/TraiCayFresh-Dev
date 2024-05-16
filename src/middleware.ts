@@ -13,6 +13,8 @@ const publicRoutes = [
   "/products",
   "/",
   "/verify-email",
+  '/about-us',
+  '/contact'
 ];
 
 export async function middleware(req: NextRequest, res: NextResponse) {

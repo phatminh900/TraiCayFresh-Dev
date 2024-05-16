@@ -4,7 +4,9 @@ export const metadata: Metadata = {
   title: "Quên mật khẩu | TraiCayFresh",
 };
 const VerifyEmailLayout = ({ children }: { children: ReactNode }) => {
-  return <section>{children}</section>;
+  return <section>
+    
+    {children}</section>;
 };
 
 export default VerifyEmailLayout;

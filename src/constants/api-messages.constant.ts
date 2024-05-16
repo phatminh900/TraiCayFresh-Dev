@@ -26,7 +26,8 @@ export const USER_MESSAGE={
 export const AUTH_MESSAGE={
     EXPIRED:"Mã OTP đã hết hạn",
     INVALID_OTP:"Mã OTP không đúng",
-    INVALID_EMAIL_TOKEN:"Xác thực không thành công"
+    INVALID_EMAIL_TOKEN:"Xác thực không thành công",
+    SUCCESS_SEND_RESET_PASSWORD:"Link đổi mật khẩu đã được gửi qua email"
 
 }
 export const OTP_MESSAGE={

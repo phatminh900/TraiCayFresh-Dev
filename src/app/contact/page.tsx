@@ -17,7 +17,7 @@ const ContactPage = () => {
       </h3>
       <div className='space-y-4'>
         <div className='flex items-center gap-2'>
-          <p>Địa chỉ: </p>{" "}
+          <p className='whitespace-nowrap'>Địa chỉ: </p>{" "}
           <a
             target='_blank'
             href='https://www.google.com/maps/place/42+%C4%90.+S%E1%BB%91+8,+Linh+T%C3%A2y,+Th%E1%BB%A7+%C4%90%E1%BB%A9c,+Th%C3%A0nh+ph%E1%BB%91+H%E1%BB%93+Ch%C3%AD+Minh,+Vietnam/@10.8586633,106.7538669,17z/data=!3m1!4b1!4m6!3m5!1s0x31752790e447e321:0x40849b701606844b!8m2!3d10.8586633!4d106.7564418!16s%2Fg%2F11knkgw8mq?entry=ttu'

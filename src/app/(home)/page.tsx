@@ -1,14 +1,14 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getProducts } from "@/services/server/payload/products.service";
+import { getPriorityProducts, getProducts } from "@/services/server/payload/products.service";
 import Link from "next/link";
 import ProductList from "./_components/product-list";
 import { notFound } from "next/navigation";
 import HeroSection from "./_components/hero-section";
 
 export default async function Home() {
-  const { data :products} = await getProducts(4);
+  const { data :products} = await getPriorityProducts();
   if(!products) notFound()
   return (
     <section>

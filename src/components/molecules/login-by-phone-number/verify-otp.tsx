@@ -140,6 +140,7 @@ function VerifyOtp({ phoneNumber,onToggleShowOtp,routeToPushAfterVerifying }: Ve
       <p className='mb-3 text-muted-foreground text-sm'>
         Mã xác nhận đã được gửi đến số điện thoại của bạn
       </p>
+      <p className="text-xs my-4">Mã OTP: 000000</p>
       <form data-cy='otp-verification-form' className="flex flex-col justify-center items-center" onSubmit={handleVerifyOTP}>
         <OTPInput
           value={otp}

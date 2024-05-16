@@ -29,7 +29,7 @@ const HeaderNavMobile = ({ user }: HeaderNavMobileProps) => {
       <nav
         data-cy='nav-mobile'
         className={cn(
-          "w-screen-h-screen inset-0 flex justify-center z-50 bg-white/90 fixed inset-y-0 translate-x-full duration-500",
+          "w-screen-h-screen inset-0 flex justify-center z-50 bg-white/90 backdrop-blur-sm fixed inset-y-0 translate-x-full duration-500",
           {
             "translate-x-0": isOpen,
           }

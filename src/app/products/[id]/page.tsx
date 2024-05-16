@@ -90,7 +90,7 @@ const ProductPage = async ({
             product={{ ...product, quantity: currentQuantityOption }}
           />
         </div>
-        <ProductDescription description={product.description} />
+        <ProductDescription benefitImg={product.benefitImg} description={product.description} />
       </div>
 
       <ProductBenefits />

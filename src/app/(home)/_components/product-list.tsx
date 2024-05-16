@@ -1,6 +1,6 @@
 import ProductItem from "@/components/molecules/product-item";
 import { APP_URL } from "@/constants/navigation.constant";
-import { Product } from "@/payload/payload-types";
+import { Media, Product } from "@/payload/payload-types";
 import { getUserServer } from "@/services/server/payload/users.service";
 import { getImgUrlMedia } from "@/utils/util.utls";
 import { cookies } from "next/headers";
@@ -15,6 +15,7 @@ const ProductList = async ({ products }: ProductListProps) => {
   return (
     <ul className='space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-6 xl:grid-cols-3 '>
       {products?.map((product) => {
+       
         const productImg = getImgUrlMedia(product.thumbnailImg);
         return (
           <ProductItem

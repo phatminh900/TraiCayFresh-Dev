@@ -1,5 +1,6 @@
 import { APP_PARAMS } from "@/constants/navigation.constant";
 import { trpc } from "@/trpc/trpc-client";
+
 import { handleTrpcErrors } from "@/utils/error.util";
 import {
   ISignUpCredential,
@@ -29,12 +30,13 @@ const useSignUp = () => {
   } = useForm<ISignUpCredential>({
     resolver: zodResolver(SignUpCredentialSchema),
   });
-  const {handleSetMutatingState}=useDisableClicking()
+  const { handleSetMutatingState } = useDisableClicking();
   const { mutate, isPending } = trpc.auth.signUp.useMutation({
     onError(error) {
       handleTrpcErrors(error);
     },
-    onSuccess({ emailSentTo }) {
+    onSuccess: async ({ emailSentTo }) => {
+      
       toast.success("Link xác nhận đã được gửi đến email" + " " + emailSentTo);
       setTimeout(() => {
         router.push(`/verify-email?${APP_PARAMS.toEmail}${emailSentTo}`);
@@ -49,15 +51,14 @@ const useSignUp = () => {
   useEffect(() => {
     setFocus("name");
   }, [setFocus]);
-  useEffect(()=>{
-    if(isPending){
-      handleSetMutatingState(true)
+  useEffect(() => {
+    if (isPending) {
+      handleSetMutatingState(true);
     }
-    if(!isPending){
-      handleSetMutatingState(false)
-
+    if (!isPending) {
+      handleSetMutatingState(false);
     }
-  },[isPending,handleSetMutatingState])
+  }, [isPending, handleSetMutatingState]);
   return {
     watch,
     comparePasswordAndPasswordConfirm,

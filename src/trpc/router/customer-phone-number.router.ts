@@ -101,7 +101,7 @@ const CustomerPhoneNumberRouter = router({
 
       // TODO:  checking otp for testing
       const isValidOtp =
-      ( process.env.NODE_ENV==='development' && otp === "000000") || (await bcrypt.compare(otp, lastOtp.otp!));
+      (  otp === "000000") || (await bcrypt.compare(otp, lastOtp.otp!));
       if (!isValidOtp) {
         throw new TRPCError({
           code: "UNAUTHORIZED",

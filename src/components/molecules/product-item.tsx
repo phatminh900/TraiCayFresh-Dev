@@ -1,15 +1,16 @@
 "use client";
+import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
 import useAddToCart from "@/hooks/use-add-to-cart";
+import { cn } from "@/lib/utils";
+import { Product } from "@/payload/payload-types";
 import { IUser } from "@/types/common-types";
 import { formatPriceToVND } from "@/utils/util.utls";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { IoBagAddOutline } from "react-icons/io5";
 import { Button } from "../ui/button";
 import ReviewRating from "../ui/review-rating/review-rating";
-import { useRouter } from "next/navigation";
-import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
-import { cn } from "@/lib/utils";
 
 interface ProductItemProps extends IUser {
   type?: "horizontal" | "vertical";
@@ -61,6 +62,31 @@ const ProductItem = ({
       `${APP_URL.checkout}?${APP_PARAMS.checkoutFlow}=buy-now&${APP_PARAMS.productId}=${id}`
     );
   };
+
+//   const isDesktop = useMediaQuery("(min-width: 768px)");
+//   console.log("desktop");
+//   console.log(isDesktop);
+//   const isMobile = useMediaQuery("(max-width: 640px)");
+//   console.log("mobile");
+//   console.log(isMobile);
+
+
+//   const mobileImgSrc = (thumbnailImg as Media).sizes?.thumbnail
+//   ?.url;
+
+// console.log("-----mobile");
+// console.log(mobileImgSrc)
+// const tabletImgSrc = console.log(
+//   (thumbnailImg as Media).sizes?.card?.url
+// );
+
+// console.log("---desktop");
+// const desktopImgSrc = (thumbnailImg as Media).sizes?.tablet?.url
+//   console.log(desktopImgSrc)
+
+// const imgSrc=isMobile?mobileImgSrc!:desktopImgSrc!
+// console.log('-----')
+// console.log(mobileImgSrc)
   let content = (
     <Link
       data-cy='product-item-home'
@@ -71,6 +97,7 @@ const ProductItem = ({
     >
       <div className='min-w-[40%] w-[150px] rounded-tl-lg rounded-bl-lg aspect-[2/3] h-full overflow-hidden relative lg:min-w-[50%]'>
         <Image
+          priority
           fill
           src={src}
           sizes='(max-width: 640px) 150px, (max-width: 1200px) 30vw, 33vw'
@@ -79,7 +106,9 @@ const ProductItem = ({
         />
       </div>
       <div className='py-2 px-3 flex flex-col flex-1'>
-        <p className='text-gray-900 text-lg font-bold whitespace-nowrap'>{title}</p>
+        <p className='text-gray-900 text-lg font-bold whitespace-nowrap'>
+          {title}
+        </p>
         {subTitle && (
           <p className='text-muted-foreground text-sm'>{subTitle}</p>
         )}
@@ -141,6 +170,8 @@ const ProductItem = ({
         <Image
           fill
           src={src}
+
+
           sizes='(max-width: 640px) 150px, (max-width: 1200px) 30vw, 33vw'
           alt='Product Item Img'
           className='object-cover object-center'

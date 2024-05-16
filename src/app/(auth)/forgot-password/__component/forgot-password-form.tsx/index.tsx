@@ -16,12 +16,15 @@ import ErrorMsg from "@/components/atoms/error-msg";
 import { useEffect, useState } from "react";
 import { handleTrpcErrors } from "@/utils/error.util";
 import useDisableClicking from "@/hooks/use-disable-clicking";
+import { handleTrpcSuccess } from "@/utils/success.util";
+import { useRouter } from "next/navigation";
 
-const TIMER_SEND_REQUEST_AGAIN = 5;
+const TIMER_SEND_REQUEST_AGAIN = 90;
 const EmailValidationSchema = AuthCredentialSchema.pick({ email: true });
 
 const ForgotPasswordForm = () => {
-  const {handleSetMutatingState}=useDisableClicking()
+  const router = useRouter();
+  const { handleSetMutatingState } = useDisableClicking();
   const [isRequestSendAgain, setIsRequestSendAgain] = useState(false);
   const [timerSendRequestAgain, setTimerSendRequestAgain] = useState(
     TIMER_SEND_REQUEST_AGAIN
@@ -42,35 +45,43 @@ const ForgotPasswordForm = () => {
     isSuccess: isCheckingEmailExistsSuccess,
   } = trpc.auth.checkIfEmailExist.useMutation({
     onError: (err) => {
-     handleTrpcErrors(err)
+      handleTrpcErrors(err);
     },
   });
+  // const {
+  //   mutate: forgotPassword,
+  //   isPending,
+  //   isSuccess,
+  // } = useMutation({
+  //   mutationFn: forgotPasswordApi,
+  //   onError: (error) => {
+  //     toast.error(GENERAL_ERROR_MESSAGE);
+  //   },
+  //   onSuccess: (data) => {
+  //     if (data.ok)
+  //       return toast.success(`Link đổi mật khẩu đã được gửi qua email`);
+
+  //     toast.error(GENERAL_ERROR_MESSAGE);
+  //   },
+  // });
   const {
     mutate: forgotPassword,
     isPending,
     isSuccess,
-  } = useMutation({
-    mutationFn: forgotPasswordApi,
-    onError: (error) => {
-      toast.error(GENERAL_ERROR_MESSAGE);
-    },
-    onSuccess: (data) => {
-      if (data.ok)
-        return toast.success(`Link đổi mật khẩu đã được gửi qua email`);
-
-      toast.error(GENERAL_ERROR_MESSAGE);
-    },
+  } = trpc.auth.forgotPassword.useMutation({
+    onError: (err) => handleTrpcErrors(err),
+    onSuccess: (data) => handleTrpcSuccess(router, data.message),
   });
   const handleSendForgetPasswordRequest = handleSubmit(async ({ email }) => {
-    await checkEmailExists({ email }).catch((err)=>handleTrpcErrors(err));
-    forgotPassword(email);
+    await checkEmailExists({ email }).catch((err) => handleTrpcErrors(err));
+    forgotPassword({ email });
   });
   const handleSendRequestAgain = async () => {
     if (isRequestSendAgain) return;
     setIsRequestSendAgain(true);
     const email = getValues("email");
     await checkEmailExists({ email });
-    forgotPassword(email);
+    forgotPassword({ email });
   };
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -93,20 +104,15 @@ const ForgotPasswordForm = () => {
   useEffect(() => {
     setFocus("email");
   }, [setFocus]);
-  const isMutating=  isPending ||
-  isSuccess ||
-  isCheckingEmailExists ||
-  isRequestSendAgain ||
-  isCheckingEmailExistsSuccess
-  useEffect(()=>{
-    if(isMutating){
-      handleSetMutatingState(true)
+  const isMutating = isPending || isCheckingEmailExists || isRequestSendAgain;
+  useEffect(() => {
+    if (isPending) {
+      handleSetMutatingState(true);
     }
-    if(!isMutating){
-      handleSetMutatingState(false)
-
+    if (!isPending) {
+      handleSetMutatingState(false);
     }
-  },[isMutating,handleSetMutatingState])
+  }, [isPending, handleSetMutatingState]);
   return (
     <>
       <form
@@ -119,7 +125,7 @@ const ForgotPasswordForm = () => {
           </Label>
           <Input
             data-cy='input-email-forgot-password'
-    error={errors.email}
+            error={errors.email}
             {...register("email")}
             placeholder='email@gmail.com'
             id='email'
@@ -127,30 +133,31 @@ const ForgotPasswordForm = () => {
           {errors.email && <ErrorMsg msg={errors.email.message} />}
         </div>
 
-        <Button
-          disabled={
-          isMutating
-          }
-          variant='secondary'
-        >
-         {!isSuccess?"Nhận mã khôi phục":"Link thay đổi mật khẩu đã được gửi đến email của bạn"}
+        <Button disabled={isMutating} variant='secondary'>
+          {!isSuccess
+            ? "Nhận mã khôi phục"
+            : "Link thay đổi mật khẩu đã được gửi đến email của bạn"}
         </Button>
-      {isSuccess && <>
-        <p className='text-center text-sm md:text-base'>
-          Không nhận được mã?{" "}
-          <button
-            onClick={handleSendRequestAgain}
-            disabled={isRequestSendAgain || !isSuccess}
-            type='button'
-            className={cn("text-primary", {
-              "text-primary/70": isRequestSendAgain || !isSuccess,
-            })}
-          >
-            Thử lại{" "}
-            {isRequestSendAgain ? `sau ${timerSendRequestAgain} giây` : null}
-          </button>{" "}
-        </p>
-      </>}
+        {isSuccess && (
+          <>
+            <div className='text-center text-sm md:text-base'>
+              Không nhận được mã?{" "}
+              <button
+                onClick={handleSendRequestAgain}
+                disabled={false}
+                type='button'
+                className={cn("text-primary", {
+                  "text-primary/70": isRequestSendAgain,
+                })}
+              >
+                Thử lại{" "}
+                {isRequestSendAgain
+                  ? `sau ${timerSendRequestAgain} giây`
+                  : null}
+              </button>{" "}
+            </div>
+          </>
+        )}
       </form>
     </>
   );

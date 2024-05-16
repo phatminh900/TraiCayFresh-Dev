@@ -1,65 +1,64 @@
-import dotenv from 'dotenv'
-import path from 'path'
-import type { InitOptions } from 'payload/config'
-import payload, { Payload } from 'payload'
-import nodemailer from 'nodemailer'
+import dotenv from "dotenv";
+import path from "path";
+import type { InitOptions } from "payload/config";
+import payload, { Payload } from "payload";
+import nodemailer from "nodemailer";
 dotenv.config({
-  path: path.resolve(__dirname, '../../.env'),
-})
-
+  path: path.resolve(__dirname, "../../.env"),
+});
 const transporter = nodemailer.createTransport({
-  host: 'smtp.resend.com',
+  host: process.env.RESEND_API_HOST!,
+  port: Number(process.env.RESEND_API_PORT!),
   secure: true,
-  port: 465,
   auth: {
-    user: 'phatminh900@gmail.com',
+    user: process.env.RESEND_API_USER,
     pass: process.env.RESEND_API_KEY,
   },
-})
+});
 
-let cached = (global as any).payload
+let cached = (global as any).payload;
 
 if (!cached) {
   cached = (global as any).payload = {
     client: null,
     promise: null,
-  }
+  };
 }
 
 interface Args {
-  initOptions?: Partial<InitOptions>
+  initOptions?: Partial<InitOptions>;
 }
 
 export const getPayloadClient = async ({
   initOptions,
 }: Args = {}): Promise<Payload> => {
   if (!process.env.PAYLOAD_SECRET) {
-    throw new Error('PAYLOAD_SECRET is missing')
+    throw new Error("PAYLOAD_SECRET is missing");
   }
 
   if (cached.client) {
-    return cached.client
+    return cached.client;
   }
 
   if (!cached.promise) {
     cached.promise = payload.init({
-      // email: {
-      //   transport: transporter,
-      //   fromAddress: 'phatminh900@gmail.com',
-      //   fromName: 'Tran MinhPhat',
-      // },
+      email: {
+        fromAddress: process.env.RESEND_API_EMAIL_FROM!,
+        fromName: "TraiCayFresh",
+        transport: transporter,
+      },
       secret: process.env.PAYLOAD_SECRET,
       local: initOptions?.express ? false : true,
       ...(initOptions || {}),
-    })
+    });
   }
 
   try {
-    cached.client = await cached.promise
+    cached.client = await cached.promise;
   } catch (e: unknown) {
-    cached.promise = null
-    throw e
+    cached.promise = null;
+    throw e;
   }
 
-  return cached.client
-}
+  return cached.client;
+};
