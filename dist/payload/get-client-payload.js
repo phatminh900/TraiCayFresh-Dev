@@ -65,14 +65,14 @@ var path_1 = __importDefault(require("path"));
 var payload_1 = __importDefault(require("payload"));
 var nodemailer_1 = __importDefault(require("nodemailer"));
 dotenv_1.default.config({
-    path: path_1.default.resolve(__dirname, '../../.env'),
+    path: path_1.default.resolve(__dirname, "../../.env"),
 });
 var transporter = nodemailer_1.default.createTransport({
-    host: 'smtp.resend.com',
+    host: process.env.RESEND_API_HOST,
+    port: Number(process.env.RESEND_API_PORT),
     secure: true,
-    port: 465,
     auth: {
-        user: 'phatminh900@gmail.com',
+        user: process.env.RESEND_API_USER,
         pass: process.env.RESEND_API_KEY,
     },
 });
@@ -95,19 +95,17 @@ var getPayloadClient = function () {
             switch (_d.label) {
                 case 0:
                     if (!process.env.PAYLOAD_SECRET) {
-                        throw new Error('PAYLOAD_SECRET is missing');
+                        throw new Error("PAYLOAD_SECRET is missing");
                     }
                     if (cached.client) {
                         return [2 /*return*/, cached.client];
                     }
                     if (!cached.promise) {
-                        cached.promise = payload_1.default.init(__assign({ 
-                            // email: {
-                            //   transport: transporter,
-                            //   fromAddress: 'phatminh900@gmail.com',
-                            //   fromName: 'Tran MinhPhat',
-                            // },
-                            secret: process.env.PAYLOAD_SECRET, local: (initOptions === null || initOptions === void 0 ? void 0 : initOptions.express) ? false : true }, (initOptions || {})));
+                        cached.promise = payload_1.default.init(__assign({ email: {
+                                fromAddress: process.env.RESEND_API_EMAIL_FROM,
+                                fromName: "TraiCayFresh",
+                                transport: transporter,
+                            }, secret: process.env.PAYLOAD_SECRET, local: (initOptions === null || initOptions === void 0 ? void 0 : initOptions.express) ? false : true }, (initOptions || {})));
                     }
                     _d.label = 1;
                 case 1:

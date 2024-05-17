@@ -14,7 +14,8 @@ exports.APP_URL = {
     resetPassword: "/reset-password",
     orderStatus: '/order-status',
     contact: '/contact',
-    aboutUs: '/about-us'
+    aboutUs: '/about-us',
+    verifyEmail: '/verify-email'
 };
 exports.APP_PARAMS = {
     // TODO: adjust consistency

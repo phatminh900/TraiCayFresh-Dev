@@ -14,6 +14,9 @@ const LoginPage = () => {
   const router=useRouter()
   const searchParams = useSearchParams();
   const origin = searchParams.get(APP_PARAMS.origin) || "";
+  const checkoutFlow=searchParams.get(APP_PARAMS.checkoutFlow)||''
+  const productId=searchParams.get(APP_PARAMS.productId)||''
+
   const [isOpenLoginByPhoneNumber,setIsOpenByPhoneNumber]=useState(false)
   const handleOpenLoginByPhoneNumber=()=>{
       setIsOpenByPhoneNumber(true)
@@ -22,16 +25,17 @@ const LoginPage = () => {
   const handleCloseLoginByPhoneNumber=()=>{
     
     setIsOpenByPhoneNumber(false)
-    router.push(!origin?`?${APP_PARAMS.isOpenOtp}=false`:`?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.isOpenOtp}=false`)
+    router.push(!origin?`?${APP_PARAMS.isOpenOtp}=false`:`?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.checkoutFlow}=${checkoutFlow}&${APP_PARAMS.productId}=${productId}&${APP_PARAMS.isOpenOtp}=false`)
   }
 
+  const pushOriginUrl=origin?`/${origin}?${APP_PARAMS.checkoutFlow}=${checkoutFlow}&${APP_PARAMS.productId}=${productId}`:''
 
   return (
     <Auth type='login'>
     <LoginByEmail />
       <div className="flex flex-col items-center justify-center">
       <SeparatorOption className="mt-12 w-4/5" />
-      <LoginByPhoneNumberAlternative origin={origin} isOpen={isOpenLoginByPhoneNumber} handleClose={handleCloseLoginByPhoneNumber} handleOpen={handleOpenLoginByPhoneNumber} />
+      <LoginByPhoneNumberAlternative origin={pushOriginUrl} isOpen={isOpenLoginByPhoneNumber} handleClose={handleCloseLoginByPhoneNumber} handleOpen={handleOpenLoginByPhoneNumber} />
       </div>
     </Auth>
   );

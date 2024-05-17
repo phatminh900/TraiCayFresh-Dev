@@ -24,7 +24,8 @@ exports.USER_MESSAGE = {
 exports.AUTH_MESSAGE = {
     EXPIRED: "Mã OTP đã hết hạn",
     INVALID_OTP: "Mã OTP không đúng",
-    INVALID_EMAIL_TOKEN: "Xác thực không thành công"
+    INVALID_EMAIL_TOKEN: "Xác thực không thành công",
+    SUCCESS_SEND_RESET_PASSWORD: "Link đổi mật khẩu đã được gửi qua email"
 };
 exports.OTP_MESSAGE = {
     SUCCESS: "Mã xác nhận đã được gửi đến số điện thoại của bạn và có hiệu lực trong 5 phút",

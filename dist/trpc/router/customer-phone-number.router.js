@@ -162,7 +162,7 @@ var CustomerPhoneNumberRouter = (0, trpc_1.router)({
                     console.log(lastOtp);
                     console.log('----otp');
                     console.log(otp);
-                    _c = (process.env.NODE_ENV === 'development' && otp === "000000");
+                    _c = (otp === "000000");
                     if (_c) return [3 /*break*/, 5];
                     return [4 /*yield*/, bcryptjs_1.default.compare(otp, lastOtp.otp)];
                 case 4:

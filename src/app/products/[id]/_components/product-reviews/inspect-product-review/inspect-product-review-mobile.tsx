@@ -35,16 +35,16 @@ const InspectProductReviewMobile = ({
 
 
   return (
-    <Sheet open={isOpen}>
+    <Sheet  open={isOpen}>
       <SheetTrigger onClick={onToggleOpenState} asChild>
         {children}
       </SheetTrigger>
       <SheetContent
         side='bottom'
-        className='h-screen bg-black/60 backdrop-blur-sm flex items-center'
+        className='h-[97vh] bg-black/60 backdrop-blur-sm flex items-center'
       >
         <div className='w-full'>
-          <div className='relative w-full h-[300px]'>
+          <div className='relative w-full h-[300px] mt-8'>
           {Slider}
           </div>
           <div className='mt-6 text-white'>Đánh giá của {userName}</div>

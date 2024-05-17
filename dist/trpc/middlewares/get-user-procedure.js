@@ -53,8 +53,13 @@ var getUserProcedure = trpc_1.publicProcedure.use(function (_a) { return __await
         switch (_c.label) {
             case 0:
                 request = ctx.req;
+                console.log('goinhere');
+                console.log(request.user);
+                console.log('--end-- user');
                 if (request.user) {
                     user_1 = request.user;
+                    console.log('user---customer');
+                    console.log(user_1);
                     return [2 /*return*/, next({ ctx: { user: user_1 } })];
                 }
                 headerCookie = ctx.req.headers.cookie;
@@ -65,6 +70,8 @@ var getUserProcedure = trpc_1.publicProcedure.use(function (_a) { return __await
                         code: "UNAUTHORIZED",
                         message: api_messages_constant_1.AUTH_MESSAGE.EXPIRED,
                     });
+                console.log('---token');
+                console.log(token);
                 return [4 /*yield*/, (0, auth_util_1.verifyToken)(token)];
             case 1:
                 decodedToken = _c.sent();

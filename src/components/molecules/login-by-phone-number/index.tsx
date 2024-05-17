@@ -19,6 +19,8 @@ export function LoginByPhoneNumber({
   const [isShowOtp, setIsShowOtp] = useState(false);
   const searchParams = useSearchParams();
   const origin = searchParams.get(APP_PARAMS.origin);
+  const checkoutFlow = searchParams.get(APP_PARAMS.checkoutFlow) || "";
+  const productId = searchParams.get(APP_PARAMS.productId) || "";
   const handleToggleShowOtp = () => {
     setIsShowOtp((prev) => !prev);
   };
@@ -34,7 +36,7 @@ export function LoginByPhoneNumber({
             router.push(
               !origin
                 ? `?${APP_PARAMS.isOpenOtp}=${state}`
-                : `?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.isOpenOtp}=${state}`
+                : `?${APP_PARAMS.origin}=${origin}&${APP_PARAMS.checkoutFlow}=${checkoutFlow}&${APP_PARAMS.productId}=${productId}&${APP_PARAMS.isOpenOtp}=${state}`
             );
             // set the router is showotp on the browser
           }}

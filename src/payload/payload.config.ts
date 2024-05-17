@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
-import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3'
+import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 // import nestedDocs from '@payloadcms/plugin-nested-docs'
@@ -22,7 +22,6 @@ import { Coupons } from "./collection/coupon.collection";
 import { Feedback } from "./collection/feedback.collection";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 
-
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
 });
@@ -36,8 +35,7 @@ const storageAdapter = s3Adapter({
     region: process.env.AWS_S3_REGION!,
   },
   bucket: process.env.AWS_S3_BUCKET_NAME!,
-})
-
+});
 
 export default buildConfig({
   routes: {
@@ -90,15 +88,18 @@ export default buildConfig({
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
   csrf: [
+    "https://trai-cay-fresh.up.railway.app",
     // whitelist of domains to allow cookie auth from
-    process.env.NEXT_PUBLIC_SERVER_URL!
+    process.env.NEXT_PUBLIC_SERVER_URL!,
   ],
 
-  plugins: [cloudStorage({
-    collections:{
-      'media':{
-        adapter:storageAdapter
-      }
-    }
-  })],
+  plugins: [
+    cloudStorage({
+      collections: {
+        media: {
+          adapter: storageAdapter,
+        },
+      },
+    }),
+  ],
 });

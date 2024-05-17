@@ -27,12 +27,15 @@ exports.Customers = {
                 var token = agrs === null || agrs === void 0 ? void 0 : agrs.token;
                 // Use the token provided to allow your user to reset their password
                 var resetPasswordURL = "".concat(process.env.NEXT_PUBLIC_SERVER_URL, "/reset-password?token=").concat(token);
-                return "\n          <!doctype html>\n          <html>\n            <body>\n              <h1>Here is my custom email template!</h1>\n              <p>Hello, ".concat(user.email, "!</p>\n              <p>Click below to reset your password.</p>\n              <p>\n                <a href=\"").concat(resetPasswordURL, "\">").concat(resetPasswordURL, "</a>\n              </p>\n            </body>\n          </html>\n        ");
+                return "\n        <!DOCTYPE html>\n        <html>\n          <body>\n            <h2>Xin ch\u00E0o ".concat(user.email, ",</h2>\n            <p>Vui l\u00F2ng nh\u1EA5p v\u00E0o link b\u00EAn d\u01B0\u1EDBi \u0111\u1EC3 \u0111\u1ED5i l\u1EA1i m\u1EADt kh\u1EA5u</p>\n            <a href=\"").concat(resetPasswordURL, "\" style=\"background-color: #22C55E; color: black; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block;\">\u0110\u1EB7t lai m\u1EADt kh\u1EA9u</a>\n\n            <p>Xin C\u1EA3m \u01A1n,</p>\n            <p>TraiCayFresh</p>\n          </body>\n        </html>\n        ");
             },
         },
         verify: {
-            generateEmailHTML: function (token) {
-                return "<p>Hi please verify your email ".concat(token, "</p>");
+            generateEmailHTML: function (_a) {
+                var req = _a.req, token = _a.token, user = _a.user;
+                // Use the token provided to allow your user to verify their account
+                var url = "".concat(process.env.NEXT_PUBLIC_SERVER_URL, "/verify?token=").concat(token);
+                return "\n          <!DOCTYPE html>\n          <html>\n            <body>\n              <h2>Xin ch\u00E0o ".concat(user.email, ",</h2>\n              <p>C\u1EA3m \u01A1n b\u1EA1n \u0111\u00E3 \u0111\u0103ng k\u00ED t\u00E0i kho\u1EA3n t\u1EA1i TraiCayFresh. Vui l\u00F2ng x\u00E1c th\u1EF1c t\u00E0i kho\u1EA3n c\u1EE7a b\u1EA1n b\u1EB1ng c\u00E1ch nh\u1EA5p v\u00E0o link li\u00EAn k\u1EBFt b\u00EAn d\u01B0\u1EDBi.</p>\n              <a href=\"").concat(url, "\" style=\"background-color: #22C55E; color: blalck; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block;\">X\u00E1c th\u1EF1c Email</a>\n              <p>N\u1EBFu b\u1EA1n kh\u00F4ng th\u1EF1c hi\u1EC7n h\u00E0nh \u0111\u1ED9ng n\u00E0y, b\u1EA1n c\u00F3 th\u1EC3 b\u1ECF qua email n\u00E0y.</p>\n              <p>Xin c\u1EA3m \u01A1n,</p>\n              <p>TraiCayFresh</p>\n            </body>\n          </html>\n        ");
             },
         },
     },
