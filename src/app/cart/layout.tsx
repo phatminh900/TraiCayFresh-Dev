@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { ReactNode } from "react"; 
 export const metadata:Metadata={
-  title:"Giỏ hàng | TraiCayFresh"
+  title:"Giỏ hàng"
 }
 const CartLayout = async ({ children }: { children: ReactNode }) => {
   const cookie = cookies();

@@ -8,10 +8,12 @@ import Provider from "@/layout/provider";
 import Footer from "@/layout/footer";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"] });
-
+const inter = Inter({ subsets: ["latin",'vietnamese'] ,display:'swap'});
 export const metadata: Metadata = {
-  title: "Trai Cay Fresh ",
+  title: {
+    template:`%s | TraicayFresh`,
+    default:"Trai Cay Fresh"
+  },
   description: "Thỏa sức mua sắm trái cây sạch mà không lo về giá cả ,chất lượng và dinh dưỡng",
 };
 

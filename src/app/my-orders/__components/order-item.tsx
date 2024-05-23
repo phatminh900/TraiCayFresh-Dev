@@ -31,7 +31,7 @@ const OrderItem = ({
       className='border border-gray-300 rounded-md'
     >
       <div className='text-sm px-3 py-2 bg-gray-200 flex justify-between border-b border-b-gray-200'>
-        <p
+        <div
           data-cy='order-id-my-order'
           className='md:flex md:items-center md:gap-2'
         >
@@ -39,7 +39,7 @@ const OrderItem = ({
             <IoReceiptOutline size={25} />
           </div>
           Đơn hàng: <span>{sliceOrderId(orderId)}</span>
-        </p>
+        </div>
         <div className='md:flex md:items-center md:gap-2'>
           <div className='hidden md:block'>
             <FaMotorcycle

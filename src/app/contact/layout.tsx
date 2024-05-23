@@ -1,18 +1,23 @@
-import BreadCrumbLinks from '@/components/molecules/breadcrumbLinks'
-import { APP_URL } from '@/constants/navigation.constant'
-import { Metadata } from 'next';
-import React, { ReactNode } from 'react'
+import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
+import { APP_URL } from "@/constants/navigation.constant";
+import { Metadata } from "next";
+import { Radio_Canada } from "next/font/google";
+import React, { ReactNode } from "react";
 
+const poiretOne = Radio_Canada({
+  subsets: ["latin", "vietnamese"],
+  display: "swap",
+});
 export const metadata: Metadata = {
-  title: "Liên hệ| TraiCayFresh",
+  title: "Liên hệ",
 };
-const ContactLayoutPage = ({children}:{children:ReactNode}) => {
+const ContactLayoutPage = ({ children }: { children: ReactNode }) => {
   return (
-    <section>
-      <BreadCrumbLinks links={[{label:"Liên hệ",href:APP_URL.contact}]}/>
-        {children}
+    <section className={poiretOne.className}>
+      <BreadCrumbLinks links={[{ label: "Liên hệ", href: APP_URL.contact }]} />
+      {children}
     </section>
-  )
-}
+  );
+};
 
-export default ContactLayoutPage
+export default ContactLayoutPage;

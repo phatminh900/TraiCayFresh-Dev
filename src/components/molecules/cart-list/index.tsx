@@ -8,16 +8,15 @@ import { CartProductItem, useCart } from "@/store/cart.store";
 import { trpc } from "@/trpc/trpc-client";
 import { IUser } from "@/types/common-types";
 
+import useDisableClicking from "@/hooks/use-disable-clicking";
+import { useRouter } from "next/navigation";
 import EmptyCart from "../empty-cart";
 import CartItem from "./cart-item";
-import { useRouter } from "next/navigation";
-import useDisableClicking from "@/hooks/use-disable-clicking";
 
 interface CartListProps extends IUser {
   userCart: UserCart;
 }
 
-let init = true;
 const CartList = ({ user, userCart }: CartListProps) => {
   const {handleSetMutatingState}=useDisableClicking()
   const router=useRouter()
@@ -57,41 +56,7 @@ const CartList = ({ user, userCart }: CartListProps) => {
     }
     setUserPhoneNumberCart(cartItems)
   }
-  // useEffect(() => {
-  //   // logged user update to localStorage as well
-  //   if (userCart.length && !cartItemLocal.length && init) {
-  //     const cartItem: CartProductItem[] = userCart.map(
-  //       ({
-  //         product: {
-  //           id,
-  //           originalPrice,
-  //           thumbnailImg,
-  //           title,
-  //           priceAfterDiscount,
-  //         },
-  //         quantity,
-  //         discountAmount,
-  //         coupon,
-  //         isAppliedCoupon,
-  //         shippingCost,
-  //       }) => ({
-  //         id,
-  //         isAppliedCoupon,
-  //         coupon,
-  //         discountAmount,
-  //         shippingCost,
-  //         originalPrice,
-  //         quantity,
-  //         title,
-  //         thumbnailImg,
-  //         priceAfterDiscount,
-  //       })
-  //     );
-  //     console.log('set again in here huh...')
-  //     setCartItem(cartItem);
-  //     init = false;
-  //   }
-  // }, [userCart.length, setCartItem, userCart, cartItemLocal.length]);
+
 
   useEffect(() => {
     // if user is logged no need to send request

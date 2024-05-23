@@ -1,12 +1,10 @@
 import { getUserServer } from "@/services/server/payload/users.service";
 
-import CheckoutClient from "../_components/checkout-client";
-import CheckoutListCart from "../_components/checkout-list-cart";
-import { redirect } from "next/navigation";
 import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
 import { getProduct } from "@/services/server/payload/products.service";
-import CheckoutClientBuyNow from "../_components/checkout-client-buy-now";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import CheckoutClientBuyNow from "../_components/checkout-client-buy-now";
 
 const CheckoutCartPage = async ({
   searchParams,

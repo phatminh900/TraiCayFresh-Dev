@@ -1,18 +1,12 @@
 import BreadCrumbLinks from "@/components/molecules/breadcrumbLinks";
-import EmptyCart from "@/components/molecules/empty-cart";
 import PageTitle from "@/components/ui/page-title";
 import { APP_URL } from "@/constants/navigation.constant";
-import { getUserServer } from "@/services/server/payload/users.service";
 
-import { getUserOrders } from "@/services/server/payload/orders.service";
-import OrderList from "./__components/order-list";
-import { cookies } from "next/headers";
+import { Suspense } from "react";
+import OrderListData from "./__components/order-list-data";
+import MyOrdersSkeleton from "./__components/my-orders-skeleton";
 
-const MyOrderPage = async () => {
-  const cookie = cookies();
-  const user = await getUserServer(cookie)!;
-  const { data } = await getUserOrders({ userId: user!.id });
-  const orders = data?.orders;
+const MyOrderPage = () => {
   return (
     <>
       <BreadCrumbLinks
@@ -20,14 +14,10 @@ const MyOrderPage = async () => {
         links={[{ href: APP_URL.myOrders, label: "Đơn hàng đã mua" }]}
       />
       <PageTitle>Đơn hàng đã mua</PageTitle>
-      {!orders?.length ? (
-        <EmptyCart message='Bạn chưa mua đơn hàng nào' />
-      ) : (
-        <OrderList
-          initialOrders={orders}
-          hasNextPage={data?.hasNextPage || false}
-        />
-      )}
+
+      <Suspense fallback={<MyOrdersSkeleton />}>
+        <OrderListData />
+      </Suspense>
     </>
   );
 };

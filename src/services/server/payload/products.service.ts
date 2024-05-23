@@ -22,7 +22,7 @@ export const getPriorityProducts = async () => {
     const payload = await getPayloadClient();
     const { docs: products } = await payload.find({
       collection: "products",
-      
+        
       // Only get 3 products to shows
       where: {
         priority: {

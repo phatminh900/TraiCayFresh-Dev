@@ -1,12 +1,11 @@
 'use client'
-import React from "react";
-import OrderSpecificSectionWrapper from "./order-specific-section-wrapper";
-import { IoBagHandleOutline } from "react-icons/io5";
-import { Order, Product } from "@/payload/payload-types";
-import Image from "next/image";
-import { formatPriceToVND, getImgUrlMedia } from "@/utils/util.utls";
-import Link from "next/link";
 import { APP_URL } from "@/constants/navigation.constant";
+import { Order, Product } from "@/payload/payload-types";
+import { formatPriceToVND, getImgUrlMedia } from "@/utils/util.utls";
+import Image from "next/image";
+import Link from "next/link";
+import { IoBagHandleOutline } from "react-icons/io5";
+import OrderSpecificSectionWrapper from "./order-specific-section-wrapper";
 
 interface OrderSpecificProductsProps {
   items: Order["items"];

@@ -1,8 +1,8 @@
-import PageSubTitle from "@/components/ui/page-subTitle";
 import PageTitle from "@/components/ui/page-title";
 import ReviewRating from "@/components/ui/review-rating/review-rating";
 import { getProduct } from "@/services/server/payload/products.service";
 import { getUserServer } from "@/services/server/payload/users.service";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import ProductAddToCart from "./_components/product-add-to-cart";
@@ -15,7 +15,6 @@ import ProductReviewQuantity from "./_components/product-review-quantity";
 import ProductReviews from "./_components/product-reviews";
 import ProductSlider from "./_components/product-slider";
 import RelativeProducts from "./_components/relative-products";
-import { cookies } from "next/headers";
 
 const ProductPage = async ({
   searchParams,

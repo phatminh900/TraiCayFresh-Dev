@@ -1,6 +1,6 @@
 import ProductItem from "@/components/molecules/product-item";
 import { APP_URL } from "@/constants/navigation.constant";
-import { Media, Product } from "@/payload/payload-types";
+import { Product } from "@/payload/payload-types";
 import { getUserServer } from "@/services/server/payload/users.service";
 import { getImgUrlMedia } from "@/utils/util.utls";
 import { cookies } from "next/headers";

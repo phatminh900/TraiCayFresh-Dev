@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { ReactNode } from "react";
 
 export const metadata:Metadata={
-  title:'Trạng thái đơn hàng | TraiCayFresh'
+  title:'Trạng thái đơn hàng'
 }
 const OrderStatusLayout = ({ children }: { children: ReactNode }) => {
   return (

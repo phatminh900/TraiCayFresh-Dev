@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
-import React from "react";
-import BenefitsSection from "./benefits-section";
+import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
-
+import Link from "next/link";
+import BenefitsSection from "./benefits-section";
 const HeroSection = () => {
   return (
     <div className='flex flex-col min-h-[calc(100vh-80px-16px)] w-full mx-auto pb-8 md:py-16'>
@@ -17,12 +16,18 @@ const HeroSection = () => {
             cấp hàng đảm bảo chất lượng , hương vị tươi ngon, và luôn sẵn sàng
             giao đến bạn
           </p>
-          <Button className='w-4/5 self-center md:hidden'>
+          <Link  href='#home-products' className={buttonVariants({variant:'default',className:'w-4/5 self-center md:hidden block'})}>
             Chọn sản phẩm ngay
-          </Button>
-          <Button variant='link' className='self-start p-0 hidden md:block'>
+          </Link>
+          <Link
+            href='#home-products'
+            className={buttonVariants({
+              variant: "link",
+              className: "self-start p-0 hidden md:block",
+            })}
+          >
             Chọn sản phẩm ngay &darr;
-          </Button>
+          </Link>
         </div>
         <div className='relative mt-6 h-[200px] md:h-[350px]'>
           {/* 1img contains 3 img */}

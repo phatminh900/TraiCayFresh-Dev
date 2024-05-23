@@ -1,17 +1,13 @@
-"use client";
-import { APP_PARAMS, APP_URL } from "@/constants/navigation.constant";
-import useAddToCart from "@/hooks/use-add-to-cart";
+import ReviewRating from "@/components/ui/review-rating/review-rating";
 import { cn } from "@/lib/utils";
 import { IUser } from "@/types/common-types";
 import { formatPriceToVND } from "@/utils/util.utls";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { IoBagAddOutline } from "react-icons/io5";
-import { Button } from "../ui/button";
-import ReviewRating from "../ui/review-rating/review-rating";
+import ProductItemAddToCartBtn from "./product-item-add-to-cart-btn";
+import ProductItemBuyNow from "./product-item-buy-now";
 
-interface ProductItemProps extends IUser {
+export interface ProductItemProps extends IUser {
   type?: "horizontal" | "vertical";
   title: string;
   subTitle?: string;
@@ -38,31 +34,6 @@ const ProductItem = ({
   reviewQuantity = 1,
   reviewRating = 5,
 }: ProductItemProps) => {
-  const router = useRouter();
-  const {
-    handleAddItemToCart,
-    isAddingError,
-    isAddingToCart,
-    isAddingToUserPhoneNumberCart,
-    isAddingUserCartNumberError,
-  } = useAddToCart({
-    product: {
-      id,
-      originalPrice,
-      quantity: 1,
-      thumbnailImg: src,
-      title,
-      priceAfterDiscount,
-    },
-    user,
-  });
-  const handleBuyNow = () => {
-    router.push(
-      `${APP_URL.checkout}?${APP_PARAMS.checkoutFlow}=buy-now&${APP_PARAMS.productId}=${id}`
-    );
-  };
-
-
   let content = (
     <Link
       data-cy='product-item-home'
@@ -107,32 +78,16 @@ const ProductItem = ({
             hidden: productType === "relativeProduct",
           })}
         >
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              handleBuyNow();
-            }}
-            className='flex-1'
-          >
-            Mua ngay
-          </Button>
-          <Button
-            data-cy='product-item-add-to-cart-home'
-            onClick={(e) => {
-              e.preventDefault();
-              handleAddItemToCart();
-            }}
-            disabled={
-              isAddingToCart ||
-              isAddingError ||
-              isAddingToUserPhoneNumberCart ||
-              isAddingUserCartNumberError
-            }
-            className='flex-1'
-            variant={"outline"}
-          >
-            <IoBagAddOutline className='w-6 h-6' />
-          </Button>
+          <ProductItemBuyNow id={id} />
+          <ProductItemAddToCartBtn
+            id={id}
+            title={title}
+            src={src}
+            originalPrice={originalPrice}
+            user={user}
+            priceAfterDiscount={priceAfterDiscount}
+            reviewQuantity={reviewQuantity}
+          />
         </div>
       </div>
     </Link>
@@ -146,8 +101,6 @@ const ProductItem = ({
         <Image
           fill
           src={src}
-
-
           sizes='(max-width: 640px) 150px, (max-width: 1200px) 30vw, 33vw'
           alt='Product Item Img'
           className='object-cover object-center'

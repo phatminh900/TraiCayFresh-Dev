@@ -16,10 +16,14 @@ export default async function Home() {
      <HeroSection />
 
       {/* products */}
+
+      <div id="home-products">
+
       <PageTitle className='text-center text-3xl mb-8'>
         Tất cả sản phẩm
       </PageTitle>
       <ProductList products={products} />
+      </div>
       <div className='flex justify-center mt-4'>
         <Link
           href={APP_URL.products}

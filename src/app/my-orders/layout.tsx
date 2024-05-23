@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 export const metadata:Metadata={
-  title:'Đơn hàng của tôi | TraiCayFresh'
+  title:'Đơn hàng của tôi'
 }
 const MyOrderLayout = async ({ children }: { children: ReactNode }) => {
   const cookie = cookies();
@@ -15,7 +15,6 @@ const MyOrderLayout = async ({ children }: { children: ReactNode }) => {
   await getUserOrders({ userId: user!.id });
   return (
     <section>
-     
       {children}
     </section>
   );
